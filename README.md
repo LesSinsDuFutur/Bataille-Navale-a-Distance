@@ -8,11 +8,7 @@ Projet de SIN 2017-2018 <i class="icon-right-open"></i> **Bataille Navale**.
 **Candidat 2**: THEVENIN Loélia
 **Candidat 3**: COLINET Cyril
 
-----------
-
 > **Note:** Projet automatiquement sauvegardé (via git ou upload sur l'organisation)
-
-----------
 
 Informations complémentaires
 --------------------
