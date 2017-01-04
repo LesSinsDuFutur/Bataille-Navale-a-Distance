@@ -4,9 +4,9 @@ Bataille Navale
 
 Projet de SIN 2017-2018 <i class="icon-right-open"></i> **Bataille Navale**.
 
-**Candidat 1 (chef de projet)**: CHAMPAULT Jordan
-**Candidat 2**: THEVENIN Loélia
-**Candidat 3**: COLINET Cyril
+- **Candidat 1 (chef de projet)**: CHAMPAULT Jordan
+- **Candidat 2**: THEVENIN Loélia
+- **Candidat 3**: COLINET Cyril
 
 > **Note:** Projet automatiquement sauvegardé (via git ou upload sur l'organisation)
 
