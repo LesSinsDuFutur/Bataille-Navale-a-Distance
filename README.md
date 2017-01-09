@@ -20,18 +20,6 @@ Informations complémentaires
 - Emmetteur / Récepteur bluetooth
 - Flowcode =)
 
-Diagrammes UML
---------------------
-
-> **Note:** Plus d'informations sur les diagrammes 
-
-> - À propos de la syntaxe des  **diagrammes de séquence** [ici][1],
-> - À propos de la syntaxe des **graphiques "FLOW"** [ici][2].
-
-  [1]: http://bramp.github.io/js-sequence-diagrams/
-  [2]: http://adrai.github.io/flowchart.js/
-
-
 Tableau du contenu
 --------------------
 
