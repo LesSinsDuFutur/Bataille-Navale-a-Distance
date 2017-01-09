@@ -37,7 +37,7 @@ Diagrammes SysML
 
 ### Diagramme de Séquence
 
-![](/Diagrams/Sequence_UML_Diagram.PNG)
+![](/Diagrams/Sequence_UML_Diagram.png)
 
 Tableau du contenu
 --------------------
