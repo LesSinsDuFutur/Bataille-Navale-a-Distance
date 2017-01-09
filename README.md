@@ -25,9 +25,7 @@ Diagrammes SysML
 
 ### Diagramme de Contexte
 
-<center>
-  <img src="/Diagrams/Context_UML_Diagram.PNG" alt="Diagramme de contexte" />
-</center>
+![](/Diagrams/Context_UML_Diagram.PNG)
 
 ### Diagramme d'Exigence
 
