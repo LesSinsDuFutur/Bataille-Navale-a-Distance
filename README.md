@@ -25,17 +25,17 @@ Diagrammes SysML
 
 ### Diagramme de Contexte
 
-![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/Context_UML_Diagram.PNG)
+![](/Diagrams/Context_UML_Diagram.PNG)
 
 ### Diagramme d'Exigence
 
-![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/Exigence_UML_Diagram.PNG)
+![](/Diagrams/Exigence_UML_Diagram.PNG)
 
 ### Diagramme de Cas d'Utilisation
 
 ### Diagramme de Séquence
 
-![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/sequence.png)
+![](/Diagrams/sequence.png)
 
 Tableau du contenu
 --------------------
