@@ -33,6 +33,10 @@ Diagrammes SysML
 
 ### Diagramme de Cas d'Utilisation
 
+### Diagramme de Séquence
+
+![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/sequence.png)
+
 Tableau du contenu
 --------------------
 
