@@ -33,6 +33,8 @@ Diagrammes SysML
 
 ### Diagramme de Cas d'Utilisation
 
+[](/Diagrams/Cas_Utilisation.png)
+
 ### Diagramme de Séquence
 
 ![](/Diagrams/sequence.png)
