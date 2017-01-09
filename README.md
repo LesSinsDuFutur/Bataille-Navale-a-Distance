@@ -20,6 +20,19 @@ Informations complémentaires
 - Emmetteur / Récepteur bluetooth
 - Flowcode =)
 
+Diagrammes SysML
+--------------------
+
+### Diagramme de Contexte
+
+![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/Context_UML_Diagram.PNG)
+
+### Diagramme d'Exigence
+
+![](https://raw.githubusercontent.com/LesSinsDuFutur/bataille_navale/master/Diagrams/Exigence_UML_Diagram.PNG)
+
+### Diagramme de Cas d'Utilisation
+
 Tableau du contenu
 --------------------
 
