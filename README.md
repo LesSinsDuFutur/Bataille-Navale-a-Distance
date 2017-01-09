@@ -41,7 +41,7 @@ Diagrammes SysML
 
 ### Diagramme de définition de Blocs
 
-![](Bloc-UML-Diagram-BETA.pngg)
+![](/Diagrams/Bloc-UML-Diagram-BETA.png)
 
 Tableau du contenu
 --------------------
