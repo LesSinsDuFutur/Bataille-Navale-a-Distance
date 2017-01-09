@@ -39,6 +39,10 @@ Diagrammes SysML
 
 ![](/Diagrams/Sequence_UML_Diagram.png)
 
+### Diagramme de définition de Blocs
+
+![](/Diagrams/Blocs_UML_Diagram.png)
+
 Tableau du contenu
 --------------------
 
