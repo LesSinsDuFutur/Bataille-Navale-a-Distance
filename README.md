@@ -46,7 +46,4 @@ Diagrammes SysML
 Chaîne d'Information
 --------------------
 
-![](CICE.PNG)
-
---------------------
-Cyril, change les noms des fichers qui sont up avec OK dedans stp
+![](/Diagrams/CICE_Diagram_OK.png)
