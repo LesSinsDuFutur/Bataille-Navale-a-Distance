@@ -25,25 +25,33 @@ Diagrammes SysML
 
 ### Diagramme de Contexte
 
-![](/Diagrams/Context_UML_Diagram.PNG)
+![](/Diagrams/Context_navale_OK.PNG)
 
 ### Diagramme d'Exigence
 
-![](/Diagrams/Exigence_UML_Diagram.PNG)
+![](/Diagrams/Exigence_navale_OK.PNG)
 
 ### Diagramme de Cas d'Utilisation
 
-![](/Diagrams/Cas_Utilisation_UML_Diagram.PNG)
+![](/Diagrams/Cas_Utilisation_navale_OK.PNG)
 
-### Diagramme de Séquence
+### Diagramme de Séquence (Début de partie)
 
-![](/Diagrams/sequence_UML_diagram.png)
+![](/Diagrams/se_start_navale_OK.png)
+
+### Diagramme de Séquence (Partie Gagnée)
+
+![](/Diagrams/seq_Win_Navale_OK.png)
+
+### Diagramme de Séquence (Pendant une partie)
+
+![](/Diagrams/seq_main_navale_OK.png)
 
 ### Diagramme de définition de Blocs
 
-![](/Diagrams/Bloc-UML-Diagram.png)
+![](/Diagrams/Bloc_navale_OK.png)
 
 Chaîne d'Information
 --------------------
 
-![](/Diagrams/CICE_Diagram_OK.png)
+![](/Diagrams/CICE_Navale_OK.PNG)
