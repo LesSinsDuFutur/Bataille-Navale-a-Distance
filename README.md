@@ -41,7 +41,7 @@ Diagrammes SysML
 
 ### Diagramme de Séquence (Partie Gagnée)
 
-![](/Diagrams/seq_Win_Navale_OK.png)
+![](/Diagrams/seq_Win_OK.png)
 
 ### Diagramme de Séquence (Pendant une partie)
 
