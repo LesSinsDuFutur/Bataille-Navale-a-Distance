@@ -33,7 +33,7 @@ Diagrammes SysML
 
 ### Diagramme de Cas d'Utilisation
 
-![](/Diagrams/Cas_utilisation_navale_OK.PNG)
+![](/Diagrams/Cas_utilisation_navale_OK.png)
 
 ### Diagramme de Séquence (Début de partie)
 
