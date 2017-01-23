@@ -1,0 +1,3 @@
+* Lorsqu'un des joueurs à touchés tous les bateaux adverses, la partie est finie.
+* Afficher "Partie gagnée par + joueur ayant gagné" + révéler la position des bateaux adverses.
+* Réinitialiser la partie au bout de dix secondes.
