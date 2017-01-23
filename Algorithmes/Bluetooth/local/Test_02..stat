@@ -1,0 +1,17 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 37.1,rom = 0;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCM_INITIALISATION(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 1610,ram = 15.0,rom = 82;
+FCD_05181_Bluetooth1__Initialise(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 1590,ram = 0.0,rom = 10;
+FCD_04071_LCD__Start(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 780,ram = 1.0,rom = 290;
+FCD_04071_LCD__Clear(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 302,ram = 0.0,rom = 38;
+FCD_04071_LCD__PrintString(unsigned char*,unsigned short):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 321,ram = 6.0,rom = 54;
+FCD_04071_LCD__RawSend(unsigned char,bit):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 654,ram = 3.1,rom = 700;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 18;
+main(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 1680,ram = 0.0,rom = 10;
+interrupt(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\local\Test_02..c",line = 1700,ram = 0.0,rom = 34;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 76;
+#HEAP_BLOCK: 0, 65, 1471;

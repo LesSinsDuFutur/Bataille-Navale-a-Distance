@@ -1,0 +1,4566 @@
+;/////////////////////////////////////////////////////////////////////////////////
+;// Code Generator: BoostC Compiler - http://www.sourceboost.com
+;// Version       : 7.20
+;// License Type  : Pro License
+;// Limitations   : PIC18 max code size:Unlimited, max RAM banks:Unlimited
+;/////////////////////////////////////////////////////////////////////////////////
+
+/*********************************************************************
+ *                  Flowcode CAL String File
+ *
+ * File: PIC_CAL_String.c
+ *
+ * (c) 2011 Matrix Multimedia Ltd.
+ * http://www.matrixmultimedia.com
+ *
+ * Software License Agreement
+ *
+ * The software supplied herewith by Matrix Multimedia Ltd (the
+ * “Company”) for its Flowcode graphical programming language is
+ * intended and supplied to you, the Company’s customer, for use
+ * solely and exclusively on the Company's products. The software
+ * is owned by the Company, and is protected under applicable
+ * copyright laws. All rights are reserved. Any use in violation
+ * of the foregoing restrictions may subject the user to criminal
+ * sanctions under applicable laws, as well as to civil liability
+ * for the breach of the terms and conditions of this licence.
+ *
+ * THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+ * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+ * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ *
+ * Changelog:
+ *
+ *  date  | by | description
+ * -------+----+-----------------------------------------------------
+ * 010911 | BR | Created
+ * 150911 | JW | Added v5 string functions
+ * 270212 | BR | Fixed an issue with ToUpper where the 1st character was being returned as null
+ * 120312 | BR | Fixed an issue with some of the float functions not using CAL functions
+ * 250912 | BR | Fixed an issue with the ToString function which caused the contents of the input variable to be cleared to 0
+ * 091213 | LM | Flowcode now passes FCV_PRECISION
+ * 230114 | LM | Updated string compare (length params are buffer size, not character count)
+ * 050314 | LM | Allow use of 32 bit mantissa in Float to String function
+ * 060314 | LM | Default to using 32 bit
+ * 070414 | LM | String functions to return string pointer, not length (FC6 requirement)
+ */
+
+
+// Useful call for finding the length of an (uncorrupted) string
+#define FCI_GETLENGTH__x(str, max, idx)         for (idx = 0; idx < max; idx++) if (str[idx] == 0) break
+#define FCI_STRMOV__x(str, max, dst, dlen, ix)  for (ix = 0; ix < (max) && ix < (dlen) && str[ix] != '\0'; ix++) dst[ix] = str[ix]
+#define FCI_CONCATENATE(s0, l0, s1, l1, sd, ld) FCI_SHEAD(s0, l0, s1, l1, sd, ld)
+
+
+#ifndef MX_USES_UINT32
+	#define MX_USES_UINT32 1
+#endif
+#ifndef MX_USES_SINT32
+	#define MX_USES_SINT32 1
+#endif
+
+
+#if (MX_USES_UINT32 || MX_USES_SINT32)
+	#define MX_STRF_LONG
+	#define MX_ULONG MX_UINT32
+	#define MX_SLONG MX_SINT32
+#else
+	#define MX_ULONG MX_UINT16
+	#define MX_SLONG MX_SINT16
+#endif
+
+
+
+#define FCI_ITOS8(value, text, length)		FCI_TOSTRS16(value, text, length)
+#define FCI_ITOS16(value, text, length)  	FCI_TOSTRS16(value, text, length)
+#define FCI_ITOS32(value, text, length)		FCI_TOSTRS32(value, text, length)
+
+#define FCI_UTOS8(value, text, length)		FCI_TOSTRU16(value, text, length)
+#define FCI_UTOS16(value, text, length)		FCI_TOSTRU16(value, text, length)
+#define FCI_UTOS32(value, text, length)		FCI_TOSTRU32(value, text, length)
+// FCV_PRECISION
+#define FCI_FTOS32(value, precision, text, length)		FCI_FLOAT_TO_STRING(value, precision, text, length);
+#define FCI_FTOS64(value, precision, text, length)		FCI_FLOAT_TO_STRING(value, precision, text, length);
+
+#define FCI_STOF(text)						FCI_STRING_TO_FLOAT(text, 15);
+#define FCI_STOI(text)						FCI_STRING_TO_INT(text, 15);
+#define FCI_STOU(text)						FCI_STRING_TO_INT(text, 15);
+
+
+/*
+#define FCI_FTOS16(value, text, length)
+#define FCI_FTOS64(value, text, length)
+
+#define FCI_STOF(text)  FCI_STRING_TO_FLOAT(text, )
+#define FCI_STOI(text)	FCI_STRING_TO_INT
+#define FCI_STOU(text)
+*/
+
+
+
+
+
+
+//String function definitions
+MX_UINT8 FCI_GETCHAR(MX_STRING sStr1, MX_UINT8 iStr1_len, MX_UINT8 iPos);
+MX_UINT8 FCI_GETLENGTH(MX_STRING sStr1, MX_UINT8 iStr1_len);
+MX_STRING FCI_MIDSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iStart, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_STRING FCI_LEFTSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_STRING FCI_RIGHTSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len);
+
+MX_STRING FCI_TOSTRING(MX_SLONG iSrc1, MX_STRING sDst, MX_UINT8 iDst_len);
+
+MX_UINT8 FCI_TOSTRS16(MX_SINT16 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_UINT8 FCI_TOSTRS32(MX_SINT32 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_UINT8 FCI_TOSTRU16(MX_UINT16 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_UINT8 FCI_TOSTRU32(MX_UINT32 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len);
+
+
+void FCI_TOLOWER(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len);
+void FCI_TOUPPER(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_UINT8 FCI_COMPARE(MX_STRING sSrc1, MX_UINT8 iSrc1_len, MX_STRING sSrc2, MX_UINT8 iSrc2_len, MX_UINT8 iNoCase);
+MX_STRING FCI_FLOAT_TO_STRING(MX_FLOAT Number, MX_UINT8 Precision, MX_STRING String, MX_UINT8 MSZ_String);
+MX_STRING FCI_NUMBER_TO_HEX(MX_ULONG Number, MX_STRING String, MX_UINT8 MSZ_String);
+MX_SINT32 FCI_STRING_TO_INT(MX_STRING String, MX_UINT8 MSZ_String);
+MX_FLOAT FCI_STRING_TO_FLOAT(MX_STRING String, MX_UINT8 MSZ_String);
+
+// Functions for contatenation
+MX_UINT8 FCI_STRREV(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len);
+MX_UINT8 FCI_STRMOV(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len);
+void FCI_SHEAD(MX_STRING sSrc1, MX_UINT8 iSrc1_len, MX_STRING sSrc2, MX_UINT8 iSrc2_len, MX_STRING sDst, MX_UINT8 iDst_len);
+void FCI_SCOPY(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len);
+
+
+
+MX_UINT8 FCI_GETCHAR(MX_STRING sStr1, MX_UINT8 iStr1_len, MX_UINT8 iPos)
+{
+	MX_UINT8 tmp;
+	FCI_GETLENGTH__x(sStr1, iStr1_len, tmp);
+
+	if(iPos < tmp)
+		return sStr1[iPos];
+	return '\0';
+}
+
+MX_UINT8 FCI_GETLENGTH(MX_STRING sStr1, MX_UINT8 iStr1_len)
+
+{
+	MX_UINT8 tmp;
+	FCI_GETLENGTH__x(sStr1, iStr1_len, tmp);
+0334  6A40      	CLRF FCI_GETLEN_00040_1_tmp
+0336            label54
+0336  503F      	MOVF FCI_GETLEN_00040_arg_iStr1_len, W
+0338  6040      	CPFSLT FCI_GETLEN_00040_1_tmp
+033A  D009      	BRA	label55
+033C  503E      	MOVF FCI_GETLEN_00040_arg_sStr1+D'1', W
+033E  6EEA      	MOVWF FSR0H
+0340  503D      	MOVF FCI_GETLEN_00040_arg_sStr1, W
+0342  2440      	ADDWF FCI_GETLEN_00040_1_tmp, W
+0344  6EE9      	MOVWF FSR0L
+0346  52EF      	MOVF INDF0, F
+0348  E002      	BZ	label55
+034A  2A40      	INCF FCI_GETLEN_00040_1_tmp, F
+034C  D7F4      	BRA	label54
+034E            label55
+
+	return (tmp);
+034E  5040      	MOVF FCI_GETLEN_00040_1_tmp, W
+0350  6E41      	MOVWF CompTempVarRet1850
+
+}
+0352  0012      	RETURN
+
+
+MX_STRING FCI_MIDSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iStart, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	if (iDst_len == 0) return sDst;
+	MX_UINT8 idx;
+	FCI_GETLENGTH__x(sSrc, iSrc_len, idx);	//find the length of the source string
+
+	if (iStart >= idx)
+	{
+		*sDst = '\0';						//starting position is beyond string length, so return a null string
+	}
+	else
+	{
+		if ((iStart + iCount) >= idx)		//Make sure the required length is not too big
+			iCount = idx - iStart;
+		if (iCount > (iDst_len))			//make sure the required length is not too big
+			iCount = (iDst_len);
+
+		sSrc += iStart;						//Move to the correct place in the source string
+
+		for (idx = 0; idx < iCount; idx++)	//Copy the contents of the source string
+		{
+			*sDst = *sSrc;
+			sDst++;
+			sSrc++;
+		}
+		if (idx < iDst_len)						//add terminating null (if we can)
+			*sDst = '\0';
+	}
+	return (sDst);
+}
+
+MX_STRING FCI_LEFTSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	if (iDst_len == 0) return sDst;
+	MX_UINT8 idx;
+	FCI_GETLENGTH__x(sSrc, iSrc_len, idx);	//find the length of the source string
+
+	if (iCount > idx)						//make sure the required length is not too big
+		iCount = idx;
+	if (iCount > (iDst_len))			//make sure the required length is not too big
+		iCount = (iDst_len);
+
+	for (idx = 0; idx < iCount; idx++)		//copy the required MX_UINT8acters
+	{
+		*sDst = *sSrc;
+		sDst++;
+		sSrc++;
+	}
+	if (idx < iDst_len)						//add terminating null (if we can)
+		*sDst = '\0';
+	return (sDst);
+}
+
+MX_STRING FCI_RIGHTSTRING(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_UINT8 iCount, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	if (iDst_len == 0) return sDst;
+	MX_UINT8 idx;
+	MX_UINT8 delta;
+
+	FCI_GETLENGTH__x(sSrc, iSrc_len, idx);	//find the length of the source string
+
+	if (iCount > idx)						//make sure the required length is not too big
+		iCount = idx;
+	delta = idx - iCount;					//get the offset
+	if (iCount > (iDst_len))				//make sure the required length is not too big
+		iCount = (iDst_len);
+	sSrc += delta;							//Move to the correct place in the source string
+
+	for(idx = 0; idx < iCount; idx++)		//copy the required MX_UINT8acters
+	{
+		*sDst = *sSrc;
+		sDst++;
+		sSrc++;
+	}
+	if (idx < iDst_len)						//add terminating null (if we can)
+		*sDst = '\0';
+	return (sDst);
+}
+
+
+MX_UINT8 FCI_TOSTRS16(MX_SINT16 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	MX_UINT8  tmp1;
+	MX_SINT16 iSrc = iSrc1;
+	MX_UINT16 top = 10000; 		// Maximum power of 10 less than 65536
+	MX_UINT8  idx = 0;
+
+	if (iDst_len == 0) return 0;
+
+	//copy source 1 into destination:
+	//minus sign
+	if (iSrc < 0)
+	{
+		sDst[0] = '-';
+		idx++;
+		iSrc = -iSrc;
+	}
+
+	tmp1 = 0;    // Nothing added yet
+	if (iSrc == 0) // Force showing zero
+	{
+		tmp1 = 1;
+		top = 1;
+	}
+	while (( idx < iDst_len) && (top > 0))
+	{
+		if (((unsigned)iSrc >= top) || (tmp1))
+		{
+			tmp1 = (unsigned)iSrc / top;	// Top digit
+			sDst[idx] = '0' + tmp1;			// Add digit to buffer
+			idx++;
+			iSrc -= tmp1 * top;				// Remove digit
+			tmp1 = 1;						// Add zeros now
+		}
+		top /= 10;							// Go to next digit
+	}
+
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+	return (idx);
+}
+
+
+MX_UINT8 FCI_TOSTRS32(MX_SINT32 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	MX_UINT8  tmp1;
+	MX_SINT32 iSrc = iSrc1;
+	MX_UINT32 top = 1000000000; 	// Maximum power of 10 less than 4294967296
+	MX_UINT8  idx = 0;
+
+	if (iDst_len == 0) return 0;
+
+	//copy source 1 into destination:
+	//minus sign
+	if (iSrc < 0)
+	{
+		sDst[0] = '-';
+		idx++;
+		iSrc = -iSrc;
+	}
+
+	tmp1 = 0;    // Nothing added yet
+	if (iSrc == 0) // Force showing zero
+	{
+		tmp1 = 1;
+		top = 1;
+	}
+	while (( idx < iDst_len) && (top > 0))
+	{
+		if (((unsigned long)iSrc >= top) || (tmp1))
+		{
+			tmp1 = (unsigned long)iSrc / top;	// Top digit
+			sDst[idx] = '0' + tmp1;			// Add digit to buffer
+			idx++;
+			iSrc -= tmp1 * top;				// Remove digit
+			tmp1 = 1;						// Add zeros now
+		}
+		top /= 10;							// Go to next digit
+	}
+
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+	return (idx);
+}
+
+
+MX_UINT8 FCI_TOSTRU16(MX_UINT16 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	MX_UINT8  tmp1;
+	MX_UINT16 iSrc = iSrc1;
+	MX_UINT16 top = 10000; 		// Maximum power of 10 less than 65536
+	MX_UINT8  idx = 0;
+
+	if (iDst_len == 0) return 0;
+
+	tmp1 = 0;    // Nothing added yet
+	if (iSrc == 0) // Force showing zero
+	{
+		tmp1 = 1;
+		top = 1;
+	}
+	while (( idx < iDst_len) && (top > 0))
+	{
+		if (((unsigned)iSrc >= top) || (tmp1))
+		{
+			tmp1 = (unsigned)iSrc / top;	// Top digit
+			sDst[idx] = '0' + tmp1;			// Add digit to buffer
+			idx++;
+			iSrc -= tmp1 * top;				// Remove digit
+			tmp1 = 1;						// Add zeros now
+		}
+		top /= 10;							// Go to next digit
+	}
+
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+	return (idx);
+}
+
+
+MX_UINT8 FCI_TOSTRU32(MX_UINT32 iSrc1, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	MX_UINT8  tmp1;
+	MX_UINT32 iSrc = iSrc1;
+	MX_UINT32 top = 1000000000; 	// Maximum power of 10 less than 4294967296
+	MX_UINT8  idx = 0;
+
+	if (iDst_len == 0) return 0;
+
+	tmp1 = 0;    // Nothing added yet
+	if (iSrc == 0) // Force showing zero
+	{
+		tmp1 = 1;
+		top = 1;
+	}
+	while (( idx < iDst_len) && (top > 0))
+	{
+		if (((unsigned long)iSrc >= top) || (tmp1))
+		{
+			tmp1 = (unsigned long)iSrc / top;	// Top digit
+			sDst[idx] = '0' + tmp1;			// Add digit to buffer
+			idx++;
+			iSrc -= tmp1 * top;				// Remove digit
+			tmp1 = 1;						// Add zeros now
+		}
+		top /= 10;							// Go to next digit
+	}
+
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+	return (idx);
+}
+
+
+
+
+
+
+
+MX_STRING FCI_TOSTRING(MX_SLONG iSrc1, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	MX_UINT8 tmp1;
+
+	MX_SLONG iSrc = iSrc1;
+
+	#ifdef MX_STRF_LONG
+		unsigned long top = 1000000000; 	// Maximum power of 10 less than 4294967296
+	#else
+		unsigned short top = 10000; 		// Maximum power of 10 less than 65536
+	#endif
+
+	MX_UINT8 idx = 0;
+
+	if (iDst_len == 0) return sDst;
+
+	//copy source 1 into destination:
+	//minus sign
+	if (iSrc < 0)
+	{
+		sDst[0] = '-';
+		idx++;
+		iSrc = -iSrc;
+	}
+
+	tmp1 = 0;    // Nothing added yet
+	if (iSrc == 0) // Force showing zero
+	{
+		tmp1 = 1;
+		top = 1;
+	}
+	while (( idx < iDst_len) && (top > 0))
+	{
+		#ifdef MX_STRF_LONG
+		if (((unsigned long)iSrc >= top) || (tmp1))
+		#else
+		if (((unsigned)iSrc >= top) || (tmp1))
+		#endif
+		{
+			#ifdef MX_STRF_LONG
+			tmp1 = (unsigned long)iSrc / top;	// Top digit
+			#else
+			tmp1 = (unsigned)iSrc / top;	// Top digit
+			#endif
+			sDst[idx] = '0' + tmp1;			// Add digit to buffer
+			idx++;
+			iSrc -= tmp1 * top;				// Remove digit
+			tmp1 = 1;						// Add zeros now
+		}
+		top /= 10;							// Go to next digit
+	}
+
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+	return (sDst);
+}
+
+
+
+void FCI_TOLOWER(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	if (iDst_len == 0) return;
+	MX_UINT8 idx;
+	MX_UINT8 ch;
+
+	if (iSrc_len < iDst_len) iSrc_len = iDst_len; // Bound so cant overflow dest
+	//copy source into destination and change to lower case
+	for (idx=0; idx<iSrc_len; idx++)
+	{
+		ch = sSrc[idx];
+		if ((ch >= 'A') && (ch <= 'Z'))
+		{
+			ch ^= 0x20;
+		}
+		sDst[idx] = ch;
+		if (ch == 0)
+		{
+			break;
+		}
+	}
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+}
+
+void FCI_TOUPPER(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+	if (iDst_len == 0) return;
+	MX_UINT8 idx;
+	MX_UINT8 ch;
+
+	if (iSrc_len < iDst_len) iSrc_len = iDst_len; // Bound so cant overflow dest
+	//copy source into destination and change to upper case
+	for (idx=0; idx<iSrc_len; idx++)
+	{
+		ch = sSrc[idx];
+		if ((ch >= 'a') && (ch <= 'z'))
+		{
+			ch ^= 0x20;
+		}
+		sDst[idx] = ch;
+		if (ch == 0)
+		{
+			break;
+		}
+	}
+	if (idx < iDst_len)						//add terminating null (if we can)
+		sDst[idx] = '\0';
+}
+
+MX_UINT8 FCI_COMPARE(MX_STRING sSrc1, MX_UINT8 iSrc1_len, MX_STRING sSrc2, MX_UINT8 iSrc2_len, MX_UINT8 iNoCase)
+{
+	MX_UINT8 idx = 0;
+	MX_UINT8 ch1, ch2;
+
+	while ((idx < iSrc1_len)&&(idx < iSrc2_len))
+	{
+		ch1 = sSrc1[idx];
+		ch2 = sSrc2[idx];
+
+		if (iNoCase)
+		{
+			if ((ch1 >= 'a') && (ch1 <= 'z'))
+				ch1 = (ch1 & 0xDF);
+
+			if ((ch2 >= 'a') && (ch2 <= 'z'))
+				ch2 = (ch2 & 0xDF);
+		}
+
+		if (ch2 == 0)
+		{
+			if (ch1 == 0)
+				return (0);				//end of iSrc1 as well, so we have a match
+			else
+				return (1);				//reached the end of iSrc2, but still more of iSrc1
+		}
+		else if (ch1 == 0)
+			return (255);				//end of iSrc1 but not at end of iSrc2, so return -1
+		else if (ch1 < ch2)
+			return(255);
+		else if (ch1 > ch2)
+			return(1);
+		// here if they are the same so far
+		++idx;
+	}
+
+	// We've reached the end of one of the buffers without encountering a null terminator
+	if (iSrc1_len > iSrc2_len)
+	{
+		if (sSrc1[idx] == 0)
+			return (0);				// the next char in the longer buffer is a null so that's a match
+		else
+			return (1);
+	}
+	else if (iSrc1_len < iSrc2_len)
+	{
+		if (sSrc2[idx] == 0)
+			return (0);
+		else
+			return (255);
+	}
+	return (0);						// the two buffers are the same size and contain the same data
+}
+
+
+MX_STRING FCI_FLOAT_TO_STRING(MX_FLOAT Number, MX_UINT8 Precision, MX_STRING String, MX_UINT8 MSZ_String)
+{
+	MX_SLONG whole;
+	// MX_UINT8 str_length;
+	MX_UINT8 idx;
+	MX_UINT8 stringidx = 0;
+	MX_FLOAT real, temp;
+	MX_UINT8 old;
+	MX_UINT8 temp_string[12];
+
+	#ifdef _BOOSTC									//BoostC Floating Point
+
+		float_rounding_mode = 3;					//Always round to zero
+		whole = float32_to_int32(Number);			//Convert to whole integer
+		temp = float32_from_int32(whole);			//Convert whole number back to floating point
+
+		if (float32_ge(Number,0))
+		{
+			real = float32_sub(Number, temp);		//Subtract whole number from floating point number
+		}
+		else
+		{
+			if (whole == 0)							//Fix -0 bug
+			{
+				String[stringidx] = '-';
+				stringidx = stringidx + 1;
+			}
+
+			real = float32_sub(temp, Number);		//Subtract floating point number from whole number
+		}
+	#endif
+
+	#ifdef HI_TECH_C								//HiTECH Floating Point
+
+		whole = (int)Number;						//Convert to whole integer
+		temp = whole;								//Convert whole number back to floating point
+
+		if (Number >= 0)
+		{
+			real = Number - temp;					//Subtract whole number from floating point number
+		}
+		else
+		{
+			if (whole == 0)							//Fix -0 bug
+			{
+				String[stringidx] = '-';
+				stringidx = stringidx + 1;
+			}
+
+			real = temp - Number;					//Subtract floating point number from whole number
+		}
+	#endif
+
+	FCI_TOSTRING(whole, temp_string, sizeof(temp_string));		//Convert integer numbers to strings
+
+	for (idx=0; temp_string[idx]; idx++)						//Copy whole part of number to string
+	{
+		if(stringidx < MSZ_String)
+		{
+			String[stringidx] = temp_string[idx];
+			stringidx = stringidx + 1;
+		}
+	}
+
+	if(stringidx < MSZ_String)						//Add decimal point to string
+	{
+		String[stringidx] = '.';
+		stringidx = stringidx + 1;
+	}
+
+	for (idx = 0; idx < Precision; idx++)			//Output Real Part Of Number
+	{
+		if (stringidx >= MSZ_String)
+			break;
+
+		#ifdef _BOOSTC								//BoostC Floating Point
+			real = float32_mul(real, 10);
+			whole = float32_to_int32(real);			//Convert to whole integer
+			temp = float32_from_int32(whole);		//Convert whole number back to floating point
+			real = float32_sub(real, temp);			//Subtract whole number from floating point number
+		#endif
+		#ifdef HI_TECH_C							//HiTECH Floating Point
+			real = real * 10;
+			whole = (int)real;						//Convert to whole integer
+			temp = whole;							//Convert whole number back to floating point
+			real = real - temp;						//Subtract whole number from floating point number
+		#endif
+
+		String[stringidx] = '0' + whole;
+		stringidx = stringidx + 1;
+	}
+
+	if(stringidx < MSZ_String)									//Add null termination to string
+	{
+		String[stringidx] = 0;
+	}
+
+	return String;
+}
+
+
+
+
+
+
+
+
+
+
+
+MX_STRING FCI_NUMBER_TO_HEX(MX_ULONG Number, MX_STRING String, MX_UINT8 MSZ_String)
+{
+	MX_UINT8 stringidx;
+	MX_UINT8 idx = 0;
+	MX_UINT8 temp;
+	MX_UINT8 digit[8] = {0,0,0,0,0,0,0,0};
+
+	#ifdef MX_STRF_LONG
+		MX_UINT32 num = Number;
+	#else
+		MX_UINT16 num = Number;
+	#endif
+
+	String[0] = 0;
+
+	//Check that output string is long enough to store result
+	if((Number > 0xFFFF) && (MSZ_String < 10))
+		return String;
+
+	if((Number > 0xFF) && (MSZ_String < 6))
+		return String;
+
+	if((Number <= 0xFF) && (MSZ_String < 4))
+		return String;
+
+	//Initialise start of string with hexadecimal indicator
+	String[0] = '0';
+	String[1] = 'x';
+
+	//Calculate hex values
+	do
+	{
+		temp = num % 16;
+		num = num >> 4;
+
+		if(temp > 9)
+		{
+			temp = temp - 10;
+			digit[idx] = temp + 'A';
+		}
+		else
+			digit[idx] = temp + '0';
+
+		idx = idx + 1;
+	} while (num > 0);
+
+	//Copy Hex values over to output string
+	for (stringidx = 2; stringidx < (idx + 2); stringidx++)
+		String[stringidx] = digit[idx - (stringidx - 1)];
+
+	//Add null termination to string
+	if(stringidx < MSZ_String)
+	{
+		String[stringidx] = 0;
+	}
+
+	return String;
+}
+
+
+MX_SINT32 FCI_STRING_TO_INT(MX_STRING String, MX_UINT8 MSZ_String)
+{
+	MX_UINT8 bNegative = 0;
+	MX_UINT8 idx = 0;
+	MX_SINT32 RetVal = 0;
+
+	//While string contains none numeric characters
+	while (idx < MSZ_String && (String[idx] < '0' || String[idx] > '9'))
+	{
+		//Is number negative
+		if(String[idx] == '-')
+		{
+			bNegative = 1;
+			idx = idx + 1;
+			break;
+		}
+		idx = idx + 1;
+	}
+
+	//While string contains a valid number
+	while (idx < MSZ_String && String[idx] >= '0' && String[idx] <= '9')
+	{
+		//Pull MX_UINT8acter from string and add to running total
+		RetVal = (long) RetVal * 10;
+		RetVal = (long) RetVal + (String[idx] - '0');
+		idx = idx + 1;
+	}
+
+	if (bNegative)
+		RetVal = (long) 0 - RetVal;
+
+	return RetVal;
+}
+
+
+MX_FLOAT FCI_STRING_TO_FLOAT(MX_STRING String, MX_UINT8 MSZ_String)
+{
+	MX_FLOAT RetVal = 0;
+	MX_FLOAT real_divider = 1;
+	MX_UINT32 whole, real;			//Changed from INT 23/07/10
+	MX_UINT8 idx = 0;
+	MX_UINT8 idx2 = 0;
+	MX_UINT8 offset = 0;
+	MX_UINT8 bNegative = 0;
+	MX_UINT8 Comp_String[8];
+
+	//Is number negative
+	if(String[0] == '-')
+	{
+		bNegative = 1;
+		offset = 1;
+	}
+
+	//Scan for decimal point
+	for(idx=offset; idx<MSZ_String; idx++)
+	{
+		if(String[idx] == '.')
+			break;
+	}
+
+	//Convert whole portion of number from string
+	whole = FCI_STRING_TO_INT (String, idx);
+
+	//No decimal point found
+	if(idx == MSZ_String)
+	{
+		#ifdef _BOOSTC
+			RetVal = float32_from_int32(whole);
+		#endif
+		#ifdef HI_TECH_C
+			RetVal = (int)whole;
+		#endif
+		return RetVal;
+	}
+
+	//Collect real portion of number into new string
+	offset = idx + 1;
+	for(idx=offset; idx<MSZ_String; idx++)
+	{
+		if(String[idx] >= '0' && String[idx] <= '9')
+		{
+			Comp_String[idx - offset] = String[idx];
+			#ifdef _BOOSTC
+				real_divider = float32_mul(real_divider, 0.1);
+			#endif
+			#ifdef HI_TECH_C
+				real_divider = real_divider * 0.1;
+			#endif
+		}
+		else
+			break;
+	}
+
+	//Convert real portion of number from string
+	real = FCI_STRING_TO_INT (Comp_String, (idx - offset));
+
+	//Adjust weighting of values and combine into one float variable
+	#ifdef _BOOSTC
+
+		RetVal = float32_from_int32(real);
+		RetVal = float32_mul(RetVal, real_divider);
+		real_divider = float32_from_int32(whole);
+		RetVal = float32_add(RetVal, real_divider);
+
+		if (bNegative)
+			RetVal = float32_sub(0, RetVal);
+
+	#endif
+	#ifdef HI_TECH_C
+
+		RetVal = (MX_FLOAT)real;
+		RetVal = RetVal * real_divider;
+		real_divider = (MX_FLOAT)whole;
+		RetVal = RetVal + real_divider;
+
+		if (bNegative)
+			RetVal = 0 - RetVal;
+	#endif
+
+	return RetVal;
+}
+
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Move but do not null-terminate sSrc to sDst, max len iSrc_len
+       :This differs from FCI_STRMOV() in that the bytes are copied from the
+       :end of the string to the start
+       :Returns length of copy
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCI_STRREV(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+  MX_UINT8 ix, len;
+  FCI_GETLENGTH__x(sSrc, iSrc_len, len);
+  if (len > iDst_len)
+  {
+    len = iDst_len;
+  }
+  ix = len;
+  while (ix > 0)
+  {
+    ix--;
+    sDst[ix] = sSrc[ix];
+  }
+  // No null terminate
+  // Return length of string
+  return len;
+}
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Move but do not null-terminate sSrc to sDst, max len iSrc_len
+       :Returns length of copy
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCI_STRMOV(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+  MX_UINT8 ix;
+  ix = 0;
+  while (ix < iSrc_len && ix < iDst_len && sSrc[ix] != '\0')
+  {
+    sDst[ix] = sSrc[ix];
+    ix++;
+  }
+  // No null terminate
+  // Return length of string
+  return ix;
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Concatenate sDst = (sSrc1 + sSrc2)
+       :sDst is only null terminated if the concat doesnt overflow
+       :
+\*=----------------------------------------------------------------------=*/
+void FCI_SHEAD(MX_STRING sSrc1, MX_UINT8 iSrc1_len, MX_STRING sSrc2, MX_UINT8 iSrc2_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+  MX_UINT8 len, strt;
+
+  len = 0;
+  if (sSrc2 == sDst)
+  {
+    FCI_GETLENGTH__x(sSrc1, iSrc1_len, strt);
+    if (strt < iDst_len)
+    {
+      // Copy second, in reverse
+      // len = FCI_STRREV(sSrc2, iSrc2_len, sDst + strt, iDst_len - strt);
+      FCI_GETLENGTH__x(sSrc2, iSrc2_len, len);
+      if (len > (iDst_len - strt))
+      {
+        len = (iDst_len - strt); // Length of string to copy to
+      }
+      iSrc2_len = strt + len; // Use no longer needed var as an offset
+      strt = len;
+      while (strt > 0)
+      {
+        strt--;
+        iSrc2_len--;
+        sDst[iSrc2_len] = sSrc2[strt];
+      }
+      // Move first
+      FCI_STRMOV__x(sSrc1, iSrc1_len, sDst, iDst_len, strt);
+      len += strt;
+    }
+    else
+    {
+      // Copy first
+      FCI_STRMOV__x(sSrc1, iSrc1_len, sDst, iDst_len, len);
+    }
+  }
+  else
+  {
+    // Copy first
+    FCI_STRMOV__x(sSrc1, iSrc1_len, sDst, iDst_len, len);
+    // Copy second
+    if (len < iDst_len)
+    {
+      sSrc1 = sDst + len; // make temp copies in no longer used variables
+      iSrc1_len = iDst_len - len;
+      FCI_STRMOV__x(sSrc2, iSrc2_len, sSrc1, iSrc1_len, strt);
+      len += strt;
+    }
+  }
+  // Terminate (only if can)
+  if (len < iDst_len)
+  {
+    sDst[len] = '\0';
+  }
+}
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Copy and null-terminate sSrc to sDst, max len iSrc_len
+       :sDst is only null terminated if the concat doesnt overflow
+       :
+\*=----------------------------------------------------------------------=*/
+void FCI_SCOPY(MX_STRING sSrc, MX_UINT8 iSrc_len, MX_STRING sDst, MX_UINT8 iDst_len)
+{
+  MX_UINT8 len;
+
+  // Move first
+  FCI_STRMOV__x(sSrc, iSrc_len, sDst, iDst_len, len);
+  // Terminate (only if can)
+  if (len < iDst_len)
+  {
+    sDst[len] = '\0';
+  }
+}
+
+
+
+
+//************************************************************************************
+//**  
+//**  Source name:   U:\Documents\SIN\BOYER\PROJET\Tests\Bluetooth\local\Test_02.fcfx
+//**  Title:         
+//**  Description:   
+//**  Device:        PIC.18F.18F4520
+//**  
+//**  Generated by:  Flowcode v6.1.1.0
+//**  Date:          Monday, January 23, 2017 17:31:36
+//**  Users:         50
+//**  Registered to: LYC-FERRY06-V6
+//**  Licence key:   HY62PA
+//**  
+//**  
+//**     POUR UN USAGE NON COMMERCIAL
+//**  
+//**  http://www.matrixtsl.com
+//**  
+//************************************************************************************
+
+
+#define MX_PIC
+#define MX_CAL_PIC
+#define MX_CLK_SPEED 19660800
+#define FCP_NULL Unconnected_Port
+
+
+#ifdef _BOOSTC
+#pragma DATA 0x300000, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300001, 0x32
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0x32);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300002, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300003, 0xFE
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFE);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300004, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300005, 0xFB
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFB);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300006, 0xBA
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xBA);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300007, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300008, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300009, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000a, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000b, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000c, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000d, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+
+/*========================================================================*\
+   Use :Inclure les définitions de type
+\*========================================================================*/
+#include "C:\Program Files (x86)\Flowcode 6\CAL\internals.c"
+
+MX_UINT8 FCLV_LOOP1;
+
+
+/*========================================================================*\
+   Use :panel
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCV_FALSE (0)
+#define FCV_WAITING (0)
+#define FCV_CONNECTED (1)
+#define FCV_TRUE (1)
+MX_GLOBAL MX_BOOL FCV_BLUETOOTH_CONNECTED = (0); // Bluetooth connecté ou pas
+0644  9024      	BCF gbl_FCV_BLUETOOTH_CONNECTED,0
+
+
+void FCM_INITIALISATION();
+void FCM_BLUETTOOH_CONNECT();
+
+/*========================================================================*\
+   Use :ctrl_lcd
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :LCD
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+void FCD_04071_LCD__Clear();
+void FCD_04071_LCD__PrintString(MX_CHAR *FCL_TEXT, MX_UINT16 FCLsz_TEXT);
+void FCD_04071_LCD__PrintAscii(MX_UINT8 FCL_CHARACTER);
+void FCD_04071_LCD__PrintNumber(MX_SINT16 FCL_NUMBER);
+void FCD_04071_LCD__RAMWrite(MX_UINT8 FCL_INDEX, MX_UINT8 FCL_D0, MX_UINT8 FCL_D1, MX_UINT8 FCL_D2, MX_UINT8 FCL_D3, MX_UINT8 FCL_D4, MX_UINT8 FCL_D5, MX_UINT8 FCL_D6, MX_UINT8 FCL_D7);
+void FCD_04071_LCD__ClearLine(MX_UINT8 FCL_LINE);
+void FCD_04071_LCD__Cursor(MX_UINT8 FCL_X, MX_UINT8 FCL_Y);
+void FCD_04071_LCD__Command(MX_UINT8 FCL_INSTRUCTION);
+void FCD_04071_LCD__PrintFormattedNumber(MX_UINT32 FCL_NUMBER, MX_BOOL FCL_FORMAT);
+void FCD_04071_LCD__ScrollDisplay(MX_UINT8 FCL_POSITION, MX_UINT8 FCL_DIRECTION);
+void FCD_04071_LCD__RawSend(MX_UINT8 FCL_DATA, MX_BOOL FCL_TYPE);
+void FCD_04071_LCD__Start();
+
+/*========================================================================*\
+   Use :lcd_eb005
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCD_0ad31_lcd_eb005__Clear FCD_04071_LCD__Clear
+#define FCD_0ad31_lcd_eb005__PrintString FCD_04071_LCD__PrintString
+#define FCD_0ad31_lcd_eb005__PrintAscii FCD_04071_LCD__PrintAscii
+#define FCD_0ad31_lcd_eb005__PrintNumber FCD_04071_LCD__PrintNumber
+#define FCD_0ad31_lcd_eb005__RAMWrite FCD_04071_LCD__RAMWrite
+#define FCD_0ad31_lcd_eb005__ClearLine FCD_04071_LCD__ClearLine
+#define FCD_0ad31_lcd_eb005__Cursor FCD_04071_LCD__Cursor
+#define FCD_0ad31_lcd_eb005__Command FCD_04071_LCD__Command
+#define FCD_0ad31_lcd_eb005__PrintFormattedNumber FCD_04071_LCD__PrintFormattedNumber
+#define FCD_0ad31_lcd_eb005__ScrollDisplay FCD_04071_LCD__ScrollDisplay
+#define FCD_0ad31_lcd_eb005__RawSend FCD_04071_LCD__RawSend
+#define FCD_0ad31_lcd_eb005__Start FCD_04071_LCD__Start
+
+/*========================================================================*\
+   Use :InjectorBase1
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :COMPort1
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :dash_IO_flasher
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :fcdhelper
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :cal_uart
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define MX_UART_TX_TRIS_1 trisc
+#define MX_UART_REF1 
+#define MX_UART_RTS_PIN_1 (5)
+#define MX_UART_DBITS_1 (8)
+#define MX_UART_RETURN_1 (1)
+#define MX_UART_RX_PORT_1 portc
+#define MX_UART_RTS_PORT_1 portc
+#define MX_UART_ECHO_1 (0)
+#define MX_UART_FLOWEN_1 (0)
+#define MX_UART_CTS_PORT_1 portc
+#define MX_UART_TX_PIN_1 (6)
+#define MX_UART_RX_TRIS_1 trisc
+#define MX_UART_RTS_TRIS_1 trisc
+#define MX_UART_BAUD_1 (9600)
+#define MX_UART_TX_PORT_1 portc
+#define MX_UART_RX_PIN_1 (7)
+#define MX_UART_CTS_TRIS_1 trisc
+#define MX_UART_CHANNEL_1 (1)
+#define MX_UART_CTS_PIN_1 (4)
+#define MX_UART_INT_1 (0)
+
+MX_GLOBAL MX_UINT32 FCV_05481_cal_uart__CONSOLE;
+
+void FCD_05481_cal_uart__Prv_TextConsole(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR);
+void FC_CAL_UART_UpdateBaud_1(MX_UINT8 FCL_NEW_BAUD);
+MX_SINT16 FC_CAL_UART_Receive_1(MX_UINT8 FCL_TIMEOUT);
+void FC_CAL_UART_Send_1(MX_UINT16 FCL_CHAR);
+void FC_CAL_UART_Init_1();
+void FC_CAL_UART_Delay_1();
+void FC_CAL_UART_Uninit_1();
+
+/*========================================================================*\
+   Use :Bluetooth1
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_05181_Bluetooth1__COMMANDARRAY 32
+#define FCVsz_05181_Bluetooth1__RESPONSE_ARRAY 14
+#define FCV_05181_Bluetooth1__RS_FERR (3)
+#define FCV_05181_Bluetooth1__RESPONSE_PAIR (6)
+#define FCV_05181_Bluetooth1__RESPONSE_ERROR (2)
+#define FCV_05181_Bluetooth1__SENDCMD_TIMEOUT (200)
+#define FCV_05181_Bluetooth1__RESPONSE_OK (1)
+#define FCV_05181_Bluetooth1__RESPONSE_RING (7)
+#define FCV_05181_Bluetooth1__RS_OERR (4)
+#define FCV_05181_Bluetooth1__RS_TIMEOUT (1)
+#define FCV_05181_Bluetooth1__RESPONSE_NOCARRIER (4)
+#define FCV_05181_Bluetooth1__RESPONSE_AUDIO (5)
+#define FCV_05181_Bluetooth1__SENDSCRIPT_TIMEOUT (200)
+#define FCV_05181_Bluetooth1__RESPONSE_CONNECT (3)
+#define FCV_05181_Bluetooth1__RS_OK (0)
+#define FCV_05181_Bluetooth1__RESPONSE_TIMEOUT (75)
+#define FCV_05181_Bluetooth1__STRINGRX_TIMEOUT (200)
+#define FCV_05181_Bluetooth1__COMMANDARRAYSIZE (32)
+MX_GLOBAL MX_UINT8 FCV_05181_Bluetooth1__COMMANDARRAYRXPTR;
+MX_GLOBAL MX_UINT8 FCV_05181_Bluetooth1__COMMANDARRAY[FCVsz_05181_Bluetooth1__COMMANDARRAY];
+MX_GLOBAL MX_UINT8 FCV_05181_Bluetooth1__COMMANDARRAYTXPTR;
+MX_GLOBAL MX_UINT8 FCV_05181_Bluetooth1__RX_STATUS;
+MX_GLOBAL MX_UINT8 FCV_05181_Bluetooth1__RESPONSE_ARRAY[FCVsz_05181_Bluetooth1__RESPONSE_ARRAY];
+
+MX_UINT8 FCD_05181_Bluetooth1__StringRead(MX_UINT8 FCL_IDX);
+MX_UINT8 FCD_05181_Bluetooth1__SendScript(MX_UINT8 FCL_IDX);
+MX_UINT8 FCD_05181_Bluetooth1__SendCommand(MX_UINT8 FCL_EXPECTECHO, MX_UINT8 FCL_SENDCR);
+void FCD_05181_Bluetooth1__SendScriptString(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR);
+MX_UINT8 FCD_05181_Bluetooth1__Read_byte(MX_UINT8 FCL_TIMEOUT);
+MX_UINT8 FCD_05181_Bluetooth1__CreateCommandString(MX_CHAR *FCL_DATA, MX_UINT16 FCLsz_DATA);
+MX_UINT8 FCD_05181_Bluetooth1__StringReceive();
+MX_UINT8 FCD_05181_Bluetooth1__CreateCommand(MX_UINT8 FCL_CHARACTER);
+void FCD_05181_Bluetooth1__Send_byte(MX_UINT8 FCL_BYTEVAL);
+MX_UINT8 FCD_05181_Bluetooth1__WaitForResponse(MX_UINT8 FCL_RESPONSE_CODE, MX_UINT8 FCL_TIMEOUT);
+void FCD_05181_Bluetooth1__Initialise();
+
+/*========================================================================*\
+   Use :Inclure la couche d'adaptation de puce
+\*========================================================================*/
+#include "C:\Program Files (x86)\Flowcode 6\CAL\includes.c"
+
+
+/*========================================================================*\
+   Use :ctrl_lcd
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :LCD
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :Clears the entire contents of the display.
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__Clear()
+
+{
+
+
+
+
+	FCD_04071_LCD__RawSend(0x01, 0);
+0354  0E01      	MOVLW 0x01
+0356  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+0358  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+035A  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+035E  0E02      	MOVLW 0x02
+0360  6E29      	MOVWF delay_ms_00000_arg_del
+0362  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x02, 0);
+0366  0E02      	MOVLW 0x02
+0368  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+036A  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+036C  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+0370  0E02      	MOVLW 0x02
+0372  6E29      	MOVWF delay_ms_00000_arg_del
+0374  EC0BF000  	CALL delay_ms_00000
+
+
+}
+0378  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Breaks down a string of text and sends it to the LCD via the private RawSend(byte, mask) macro
+       :
+       :Param??tres pour la macro PrintString :
+       :  Text[20] : Enter the text or variable to print to the LCD
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__PrintString(MX_CHAR *FCL_TEXT, MX_UINT16 FCLsz_TEXT)
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_IDX = (0x0);
+03A8  6A3B      	CLRF FCD_04071__00054_1_FCL_IDX
+
+	MX_UINT8 FCL_COUNT;
+
+
+
+	FCL_COUNT = FCI_GETLENGTH(FCL_TEXT, FCLsz_TEXT);
+03AA  5027      	MOVF FCD_04071__00054_arg_FCL_TEXT, W
+03AC  6E3D      	MOVWF FCI_GETLEN_00040_arg_sStr1
+03AE  5028      	MOVF FCD_04071__00054_arg_FCL_TEXT+D'1', W
+03B0  6E3E      	MOVWF FCI_GETLEN_00040_arg_sStr1+D'1'
+03B2  5039      	MOVF FCD_04071__00054_arg_FCLsz_TEXT, W
+03B4  6E3F      	MOVWF FCI_GETLEN_00040_arg_iStr1_len
+03B6  EC9AF001  	CALL FCI_GETLEN_00040
+03BA  5041      	MOVF CompTempVarRet1850, W
+03BC  6E3C      	MOVWF FCD_04071__00054_1_FCL_COUNT
+
+
+	while (FCL_IDX < FCL_COUNT)
+03BE            label58
+03BE  503C      	MOVF FCD_04071__00054_1_FCL_COUNT, W
+03C0  603B      	CPFSLT FCD_04071__00054_1_FCL_IDX
+03DC  D7F0      	BRA	label58
+
+	{
+
+		FCD_04071_LCD__RawSend(FCL_TEXT[FCL_IDX], 0x10);
+03C4  5028      	MOVF FCD_04071__00054_arg_FCL_TEXT+D'1', W
+03C6  6EEA      	MOVWF FSR0H
+03C8  5027      	MOVF FCD_04071__00054_arg_FCL_TEXT, W
+03CA  243B      	ADDWF FCD_04071__00054_1_FCL_IDX, W
+03CC  6EE9      	MOVWF FSR0L
+03CE  50EF      	MOVF INDF0, W
+03D0  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+03D2  803E      	BSF FCD_04071__00057_arg_FCL_TYPE,0
+03D4  EC33F000  	CALL FCD_04071__00057
+
+
+		FCL_IDX = FCL_IDX + 1;
+03D8  283B      	INCF FCD_04071__00054_1_FCL_IDX, W
+03DA  6E3B      	MOVWF FCD_04071__00054_1_FCL_IDX
+
+
+
+	}
+
+
+}
+03C2  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Takes the ascii value for a character and prints the character
+       :
+       :Param??tres pour la macro PrintAscii :
+       :  character : Holds an ascii value.
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__PrintAscii(MX_UINT8 FCL_CHARACTER)
+{
+
+	FCD_04071_LCD__RawSend(FCL_CHARACTER, 0x10);
+
+
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Based on v5 macro, will allow you to print a number. This is limited to a signed-INT, -32768 to 32767
+       :
+       :Param??tres pour la macro PrintNumber :
+       :  Number : Enter the number or variable to print to the LCD
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__PrintNumber(MX_SINT16 FCL_NUMBER)
+{
+	//Définitions des variables locales
+	#define FCLsz_S 10
+	MX_CHAR FCL_S[FCLsz_S];
+
+
+	FCI_TOSTRING(FCL_NUMBER, FCL_S,10);
+
+	FCD_04071_LCD__PrintString(FCL_S, FCLsz_S);
+
+	//Définitions des variables locales
+	#undef FCLsz_S
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Modifies the internal memory of the LCD to allow for up to 8 customised characters to be created and stored in the device memory
+       :
+       :Param??tres pour la macro RAMWrite :
+       :  Index : Values 0 to 7
+       :  d0 : MX_UINT8
+       :  d1 : MX_UINT8
+       :  d2 : MX_UINT8
+       :  d3 : MX_UINT8
+       :  d4 : MX_UINT8
+       :  d5 : MX_UINT8
+       :  d6 : MX_UINT8
+       :  d7 : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__RAMWrite(MX_UINT8 FCL_INDEX, MX_UINT8 FCL_D0, MX_UINT8 FCL_D1, MX_UINT8 FCL_D2, MX_UINT8 FCL_D3, MX_UINT8 FCL_D4, MX_UINT8 FCL_D5, MX_UINT8 FCL_D6, MX_UINT8 FCL_D7)
+{
+
+	FCD_04071_LCD__RawSend(64 + (FCL_INDEX << 3), 0);
+
+	FCI_DELAYBYTE_MS(2);
+
+	FCD_04071_LCD__RawSend(FCL_D0, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D1, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D2, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D3, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D4, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D5, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D6, 0x10);
+
+	FCD_04071_LCD__RawSend(FCL_D7, 0x10);
+
+	FCD_04071_LCD__Clear();
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Clears a single line on the display and then moves the cursor to the start of the line to allow you to start populating the line with data.
+       :
+       :Param??tres pour la macro ClearLine :
+       :  Line : The line to clear, zero being the first (top) line of the display
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__ClearLine(MX_UINT8 FCL_LINE)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_X;
+
+
+	if (FCL_LINE < 2)
+	{
+
+		FCD_04071_LCD__Cursor(0, FCL_LINE);
+
+		FCL_X = 0;
+
+		while (FCL_X < 16)
+		{
+
+
+			FCD_04071_LCD__RawSend(' ', 0x10);
+
+			FCL_X = FCL_X + 1;
+
+
+		}
+
+		FCD_04071_LCD__Cursor(0, FCL_LINE);
+
+	// } else {
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Moves the cursor on the LCD Display
+       :
+       :Param??tres pour la macro Cursor :
+       :  x : Set the cursor position in the X plane, 0 is the left most cell
+       :  y : Set the cursor position in the Y plane, 0 is the top most cell
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__Cursor(MX_UINT8 FCL_X, MX_UINT8 FCL_Y)
+
+{
+
+
+
+	#if (0) // 2 == 1
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	#if (1) // 2 == 2
+
+		if (FCL_Y == 0)
+0384  5228      	MOVF FCD_04071__00056_arg_FCL_Y, F
+0386  E103      	BNZ	label56
+038E            label56
+
+		{
+
+			FCL_Y = 0x80;
+0388  0E80      	MOVLW 0x80
+038A  6E28      	MOVWF FCD_04071__00056_arg_FCL_Y
+
+
+		} else {
+038C  D002      	BRA	label57
+0392            label57
+
+
+			FCL_Y = 0xC0;
+038E  0EC0      	MOVLW 0xC0
+0390  6E28      	MOVWF FCD_04071__00056_arg_FCL_Y
+
+
+		}
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+	#if (0) // 2 == 4
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	FCD_04071_LCD__RawSend(FCL_Y + FCL_X, 0);
+0392  5027      	MOVF FCD_04071__00056_arg_FCL_X, W
+0394  2428      	ADDWF FCD_04071__00056_arg_FCL_Y, W
+0396  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+0398  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+039A  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+039E  0E02      	MOVLW 0x02
+03A0  6E29      	MOVWF delay_ms_00000_arg_del
+03A2  EC0BF000  	CALL delay_ms_00000
+
+
+}
+03A6  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Use this method/macro to send a specific command to the LCD. Refer to the Matrix Multimedia EB006 datasheet for a list of supported instructions. For Non-Matrix LCD's refer to the manufacturers datasheet.
+       :
+       :Param??tres pour la macro Command :
+       :  instruction : Send a defined command to the LCD Screen. See datasheet for supported commands.
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__Command(MX_UINT8 FCL_INSTRUCTION)
+{
+
+	FCD_04071_LCD__RawSend(FCL_INSTRUCTION, 0);
+
+	FCI_DELAYBYTE_MS(2);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Will allow you to print a number up to 32-bits with signed or unsigned formatting.
+       :Signed = -2147483648 to 2147483647
+       :Unsigned = 0 to 4294967295
+       :
+       :Param??tres pour la macro PrintFormattedNumber :
+       :  Number : Enter the number or variable to print to the LCD
+       :  Format : 0=Signed, 1=Unsigned
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__PrintFormattedNumber(MX_UINT32 FCL_NUMBER, MX_BOOL FCL_FORMAT)
+{
+	//Définitions des variables locales
+	#define FCLsz_S 15
+	MX_CHAR FCL_S[FCLsz_S];
+
+
+	if (FCL_FORMAT == 1)
+	{
+
+		FCI_UTOS32(FCL_NUMBER, FCL_S,15);
+
+	} else {
+
+		FCI_ITOS32((MX_SINT32)(FCL_NUMBER), FCL_S,15);
+
+	}
+
+	FCD_04071_LCD__PrintString(FCL_S, FCLsz_S);
+
+	//Définitions des variables locales
+	#undef FCLsz_S
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Scrolls the display left or right by a number of given positions.
+       :
+       :Param??tres pour la macro ScrollDisplay :
+       :  Position : Holds the number of positions to shift the display
+       :  direction : 0 = left, 1 = right
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__ScrollDisplay(MX_UINT8 FCL_POSITION, MX_UINT8 FCL_DIRECTION)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_CMD = (0x0);
+
+
+	FCL_CMD = 0;
+
+	switch (FCL_DIRECTION)
+	{
+		case 0:
+		{
+			FCL_CMD = 0x18;
+
+
+			break;
+		}
+		case 'l':
+		{
+			FCL_CMD = 0x18;
+
+
+			break;
+		}
+		case 'L':
+		{
+			FCL_CMD = 0x18;
+
+
+			break;
+		}
+		case 1:
+		{
+			FCL_CMD = 0x1C;
+
+
+			break;
+		}
+		case 'r':
+		{
+			FCL_CMD = 0x1C;
+
+
+			break;
+		}
+		case 'R':
+		{
+			FCL_CMD = 0x1C;
+
+
+			break;
+		}
+		// default:
+
+	}
+
+	if (FCL_CMD != 0 && FCL_POSITION != 0)
+	{
+
+		while (FCL_POSITION != 0)
+		{
+
+			FCD_04071_LCD__RawSend(FCL_CMD, 0);
+
+			FCL_POSITION = FCL_POSITION - 1;
+
+
+		}
+
+	// } else {
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sends data to the LCD display
+       :
+       :Param??tres pour la macro RawSend :
+       :  data : The data byte to send to the LCD
+       :  type : A boolean to indicate command type: true to write data, false to write a command
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__RawSend(MX_UINT8 FCL_DATA, MX_BOOL FCL_TYPE)
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_NIBBLE;
+
+
+	//Commentaire:
+	//Output upper nibble of the byte
+
+	#if (1) // 0 == 0
+
+		FCP_SET(B, A, 0x1, 0x0, 0);
+0066  6A40      	CLRF FCD_04071__00057_2_ptmp
+0068  9092      	BCF gbl_trisa,0
+006A  5240      	MOVF FCD_04071__00057_2_ptmp, F
+006C  E004      	BZ	label4
+006E  0E01      	MOVLW 0x01
+0070  1089      	IORWF gbl_lata, W
+0072  6E80      	MOVWF gbl_porta
+0074  D003      	BRA	label5
+0076            label4
+0076  0EFE      	MOVLW 0xFE
+0078  1489      	ANDWF gbl_lata, W
+007A  6E80      	MOVWF gbl_porta
+007C            label5
+
+		FCP_SET(B, A, 0x2, 0x1, 0);
+007C  6A40      	CLRF FCD_04071__00057_9_ptmp
+007E  9292      	BCF gbl_trisa,1
+0080  5240      	MOVF FCD_04071__00057_9_ptmp, F
+0082  E004      	BZ	label6
+0084  0E02      	MOVLW 0x02
+0086  1089      	IORWF gbl_lata, W
+0088  6E80      	MOVWF gbl_porta
+008A  D003      	BRA	label7
+008C            label6
+008C  0EFD      	MOVLW 0xFD
+008E  1489      	ANDWF gbl_lata, W
+0090  6E80      	MOVWF gbl_porta
+0092            label7
+
+		FCP_SET(B, A, 0x4, 0x2, 0);
+0092  6A40      	CLRF FCD_04071__00057_16_ptmp
+0094  9492      	BCF gbl_trisa,2
+0096  5240      	MOVF FCD_04071__00057_16_ptmp, F
+0098  E004      	BZ	label8
+009A  0E04      	MOVLW 0x04
+009C  1089      	IORWF gbl_lata, W
+009E  6E80      	MOVWF gbl_porta
+00A0  D003      	BRA	label9
+00A2            label8
+00A2  0EFB      	MOVLW 0xFB
+00A4  1489      	ANDWF gbl_lata, W
+00A6  6E80      	MOVWF gbl_porta
+00A8            label9
+
+		FCP_SET(B, A, 0x8, 0x3, 0);
+00A8  6A40      	CLRF FCD_04071__00057_23_ptmp
+00AA  9692      	BCF gbl_trisa,3
+00AC  5240      	MOVF FCD_04071__00057_23_ptmp, F
+00AE  E004      	BZ	label10
+00B0  0E08      	MOVLW 0x08
+00B2  1089      	IORWF gbl_lata, W
+00B4  6E80      	MOVWF gbl_porta
+00B6  D003      	BRA	label11
+00B8            label10
+00B8  0EF7      	MOVLW 0xF7
+00BA  1489      	ANDWF gbl_lata, W
+00BC  6E80      	MOVWF gbl_porta
+00BE            label11
+
+		FCP_SET(B, A, 0x10, 0x4, 0);
+00BE  6A40      	CLRF FCD_04071__00057_30_ptmp
+00C0  9892      	BCF gbl_trisa,4
+00C2  5240      	MOVF FCD_04071__00057_30_ptmp, F
+00C4  E004      	BZ	label12
+00C6  0E10      	MOVLW 0x10
+00C8  1089      	IORWF gbl_lata, W
+00CA  6E80      	MOVWF gbl_porta
+00CC  D003      	BRA	label13
+00CE            label12
+00CE  0EEF      	MOVLW 0xEF
+00D0  1489      	ANDWF gbl_lata, W
+00D2  6E80      	MOVWF gbl_porta
+00D4            label13
+
+		FCP_SET(B, A, 0x20, 0x5, 0);
+00D4  6A40      	CLRF FCD_04071__00057_37_ptmp
+00D6  9A92      	BCF gbl_trisa,5
+00D8  5240      	MOVF FCD_04071__00057_37_ptmp, F
+00DA  E004      	BZ	label14
+00DC  0E20      	MOVLW 0x20
+00DE  1089      	IORWF gbl_lata, W
+00E0  6E80      	MOVWF gbl_porta
+00E2  D003      	BRA	label15
+00E4            label14
+00E4  0EDF      	MOVLW 0xDF
+00E6  1489      	ANDWF gbl_lata, W
+00E8  6E80      	MOVWF gbl_porta
+00EA            label15
+
+
+		#if (0)
+
+		//Le code a été optimisé par le préprocesseur
+		// #else
+
+		#endif
+
+		FCL_NIBBLE = (FCL_DATA >> 4);
+00EA  383D      	SWAPF FCD_04071__00057_arg_FCL_DATA, W
+00EC  0B0F      	ANDLW 0x0F
+00EE  6E3F      	MOVWF FCD_04071__00057_1_FCL_NIBBLE
+
+		FCP_SET(B, A, 0x1, 0x0, (FCL_NIBBLE & 0x01));
+00F0  0E01      	MOVLW 0x01
+00F2  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+00F4  6E40      	MOVWF FCD_04071__00057_46_ptmp
+00F6  9092      	BCF gbl_trisa,0
+00F8  5240      	MOVF FCD_04071__00057_46_ptmp, F
+00FA  E004      	BZ	label16
+00FC  0E01      	MOVLW 0x01
+00FE  1089      	IORWF gbl_lata, W
+0100  6E80      	MOVWF gbl_porta
+0102  D003      	BRA	label17
+0104            label16
+0104  0EFE      	MOVLW 0xFE
+0106  1489      	ANDWF gbl_lata, W
+0108  6E80      	MOVWF gbl_porta
+010A            label17
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+010A  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+010C  90D8      	BCF STATUS,C
+010E  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x2, 0x1, (FCL_NIBBLE & 0x01));
+0110  0E01      	MOVLW 0x01
+0112  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0114  6E40      	MOVWF FCD_04071__00057_55_ptmp
+0116  9292      	BCF gbl_trisa,1
+0118  5240      	MOVF FCD_04071__00057_55_ptmp, F
+011A  E004      	BZ	label18
+011C  0E02      	MOVLW 0x02
+011E  1089      	IORWF gbl_lata, W
+0120  6E80      	MOVWF gbl_porta
+0122  D003      	BRA	label19
+0124            label18
+0124  0EFD      	MOVLW 0xFD
+0126  1489      	ANDWF gbl_lata, W
+0128  6E80      	MOVWF gbl_porta
+012A            label19
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+012A  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+012C  90D8      	BCF STATUS,C
+012E  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x4, 0x2, (FCL_NIBBLE & 0x01));
+0130  0E01      	MOVLW 0x01
+0132  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0134  6E40      	MOVWF FCD_04071__00057_64_ptmp
+0136  9492      	BCF gbl_trisa,2
+0138  5240      	MOVF FCD_04071__00057_64_ptmp, F
+013A  E004      	BZ	label20
+013C  0E04      	MOVLW 0x04
+013E  1089      	IORWF gbl_lata, W
+0140  6E80      	MOVWF gbl_porta
+0142  D003      	BRA	label21
+0144            label20
+0144  0EFB      	MOVLW 0xFB
+0146  1489      	ANDWF gbl_lata, W
+0148  6E80      	MOVWF gbl_porta
+014A            label21
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+014A  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+014C  90D8      	BCF STATUS,C
+014E  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x8, 0x3, (FCL_NIBBLE & 0x01));
+0150  0E01      	MOVLW 0x01
+0152  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0154  6E40      	MOVWF FCD_04071__00057_73_ptmp
+0156  9692      	BCF gbl_trisa,3
+0158  5240      	MOVF FCD_04071__00057_73_ptmp, F
+015A  E004      	BZ	label22
+015C  0E08      	MOVLW 0x08
+015E  1089      	IORWF gbl_lata, W
+0160  6E80      	MOVWF gbl_porta
+0162  D003      	BRA	label23
+0164            label22
+0164  0EF7      	MOVLW 0xF7
+0166  1489      	ANDWF gbl_lata, W
+0168  6E80      	MOVWF gbl_porta
+016A            label23
+
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+	//Commentaire:
+	//Output byte to pins
+
+	#if (0) // 0 == 1
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	//Commentaire:
+	//Output byte to port
+
+	#if (0) // 0 == 2
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	if (FCL_TYPE)
+016A  A03E      	BTFSS FCD_04071__00057_arg_FCL_TYPE,0
+016C  D00C      	BRA	label25
+
+	{
+
+		FCP_SET(B, A, 0x10, 0x4, 1);
+016E  0E01      	MOVLW 0x01
+0170  6E40      	MOVWF FCD_04071__00057_82_ptmp
+0172  9892      	BCF gbl_trisa,4
+0174  5240      	MOVF FCD_04071__00057_82_ptmp, F
+0176  E004      	BZ	label24
+0178  0E10      	MOVLW 0x10
+017A  1089      	IORWF gbl_lata, W
+017C  6E80      	MOVWF gbl_porta
+017E  D003      	BRA	label25
+0180            label24
+0180  0EEF      	MOVLW 0xEF
+0182  1489      	ANDWF gbl_lata, W
+0184  6E80      	MOVWF gbl_porta
+0186            label25
+
+
+	// } else {
+
+	}
+
+	FCI_DELAYBYTE_US(100);
+0186  0E64      	MOVLW 0x64
+0188  6E40      	MOVWF delay_us_00000_arg_del
+018A  EC06F000  	CALL delay_us_00000
+
+
+	//Commentaire:
+	//Set Enable high, pause then set low
+	//to acknowledge the data has been 
+	//submitted.
+
+	FCP_SET(B, A, 0x20, 0x5, 1);
+018E  0E01      	MOVLW 0x01
+0190  6E40      	MOVWF FCD_04071__00057_93_ptmp
+0192  9A92      	BCF gbl_trisa,5
+0194  5240      	MOVF FCD_04071__00057_93_ptmp, F
+0196  E004      	BZ	label26
+0198  0E20      	MOVLW 0x20
+019A  1089      	IORWF gbl_lata, W
+019C  6E80      	MOVWF gbl_porta
+019E  D003      	BRA	label27
+01A0            label26
+01A0  0EDF      	MOVLW 0xDF
+01A2  1489      	ANDWF gbl_lata, W
+01A4  6E80      	MOVWF gbl_porta
+01A6            label27
+
+
+	FCI_DELAYBYTE_US(100);
+01A6  0E64      	MOVLW 0x64
+01A8  6E40      	MOVWF delay_us_00000_arg_del
+01AA  EC06F000  	CALL delay_us_00000
+
+
+	FCP_SET(B, A, 0x20, 0x5, 0);
+01AE  6A40      	CLRF FCD_04071__00057_104_ptmp
+01B0  9A92      	BCF gbl_trisa,5
+01B2  5240      	MOVF FCD_04071__00057_104_ptmp, F
+01B4  E004      	BZ	label28
+01B6  0E20      	MOVLW 0x20
+01B8  1089      	IORWF gbl_lata, W
+01BA  6E80      	MOVWF gbl_porta
+01BC  D003      	BRA	label29
+01BE            label28
+01BE  0EDF      	MOVLW 0xDF
+01C0  1489      	ANDWF gbl_lata, W
+01C2  6E80      	MOVWF gbl_porta
+01C4            label29
+
+
+	FCI_DELAYBYTE_US(100);
+01C4  0E64      	MOVLW 0x64
+01C6  6E40      	MOVWF delay_us_00000_arg_del
+01C8  EC06F000  	CALL delay_us_00000
+
+
+	#if (1) // 0 == 0
+
+		FCP_SET(B, A, 0x1, 0x0, 0);
+01CC  6A40      	CLRF FCD_04071__00057_115_ptmp
+01CE  9092      	BCF gbl_trisa,0
+01D0  5240      	MOVF FCD_04071__00057_115_ptmp, F
+01D2  E004      	BZ	label30
+01D4  0E01      	MOVLW 0x01
+01D6  1089      	IORWF gbl_lata, W
+01D8  6E80      	MOVWF gbl_porta
+01DA  D003      	BRA	label31
+01DC            label30
+01DC  0EFE      	MOVLW 0xFE
+01DE  1489      	ANDWF gbl_lata, W
+01E0  6E80      	MOVWF gbl_porta
+01E2            label31
+
+		FCP_SET(B, A, 0x2, 0x1, 0);
+01E2  6A40      	CLRF FCD_04071__00057_122_ptmp
+01E4  9292      	BCF gbl_trisa,1
+01E6  5240      	MOVF FCD_04071__00057_122_ptmp, F
+01E8  E004      	BZ	label32
+01EA  0E02      	MOVLW 0x02
+01EC  1089      	IORWF gbl_lata, W
+01EE  6E80      	MOVWF gbl_porta
+01F0  D003      	BRA	label33
+01F2            label32
+01F2  0EFD      	MOVLW 0xFD
+01F4  1489      	ANDWF gbl_lata, W
+01F6  6E80      	MOVWF gbl_porta
+01F8            label33
+
+		FCP_SET(B, A, 0x4, 0x2, 0);
+01F8  6A40      	CLRF FCD_04071__00057_129_ptmp
+01FA  9492      	BCF gbl_trisa,2
+01FC  5240      	MOVF FCD_04071__00057_129_ptmp, F
+01FE  E004      	BZ	label34
+0200  0E04      	MOVLW 0x04
+0202  1089      	IORWF gbl_lata, W
+0204  6E80      	MOVWF gbl_porta
+0206  D003      	BRA	label35
+0208            label34
+0208  0EFB      	MOVLW 0xFB
+020A  1489      	ANDWF gbl_lata, W
+020C  6E80      	MOVWF gbl_porta
+020E            label35
+
+		FCP_SET(B, A, 0x8, 0x3, 0);
+020E  6A40      	CLRF FCD_04071__00057_136_ptmp
+0210  9692      	BCF gbl_trisa,3
+0212  5240      	MOVF FCD_04071__00057_136_ptmp, F
+0214  E004      	BZ	label36
+0216  0E08      	MOVLW 0x08
+0218  1089      	IORWF gbl_lata, W
+021A  6E80      	MOVWF gbl_porta
+021C  D003      	BRA	label37
+021E            label36
+021E  0EF7      	MOVLW 0xF7
+0220  1489      	ANDWF gbl_lata, W
+0222  6E80      	MOVWF gbl_porta
+0224            label37
+
+		FCP_SET(B, A, 0x10, 0x4, 0);
+0224  6A40      	CLRF FCD_04071__00057_143_ptmp
+0226  9892      	BCF gbl_trisa,4
+0228  5240      	MOVF FCD_04071__00057_143_ptmp, F
+022A  E004      	BZ	label38
+022C  0E10      	MOVLW 0x10
+022E  1089      	IORWF gbl_lata, W
+0230  6E80      	MOVWF gbl_porta
+0232  D003      	BRA	label39
+0234            label38
+0234  0EEF      	MOVLW 0xEF
+0236  1489      	ANDWF gbl_lata, W
+0238  6E80      	MOVWF gbl_porta
+023A            label39
+
+
+		FCL_NIBBLE = (FCL_DATA & 0xf);
+023A  0E0F      	MOVLW 0x0F
+023C  143D      	ANDWF FCD_04071__00057_arg_FCL_DATA, W
+023E  6E40      	MOVWF CompTempVar2650
+0240  5040      	MOVF CompTempVar2650, W
+0242  6E3F      	MOVWF FCD_04071__00057_1_FCL_NIBBLE
+
+		FCP_SET(B, A, 0x1, 0x0, (FCL_NIBBLE & 0x01));
+0244  0E01      	MOVLW 0x01
+0246  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0248  6E40      	MOVWF FCD_04071__00057_152_ptmp
+024A  9092      	BCF gbl_trisa,0
+024C  5240      	MOVF FCD_04071__00057_152_ptmp, F
+024E  E004      	BZ	label40
+0250  0E01      	MOVLW 0x01
+0252  1089      	IORWF gbl_lata, W
+0254  6E80      	MOVWF gbl_porta
+0256  D003      	BRA	label41
+0258            label40
+0258  0EFE      	MOVLW 0xFE
+025A  1489      	ANDWF gbl_lata, W
+025C  6E80      	MOVWF gbl_porta
+025E            label41
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+025E  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+0260  90D8      	BCF STATUS,C
+0262  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x2, 0x1, (FCL_NIBBLE & 0x01));
+0264  0E01      	MOVLW 0x01
+0266  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0268  6E40      	MOVWF FCD_04071__00057_161_ptmp
+026A  9292      	BCF gbl_trisa,1
+026C  5240      	MOVF FCD_04071__00057_161_ptmp, F
+026E  E004      	BZ	label42
+0270  0E02      	MOVLW 0x02
+0272  1089      	IORWF gbl_lata, W
+0274  6E80      	MOVWF gbl_porta
+0276  D003      	BRA	label43
+0278            label42
+0278  0EFD      	MOVLW 0xFD
+027A  1489      	ANDWF gbl_lata, W
+027C  6E80      	MOVWF gbl_porta
+027E            label43
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+027E  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+0280  90D8      	BCF STATUS,C
+0282  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x4, 0x2, (FCL_NIBBLE & 0x01));
+0284  0E01      	MOVLW 0x01
+0286  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+0288  6E40      	MOVWF FCD_04071__00057_170_ptmp
+028A  9492      	BCF gbl_trisa,2
+028C  5240      	MOVF FCD_04071__00057_170_ptmp, F
+028E  E004      	BZ	label44
+0290  0E04      	MOVLW 0x04
+0292  1089      	IORWF gbl_lata, W
+0294  6E80      	MOVWF gbl_porta
+0296  D003      	BRA	label45
+0298            label44
+0298  0EFB      	MOVLW 0xFB
+029A  1489      	ANDWF gbl_lata, W
+029C  6E80      	MOVWF gbl_porta
+029E            label45
+
+		FCL_NIBBLE = FCL_NIBBLE >> 1;
+029E  523F      	MOVF FCD_04071__00057_1_FCL_NIBBLE, F
+02A0  90D8      	BCF STATUS,C
+02A2  323F      	RRCF FCD_04071__00057_1_FCL_NIBBLE, F
+
+		FCP_SET(B, A, 0x8, 0x3, (FCL_NIBBLE & 0x01));
+02A4  0E01      	MOVLW 0x01
+02A6  143F      	ANDWF FCD_04071__00057_1_FCL_NIBBLE, W
+02A8  6E40      	MOVWF FCD_04071__00057_179_ptmp
+02AA  9692      	BCF gbl_trisa,3
+02AC  5240      	MOVF FCD_04071__00057_179_ptmp, F
+02AE  E004      	BZ	label46
+02B0  0E08      	MOVLW 0x08
+02B2  1089      	IORWF gbl_lata, W
+02B4  6E80      	MOVWF gbl_porta
+02B6  D003      	BRA	label47
+02B8            label46
+02B8  0EF7      	MOVLW 0xF7
+02BA  1489      	ANDWF gbl_lata, W
+02BC  6E80      	MOVWF gbl_porta
+02BE            label47
+
+
+		if (FCL_TYPE)
+02BE  A03E      	BTFSS FCD_04071__00057_arg_FCL_TYPE,0
+02C0  D00C      	BRA	label49
+
+		{
+
+			FCP_SET(B, A, 0x10, 0x4, 1);
+02C2  0E01      	MOVLW 0x01
+02C4  6E40      	MOVWF FCD_04071__00057_188_ptmp
+02C6  9892      	BCF gbl_trisa,4
+02C8  5240      	MOVF FCD_04071__00057_188_ptmp, F
+02CA  E004      	BZ	label48
+02CC  0E10      	MOVLW 0x10
+02CE  1089      	IORWF gbl_lata, W
+02D0  6E80      	MOVWF gbl_porta
+02D2  D003      	BRA	label49
+02D4            label48
+02D4  0EEF      	MOVLW 0xEF
+02D6  1489      	ANDWF gbl_lata, W
+02D8  6E80      	MOVWF gbl_porta
+02DA            label49
+
+
+		// } else {
+
+		}
+
+		FCI_DELAYBYTE_US(100);
+02DA  0E64      	MOVLW 0x64
+02DC  6E40      	MOVWF delay_us_00000_arg_del
+02DE  EC06F000  	CALL delay_us_00000
+
+
+		FCP_SET(B, A, 0x20, 0x5, 1);
+02E2  0E01      	MOVLW 0x01
+02E4  6E40      	MOVWF FCD_04071__00057_199_ptmp
+02E6  9A92      	BCF gbl_trisa,5
+02E8  5240      	MOVF FCD_04071__00057_199_ptmp, F
+02EA  E004      	BZ	label50
+02EC  0E20      	MOVLW 0x20
+02EE  1089      	IORWF gbl_lata, W
+02F0  6E80      	MOVWF gbl_porta
+02F2  D003      	BRA	label51
+02F4            label50
+02F4  0EDF      	MOVLW 0xDF
+02F6  1489      	ANDWF gbl_lata, W
+02F8  6E80      	MOVWF gbl_porta
+02FA            label51
+
+
+		FCI_DELAYBYTE_US(100);
+02FA  0E64      	MOVLW 0x64
+02FC  6E40      	MOVWF delay_us_00000_arg_del
+02FE  EC06F000  	CALL delay_us_00000
+
+
+		FCP_SET(B, A, 0x20, 0x5, 0);
+0302  6A40      	CLRF FCD_04071__00057_210_ptmp
+0304  9A92      	BCF gbl_trisa,5
+0306  5240      	MOVF FCD_04071__00057_210_ptmp, F
+0308  E004      	BZ	label52
+030A  0E20      	MOVLW 0x20
+030C  1089      	IORWF gbl_lata, W
+030E  6E80      	MOVWF gbl_porta
+0310  D003      	BRA	label53
+0312            label52
+0312  0EDF      	MOVLW 0xDF
+0314  1489      	ANDWF gbl_lata, W
+0316  6E80      	MOVWF gbl_porta
+0318            label53
+
+
+		FCI_DELAYBYTE_US(100);
+0318  0E64      	MOVLW 0x64
+031A  6E40      	MOVWF delay_us_00000_arg_del
+031C  EC06F000  	CALL delay_us_00000
+
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+}
+0320  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Startup routine required by the hardware device.
+       :Automatically clears the display after initialising.
+\*=----------------------------------------------------------------------=*/
+void FCD_04071_LCD__Start()
+
+{
+
+
+
+	#if (1) // 0 == 0
+
+		FCP_SET(B, A, 0x1, 0x0, 0);
+03DE  6A27      	CLRF FCD_04071__00052_2_ptmp
+03E0  9092      	BCF gbl_trisa,0
+03E2  5227      	MOVF FCD_04071__00052_2_ptmp, F
+03E4  E004      	BZ	label59
+03E6  0E01      	MOVLW 0x01
+03E8  1089      	IORWF gbl_lata, W
+03EA  6E80      	MOVWF gbl_porta
+03EC  D003      	BRA	label60
+03EE            label59
+03EE  0EFE      	MOVLW 0xFE
+03F0  1489      	ANDWF gbl_lata, W
+03F2  6E80      	MOVWF gbl_porta
+03F4            label60
+
+		FCP_SET(B, A, 0x2, 0x1, 0);
+03F4  6A27      	CLRF FCD_04071__00052_9_ptmp
+03F6  9292      	BCF gbl_trisa,1
+03F8  5227      	MOVF FCD_04071__00052_9_ptmp, F
+03FA  E004      	BZ	label61
+03FC  0E02      	MOVLW 0x02
+03FE  1089      	IORWF gbl_lata, W
+0400  6E80      	MOVWF gbl_porta
+0402  D003      	BRA	label62
+0404            label61
+0404  0EFD      	MOVLW 0xFD
+0406  1489      	ANDWF gbl_lata, W
+0408  6E80      	MOVWF gbl_porta
+040A            label62
+
+		FCP_SET(B, A, 0x4, 0x2, 0);
+040A  6A27      	CLRF FCD_04071__00052_16_ptmp
+040C  9492      	BCF gbl_trisa,2
+040E  5227      	MOVF FCD_04071__00052_16_ptmp, F
+0410  E004      	BZ	label63
+0412  0E04      	MOVLW 0x04
+0414  1089      	IORWF gbl_lata, W
+0416  6E80      	MOVWF gbl_porta
+0418  D003      	BRA	label64
+041A            label63
+041A  0EFB      	MOVLW 0xFB
+041C  1489      	ANDWF gbl_lata, W
+041E  6E80      	MOVWF gbl_porta
+0420            label64
+
+		FCP_SET(B, A, 0x8, 0x3, 0);
+0420  6A27      	CLRF FCD_04071__00052_23_ptmp
+0422  9692      	BCF gbl_trisa,3
+0424  5227      	MOVF FCD_04071__00052_23_ptmp, F
+0426  E004      	BZ	label65
+0428  0E08      	MOVLW 0x08
+042A  1089      	IORWF gbl_lata, W
+042C  6E80      	MOVWF gbl_porta
+042E  D003      	BRA	label66
+0430            label65
+0430  0EF7      	MOVLW 0xF7
+0432  1489      	ANDWF gbl_lata, W
+0434  6E80      	MOVWF gbl_porta
+0436            label66
+
+		FCP_SET(B, A, 0x10, 0x4, 0);
+0436  6A27      	CLRF FCD_04071__00052_30_ptmp
+0438  9892      	BCF gbl_trisa,4
+043A  5227      	MOVF FCD_04071__00052_30_ptmp, F
+043C  E004      	BZ	label67
+043E  0E10      	MOVLW 0x10
+0440  1089      	IORWF gbl_lata, W
+0442  6E80      	MOVWF gbl_porta
+0444  D003      	BRA	label68
+0446            label67
+0446  0EEF      	MOVLW 0xEF
+0448  1489      	ANDWF gbl_lata, W
+044A  6E80      	MOVWF gbl_porta
+044C            label68
+
+		FCP_SET(B, A, 0x20, 0x5, 0);
+044C  6A27      	CLRF FCD_04071__00052_37_ptmp
+044E  9A92      	BCF gbl_trisa,5
+0450  5227      	MOVF FCD_04071__00052_37_ptmp, F
+0452  E004      	BZ	label69
+0454  0E20      	MOVLW 0x20
+0456  1089      	IORWF gbl_lata, W
+0458  6E80      	MOVWF gbl_porta
+045A  D003      	BRA	label70
+045C            label69
+045C  0EDF      	MOVLW 0xDF
+045E  1489      	ANDWF gbl_lata, W
+0460  6E80      	MOVWF gbl_porta
+0462            label70
+
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+	#if (0) // 0 == 1
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	#if (0) // 0 == 2
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	#if (0)
+
+	//Le code a été optimisé par le préprocesseur
+	// #else
+
+	#endif
+
+	FCI_DELAYBYTE_MS(12);
+0462  0E0C      	MOVLW 0x0C
+0464  6E29      	MOVWF delay_ms_00000_arg_del
+0466  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x33, 0);
+046A  0E33      	MOVLW 0x33
+046C  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+046E  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+0470  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+0474  0E02      	MOVLW 0x02
+0476  6E29      	MOVWF delay_ms_00000_arg_del
+0478  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x33, 0);
+047C  0E33      	MOVLW 0x33
+047E  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+0480  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+0482  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+0486  0E02      	MOVLW 0x02
+0488  6E29      	MOVWF delay_ms_00000_arg_del
+048A  EC0BF000  	CALL delay_ms_00000
+
+
+	#if (0) // 0 > 0
+
+	//Le code a été optimisé par le préprocesseur
+	#else
+
+		FCD_04071_LCD__RawSend(0x32, 0);
+048E  0E32      	MOVLW 0x32
+0490  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+0492  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+0494  EC33F000  	CALL FCD_04071__00057
+
+
+		FCI_DELAYBYTE_MS(2);
+0498  0E02      	MOVLW 0x02
+049A  6E29      	MOVWF delay_ms_00000_arg_del
+049C  EC0BF000  	CALL delay_ms_00000
+
+
+		FCD_04071_LCD__RawSend(0x2c, 0);
+04A0  0E2C      	MOVLW 0x2C
+04A2  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+04A4  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+04A6  EC33F000  	CALL FCD_04071__00057
+
+
+	#endif
+
+	FCI_DELAYBYTE_MS(2);
+04AA  0E02      	MOVLW 0x02
+04AC  6E29      	MOVWF delay_ms_00000_arg_del
+04AE  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x06, 0);
+04B2  0E06      	MOVLW 0x06
+04B4  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+04B6  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+04B8  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+04BC  0E02      	MOVLW 0x02
+04BE  6E29      	MOVWF delay_ms_00000_arg_del
+04C0  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x0c, 0);
+04C4  0E0C      	MOVLW 0x0C
+04C6  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+04C8  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+04CA  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+04CE  0E02      	MOVLW 0x02
+04D0  6E29      	MOVWF delay_ms_00000_arg_del
+04D2  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x01, 0);
+04D6  0E01      	MOVLW 0x01
+04D8  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+04DA  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+04DC  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+04E0  0E02      	MOVLW 0x02
+04E2  6E29      	MOVWF delay_ms_00000_arg_del
+04E4  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__RawSend(0x02, 0);
+04E8  0E02      	MOVLW 0x02
+04EA  6E3D      	MOVWF FCD_04071__00057_arg_FCL_DATA
+04EC  903E      	BCF FCD_04071__00057_arg_FCL_TYPE,0
+04EE  EC33F000  	CALL FCD_04071__00057
+
+
+	FCI_DELAYBYTE_MS(2);
+04F2  0E02      	MOVLW 0x02
+04F4  6E29      	MOVWF delay_ms_00000_arg_del
+04F6  EC0BF000  	CALL delay_ms_00000
+
+
+	FCD_04071_LCD__Clear();
+04FA  ECAAF001  	CALL FCD_04071__00053
+
+
+}
+04FE  0012      	RETURN
+
+
+
+/*========================================================================*\
+   Use :lcd_eb005
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :InjectorBase1
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :COMPort1
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :dash_IO_flasher
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :fcdhelper
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :cal_uart
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :Param??tres pour la macro Prv_TextConsole :
+       :  Str[20] : MX_CHAR (by-ref)
+\*=----------------------------------------------------------------------=*/
+void FCD_05481_cal_uart__Prv_TextConsole(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR)
+{
+
+
+}
+
+
+/*========================================================================*\
+   Use :Bluetooth1
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :Returns the ASCII value of character idx of the Response string.
+       :
+       :Param??tres pour la macro StringRead :
+       :  idx : Needs to be a equal to or less than the string length of the response in order to retrieve a valid character.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__StringRead(MX_UINT8 FCL_IDX)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	if (FCL_IDX < FCV_05181_Bluetooth1__COMMANDARRAYRXPTR)
+	{
+
+		FCR_RETVAL = FCV_05181_Bluetooth1__COMMANDARRAY[FCL_IDX];
+
+	} else {
+
+		FCR_RETVAL = 0;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sends Script idx 
+       :Note that the general property Number of Scripts needs to be set so that it allows the scripts to be accessed and sent. 
+       :Returns 0 for success and 1 for error
+       :
+       :Param??tres pour la macro SendScript :
+       :  idx : Refers to the Script page to send (1-4).
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__SendScript(MX_UINT8 FCL_IDX)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	if ((FCL_IDX < 1) || (FCL_IDX > 1))
+	{
+
+		FCR_RETVAL = 1;
+
+	} else {
+
+		switch (FCL_IDX)
+		{
+			case 2:
+			{
+				FCD_05181_Bluetooth1__SendScriptString("", 1);
+
+				break;
+			}
+			case 3:
+			{
+				FCD_05181_Bluetooth1__SendScriptString("", 1);
+
+				break;
+			}
+			case 4:
+			{
+				FCD_05181_Bluetooth1__SendScriptString("", 1);
+
+				break;
+			}
+			default:
+			{
+				FCD_05181_Bluetooth1__SendScriptString("AT\r\nAT+IPR\r\nAT+CSS\r\n", 21);
+
+			}
+		}
+
+		FCR_RETVAL = 0;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sends the command buffer.
+       :Returns 1 for success in sending the command.
+       :Returns 0 for errors.
+       :
+       :Param??tres pour la macro SendCommand :
+       :  ExpectEcho : Remote module automatically echos back data: 1 = On (Expect echo), 0 = off
+       :  SendCR : Automatically adds \n to the end of the command data: 1 = append CR, 0 = no CR.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__SendCommand(MX_UINT8 FCL_EXPECTECHO, MX_UINT8 FCL_SENDCR)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_IDX = (0x0);
+	MX_UINT8 FCL_DUMMY;
+	MX_UINT8 FCR_RETVAL;
+
+
+	if (FCV_05181_Bluetooth1__COMMANDARRAYTXPTR)
+	{
+
+		while (FCL_IDX < FCV_05181_Bluetooth1__COMMANDARRAYTXPTR)
+		{
+
+			FCD_05181_Bluetooth1__Send_byte(FCV_05181_Bluetooth1__COMMANDARRAY[FCL_IDX]);
+
+			if (FCL_EXPECTECHO)
+			{
+
+				FCL_DUMMY = FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__SENDCMD_TIMEOUT);
+
+			// } else {
+
+			}
+
+			FCL_IDX = FCL_IDX + 1;
+
+
+		}
+
+		if (FCL_SENDCR)
+		{
+
+			FCD_05181_Bluetooth1__Send_byte(0x0d);
+
+			if (FCL_EXPECTECHO)
+			{
+
+				FCL_DUMMY = FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__SENDCMD_TIMEOUT);
+
+			// } else {
+
+			}
+
+		// } else {
+
+		}
+
+		FCV_05181_Bluetooth1__COMMANDARRAYTXPTR = 0;
+
+		FCR_RETVAL = 1;
+
+	} else {
+
+		FCR_RETVAL = 0;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Param??tres pour la macro SendScriptString :
+       :  str[20] : MX_CHAR (by-ref)
+\*=----------------------------------------------------------------------=*/
+void FCD_05181_Bluetooth1__SendScriptString(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_I = (0x0);
+
+
+	FCL_I = 0;
+
+	while (FCL_STR[FCL_I] > 0)
+	{
+
+		FCD_05181_Bluetooth1__Send_byte(FCL_STR[FCL_I]);
+
+		FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__SENDSCRIPT_TIMEOUT);
+
+		if (FCL_STR[FCL_I] == 0x0d)
+		{
+
+			FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_OK;
+
+			FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__RESPONSE_TIMEOUT);
+
+			while (FCV_05181_Bluetooth1__RX_STATUS == FCV_05181_Bluetooth1__RS_OK)
+			{
+
+				FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__SENDSCRIPT_TIMEOUT);
+
+
+			}
+
+		// } else {
+
+		}
+
+		FCL_I = FCL_I + 1;
+
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Param??tres pour la macro Read_byte :
+       :  Timeout : MX_UINT8
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__Read_byte(MX_UINT8 FCL_TIMEOUT)
+{
+	//Définitions des variables locales
+	MX_SINT16 FCL_RXINT;
+	MX_UINT8 FCR_RETVAL;
+
+
+	FCL_RXINT = FC_CAL_UART_Receive_1(FCL_TIMEOUT);
+
+	if (FCL_RXINT >= 0x0100)
+	{
+
+		FCR_RETVAL = 0xff;
+
+		if (FCL_RXINT & 0x0100)
+		{
+
+			FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_TIMEOUT;
+
+		} else {
+
+			if (FCL_RXINT & 0x0200)
+			{
+
+				FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_OERR;
+
+			} else {
+
+				FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_FERR;
+
+			}
+
+		}
+
+	} else {
+
+		FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_OK;
+
+		FCR_RETVAL = FCL_RXINT;
+
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Assigns a string of characters to the Command buffer.
+       :Returns 1 for success in adding the characters to the buffer.
+       :Returns 0 for errors, including Buffer overflow.
+       :
+       :Param??tres pour la macro CreateCommandString :
+       :  Data[20] : MX_CHAR (by-ref)
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__CreateCommandString(MX_CHAR *FCL_DATA, MX_UINT16 FCLsz_DATA)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_LEN;
+	MX_UINT8 FCL_IDX = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	FCL_LEN = FCI_GETLENGTH(FCL_DATA, FCLsz_DATA);
+
+	if (FCL_LEN < FCV_05181_Bluetooth1__COMMANDARRAYSIZE)
+	{
+
+		while (FCL_IDX < FCL_LEN)
+		{
+
+			FCV_05181_Bluetooth1__COMMANDARRAY[FCL_IDX] = FCL_DATA[FCL_IDX];
+
+			FCL_IDX = FCL_IDX + 1;
+
+
+		}
+
+		FCV_05181_Bluetooth1__COMMANDARRAYTXPTR = FCL_LEN;
+		FCR_RETVAL = 1;
+
+	} else {
+
+		FCR_RETVAL = 0;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Checks for a response string.
+       :Returns the length of the response string if one is present otherwise returns 0.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__StringReceive()
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_CH;
+	MX_UINT8 FCL_CRLF_FLAGS = (0x0);
+	MX_UINT8 FCL_TIMEOUT = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	FCV_05181_Bluetooth1__COMMANDARRAYRXPTR = 0;
+	FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_OK;
+
+	while (FCL_CRLF_FLAGS <= 2)
+	{
+
+		FCL_CH = FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__STRINGRX_TIMEOUT);
+
+		if (FCV_05181_Bluetooth1__RX_STATUS == FCV_05181_Bluetooth1__RS_OK)
+		{
+
+			switch (FCL_CH)
+			{
+				case 0x0d:
+				{
+					FCL_CRLF_FLAGS = FCL_CRLF_FLAGS | 0x01;
+
+					break;
+				}
+				case 0x0a:
+				{
+					FCL_CRLF_FLAGS = FCL_CRLF_FLAGS | 0x02;
+
+					break;
+				}
+				default:
+				{
+					FCV_05181_Bluetooth1__COMMANDARRAY[FCV_05181_Bluetooth1__COMMANDARRAYRXPTR] = FCL_CH;
+					FCV_05181_Bluetooth1__COMMANDARRAYRXPTR = FCV_05181_Bluetooth1__COMMANDARRAYRXPTR + 1;
+
+					FCL_TIMEOUT = 0;
+
+					if (FCV_05181_Bluetooth1__COMMANDARRAYRXPTR >= FCV_05181_Bluetooth1__COMMANDARRAYSIZE)
+					{
+
+						FCL_CRLF_FLAGS = 0xff;
+
+					// } else {
+
+					}
+
+				}
+			}
+
+		} else {
+
+			FCL_TIMEOUT = FCL_TIMEOUT + 1;
+
+			if (FCL_TIMEOUT > 1)
+			{
+
+				FCL_CRLF_FLAGS = 0xff;
+
+			// } else {
+
+			}
+
+		}
+
+		FCR_RETVAL = FCV_05181_Bluetooth1__COMMANDARRAYRXPTR;
+
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Adds a single characters to the end of the Command buffer.
+       :Returns 1 for success in adding the characters to the buffer.
+       :Returns 0 for errors, including Buffer overflow.
+       :
+       :Param??tres pour la macro CreateCommand :
+       :  Character : ASCII value or single character,
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__CreateCommand(MX_UINT8 FCL_CHARACTER)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	if (FCV_05181_Bluetooth1__COMMANDARRAYTXPTR < FCV_05181_Bluetooth1__COMMANDARRAYSIZE)
+	{
+
+		FCV_05181_Bluetooth1__COMMANDARRAY[FCV_05181_Bluetooth1__COMMANDARRAYTXPTR] = FCL_CHARACTER;
+		FCV_05181_Bluetooth1__COMMANDARRAYTXPTR = FCV_05181_Bluetooth1__COMMANDARRAYTXPTR + 1;
+
+		FCR_RETVAL = 1;
+
+	} else {
+
+		FCR_RETVAL = 0;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Param??tres pour la macro Send_byte :
+       :  ByteVal : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+void FCD_05181_Bluetooth1__Send_byte(MX_UINT8 FCL_BYTEVAL)
+{
+
+	FC_CAL_UART_Send_1(FCL_BYTEVAL);
+
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Waits for a response message of type response_code for timeout ms.
+       :Returns: 0 for a Response of type response_code
+       :255 (0xFF) for a timeout or invalid response
+       :Response string length for any Response not of type response_code
+       :
+       :Param??tres pour la macro WaitForResponse :
+       :  response_code : 1:OK / 2:ERROR / 3:CONNECT / 4:NO CARRIER / 5:AUDIO / 6:PAIR / 7:RING
+       :  timeout : The timeout value will need to set to allow sufficient time for the response to arrive.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_05181_Bluetooth1__WaitForResponse(MX_UINT8 FCL_RESPONSE_CODE, MX_UINT8 FCL_TIMEOUT)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_RESP_SIZE = (0x0);
+	MX_UINT8 FCL_CH;
+	MX_UINT8 FCL_RX_PTR;
+	MX_UINT8 FCL_CRLF_FLAGS = (0x0);
+	MX_UINT8 FCL_UNEXPECTED = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	FCR_RETVAL = 0;
+
+	switch (FCL_RESPONSE_CODE)
+	{
+		case FCV_05181_Bluetooth1__RESPONSE_OK:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'O';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'K';
+
+			FCL_RESP_SIZE = 2;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_ERROR:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'E';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'O';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[5] = ' ';
+
+			FCL_RESP_SIZE = 6;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_CONNECT:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'C';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'O';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = 'N';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'N';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = 'E';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[5] = 'C';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[6] = 'T';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[7] = ' ';
+
+			FCL_RESP_SIZE = 8;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_NOCARRIER:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'N';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'O';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = ' ';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'C';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = 'A';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[5] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[6] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[7] = 'I';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[8] = 'E';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[9] = 'R';
+
+			FCL_RESP_SIZE = 10;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_AUDIO:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'A';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'U';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = 'D';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'I';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = 'O';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[5] = ' ';
+
+			FCL_RESP_SIZE = 6;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_PAIR:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'P';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'A';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = 'I';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = ' ';
+
+			FCL_RESP_SIZE = 5;
+
+			break;
+		}
+		case FCV_05181_Bluetooth1__RESPONSE_RING:
+		{
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[0] = 'R';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[1] = 'I';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[2] = 'N';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[3] = 'G';
+			FCV_05181_Bluetooth1__RESPONSE_ARRAY[4] = ' ';
+
+			FCL_RESP_SIZE = 5;
+
+			break;
+		}
+		default:
+		{
+			FCR_RETVAL = 0xff;
+
+		}
+	}
+
+	if (FCR_RETVAL == 0)
+	{
+
+		FCV_05181_Bluetooth1__COMMANDARRAYRXPTR = 0;
+		FCL_RX_PTR = 0;
+
+		while (FCL_CRLF_FLAGS < 0x03)
+		{
+
+			FCL_CH = FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__RESPONSE_TIMEOUT);
+
+			while (FCV_05181_Bluetooth1__RX_STATUS != FCV_05181_Bluetooth1__RS_OK)
+			{
+
+				if (FCL_TIMEOUT)
+				{
+
+					FCL_TIMEOUT = FCL_TIMEOUT - 1;
+
+					FCL_CH = FCD_05181_Bluetooth1__Read_byte(FCV_05181_Bluetooth1__STRINGRX_TIMEOUT);
+
+				} else {
+
+					FCR_RETVAL = 0xff;
+
+					FCV_05181_Bluetooth1__RX_STATUS = FCV_05181_Bluetooth1__RS_OK;
+					FCL_CRLF_FLAGS = 0x03;
+
+				}
+
+
+			}
+
+			if (FCR_RETVAL == 0)
+			{
+
+				switch (FCL_CH)
+				{
+					case 0x0d:
+					{
+						FCL_CRLF_FLAGS = FCL_CRLF_FLAGS | 0x01;
+
+						break;
+					}
+					case 0x0a:
+					{
+						FCL_CRLF_FLAGS = FCL_CRLF_FLAGS | 0x02;
+
+						break;
+					}
+					default:
+					{
+						FCV_05181_Bluetooth1__COMMANDARRAY[FCV_05181_Bluetooth1__COMMANDARRAYRXPTR] = FCL_CH;
+						FCV_05181_Bluetooth1__COMMANDARRAYRXPTR = FCV_05181_Bluetooth1__COMMANDARRAYRXPTR + 1;
+
+						if (FCV_05181_Bluetooth1__COMMANDARRAYRXPTR >= FCV_05181_Bluetooth1__COMMANDARRAYSIZE)
+						{
+
+							FCR_RETVAL = FCV_05181_Bluetooth1__COMMANDARRAYRXPTR;
+
+							FCL_CRLF_FLAGS = 0x03;
+
+						} else {
+
+							if (FCL_UNEXPECTED == 0)
+							{
+
+								FCL_CRLF_FLAGS = 0;
+
+								if (FCL_CH != FCV_05181_Bluetooth1__RESPONSE_ARRAY[FCL_RX_PTR])
+								{
+
+									FCL_UNEXPECTED = 1;
+
+								// } else {
+
+								}
+
+								FCL_RX_PTR = FCL_RX_PTR + 1;
+
+							// } else {
+
+							}
+
+						}
+
+					}
+				}
+
+				if ((FCL_UNEXPECTED == 0) & (FCL_RX_PTR == FCL_RESP_SIZE))
+				{
+
+					FCL_CRLF_FLAGS = 0x03;
+
+				// } else {
+
+				}
+
+			// } else {
+
+			}
+
+
+		}
+
+		if (FCL_UNEXPECTED)
+		{
+
+			FCR_RETVAL = FCV_05181_Bluetooth1__COMMANDARRAYRXPTR;
+
+		// } else {
+
+		}
+
+	// } else {
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Required to be used whenever the Bluetooth component is used in a program.
+       :Initialises the Bluetooth component ready for use.
+\*=----------------------------------------------------------------------=*/
+void FCD_05181_Bluetooth1__Initialise()
+
+{
+
+	FCV_05181_Bluetooth1__COMMANDARRAYTXPTR = 0;
+037A  6A26      	CLRF gbl_FCV_05181_Bluetooth1___00002
+
+	FCV_05181_Bluetooth1__COMMANDARRAYRXPTR = 0;
+037C  6A25      	CLRF gbl_FCV_05181_Bluetooth1___00000
+
+
+	FC_CAL_UART_Init_1();
+037E  EC91F001  	CALL FC_CAL_UAR_00068
+
+
+}
+0382  0012      	RETURN
+
+
+
+/*========================================================================*\
+   Use :panel
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :D??arrage des modules
+\*=----------------------------------------------------------------------=*/
+void FCM_INITIALISATION()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: Bluetooth1::Initialise()
+	FCD_05181_Bluetooth1__Initialise();
+0500  ECBDF001  	CALL FCD_05181__00051
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::Start()
+	FCD_0ad31_lcd_eb005__Start();
+0504  ECEFF001  	CALL FCD_04071__00052
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::Clear()
+	FCD_0ad31_lcd_eb005__Clear();
+0508  ECAAF001  	CALL FCD_04071__00053
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::PrintString("Initiate conn.")
+	FCD_0ad31_lcd_eb005__PrintString("Initiate conn.", 15);
+050C  0E20      	MOVLW 0x20
+050E  6E31      	MOVWF CompTempVar2633+D'8'
+0510  0E2E      	MOVLW 0x2E
+0512  6E36      	MOVWF CompTempVar2633+D'13'
+0514  0E49      	MOVLW 0x49
+0516  6E29      	MOVWF CompTempVar2633
+0518  0E61      	MOVLW 0x61
+051A  6E2E      	MOVWF CompTempVar2633+D'5'
+051C  0E63      	MOVLW 0x63
+051E  6E32      	MOVWF CompTempVar2633+D'9'
+0520  0E65      	MOVLW 0x65
+0522  6E30      	MOVWF CompTempVar2633+D'7'
+0524  0E69      	MOVLW 0x69
+0526  6E2B      	MOVWF CompTempVar2633+D'2'
+0528  6E2D      	MOVWF CompTempVar2633+D'4'
+052A  0E6E      	MOVLW 0x6E
+052C  6E2A      	MOVWF CompTempVar2633+D'1'
+052E  6E34      	MOVWF CompTempVar2633+D'11'
+0530  6E35      	MOVWF CompTempVar2633+D'12'
+0532  0E6F      	MOVLW 0x6F
+0534  6E33      	MOVWF CompTempVar2633+D'10'
+0536  0E74      	MOVLW 0x74
+0538  6E2C      	MOVWF CompTempVar2633+D'3'
+053A  6E2F      	MOVWF CompTempVar2633+D'6'
+053C  6A37      	CLRF CompTempVar2633+D'14'
+053E  0E00      	MOVLW HIGH(CompTempVar2633+D'0')
+0540  6E28      	MOVWF FCD_04071__00054_arg_FCL_TEXT+D'1'
+0542  0E29      	MOVLW LOW(CompTempVar2633+D'0')
+0544  6E27      	MOVWF FCD_04071__00054_arg_FCL_TEXT
+0546  0E0F      	MOVLW 0x0F
+0548  6E39      	MOVWF FCD_04071__00054_arg_FCLsz_TEXT
+054A  6A3A      	CLRF FCD_04071__00054_arg_FCLsz_TEXT+D'1'
+054C  ECD4F001  	CALL FCD_04071__00054
+
+
+}
+0550  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Connexion du bluethooth ?? l'autre carte
+\*=----------------------------------------------------------------------=*/
+void FCM_BLUETTOOH_CONNECT()
+
+{
+
+	// Calcul
+	// Calcul:
+	//  bluetooth_connected = WAITING
+	FCV_BLUETOOTH_CONNECTED = FCV_WAITING;
+0552  9024      	BCF gbl_FCV_BLUETOOTH_CONNECTED,0
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::Clear()
+	FCD_0ad31_lcd_eb005__Clear();
+0554  ECAAF001  	CALL FCD_04071__00053
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::PrintString("Waiting pairing")
+	FCD_0ad31_lcd_eb005__PrintString("Waiting pairing", 16);
+0558  0E20      	MOVLW 0x20
+055A  6E30      	MOVWF CompTempVar2638+D'7'
+055C  0E57      	MOVLW 0x57
+055E  6E29      	MOVWF CompTempVar2638
+0560  0E61      	MOVLW 0x61
+0562  6E2A      	MOVWF CompTempVar2638+D'1'
+0564  6E32      	MOVWF CompTempVar2638+D'9'
+0566  0E67      	MOVLW 0x67
+0568  6E2F      	MOVWF CompTempVar2638+D'6'
+056A  6E37      	MOVWF CompTempVar2638+D'14'
+056C  0E69      	MOVLW 0x69
+056E  6E2B      	MOVWF CompTempVar2638+D'2'
+0570  6E2D      	MOVWF CompTempVar2638+D'4'
+0572  6E33      	MOVWF CompTempVar2638+D'10'
+0574  6E35      	MOVWF CompTempVar2638+D'12'
+0576  0E6E      	MOVLW 0x6E
+0578  6E2E      	MOVWF CompTempVar2638+D'5'
+057A  6E36      	MOVWF CompTempVar2638+D'13'
+057C  0E70      	MOVLW 0x70
+057E  6E31      	MOVWF CompTempVar2638+D'8'
+0580  0E72      	MOVLW 0x72
+0582  6E34      	MOVWF CompTempVar2638+D'11'
+0584  0E74      	MOVLW 0x74
+0586  6E2C      	MOVWF CompTempVar2638+D'3'
+0588  6A38      	CLRF CompTempVar2638+D'15'
+058A  0E00      	MOVLW HIGH(CompTempVar2638+D'0')
+058C  6E28      	MOVWF FCD_04071__00054_arg_FCL_TEXT+D'1'
+058E  0E29      	MOVLW LOW(CompTempVar2638+D'0')
+0590  6E27      	MOVWF FCD_04071__00054_arg_FCL_TEXT
+0592  0E10      	MOVLW 0x10
+0594  6E39      	MOVWF FCD_04071__00054_arg_FCLsz_TEXT
+0596  6A3A      	CLRF FCD_04071__00054_arg_FCLsz_TEXT+D'1'
+0598  ECD4F001  	CALL FCD_04071__00054
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::Cursor(0, 1)
+	FCD_0ad31_lcd_eb005__Cursor(0, 1);
+059C  6A27      	CLRF FCD_04071__00056_arg_FCL_X
+059E  0E01      	MOVLW 0x01
+05A0  6E28      	MOVWF FCD_04071__00056_arg_FCL_Y
+05A2  ECC2F001  	CALL FCD_04071__00056
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: lcd_eb005::PrintString("Please wait...")
+	FCD_0ad31_lcd_eb005__PrintString("Please wait...", 15);
+05A6  0E20      	MOVLW 0x20
+05A8  6E2F      	MOVWF CompTempVar2640+D'6'
+05AA  0E2E      	MOVLW 0x2E
+05AC  6E34      	MOVWF CompTempVar2640+D'11'
+05AE  6E35      	MOVWF CompTempVar2640+D'12'
+05B0  6E36      	MOVWF CompTempVar2640+D'13'
+05B2  0E50      	MOVLW 0x50
+05B4  6E29      	MOVWF CompTempVar2640
+05B6  0E61      	MOVLW 0x61
+05B8  6E2C      	MOVWF CompTempVar2640+D'3'
+05BA  6E31      	MOVWF CompTempVar2640+D'8'
+05BC  0E65      	MOVLW 0x65
+05BE  6E2B      	MOVWF CompTempVar2640+D'2'
+05C0  6E2E      	MOVWF CompTempVar2640+D'5'
+05C2  0E69      	MOVLW 0x69
+05C4  6E32      	MOVWF CompTempVar2640+D'9'
+05C6  0E6C      	MOVLW 0x6C
+05C8  6E2A      	MOVWF CompTempVar2640+D'1'
+05CA  0E73      	MOVLW 0x73
+05CC  6E2D      	MOVWF CompTempVar2640+D'4'
+05CE  0E74      	MOVLW 0x74
+05D0  6E33      	MOVWF CompTempVar2640+D'10'
+05D2  0E77      	MOVLW 0x77
+05D4  6E30      	MOVWF CompTempVar2640+D'7'
+05D6  6A37      	CLRF CompTempVar2640+D'14'
+05D8  0E00      	MOVLW HIGH(CompTempVar2640+D'0')
+05DA  6E28      	MOVWF FCD_04071__00054_arg_FCL_TEXT+D'1'
+05DC  0E29      	MOVLW LOW(CompTempVar2640+D'0')
+05DE  6E27      	MOVWF FCD_04071__00054_arg_FCL_TEXT
+05E0  0E0F      	MOVLW 0x0F
+05E2  6E39      	MOVWF FCD_04071__00054_arg_FCLsz_TEXT
+05E4  6A3A      	CLRF FCD_04071__00054_arg_FCLsz_TEXT+D'1'
+05E6  ECD4F001  	CALL FCD_04071__00054
+
+
+	// Boucle
+	// Boucle: While bluetooth_connected == WAITING
+	while (FCV_BLUETOOTH_CONNECTED == FCV_WAITING)
+05EA            label71
+05EA  A024      	BTFSS gbl_FCV_BLUETOOTH_CONNECTED,0
+05EC  D7FE      	BRA	label71
+
+	{
+
+		#if 0 // Disabled code
+		// Calcul
+		// Calcul:
+		//  bluetooth_connected = CONNECTED
+		FCV_BLUETOOTH_CONNECTED = FCV_CONNECTED;
+
+		#endif // #if 0: Disabled code
+
+	}
+
+}
+05EE  0012      	RETURN
+
+
+
+
+/*========================================================================*\
+   Use :Principale
+\*========================================================================*/
+void main()
+
+{
+adcon1 = 0x0F;
+05F0  0E0F      	MOVLW 0x0F
+05F2  6EC1      	MOVWF gbl_adcon1
+
+
+
+
+
+	// Appel d'une Macro
+	// Appel d'une Macro: INITIALISATION()
+	FCM_INITIALISATION();
+05F4  EC80F002  	CALL FCM_INITIA_00050
+
+
+	// Appel d'une Macro
+	// Appel d'une Macro: BLUETTOOH_CONNECT()
+	FCM_BLUETTOOH_CONNECT();
+05F8  ECA9F002  	CALL FCM_BLUETT_00055
+
+
+	mainendloop: goto mainendloop;
+05FC            label72
+05FC  D7FF      	BRA	label72
+
+}
+
+
+
+
+/*========================================================================*\
+   Use :Interruption
+\*========================================================================*/
+void MX_INTERRUPT_MACRO(void)
+
+{
+
+}
+064A  CFEAF001  	MOVFF FSR0H,  Int1Context
+064E  CFE9F002  	MOVFF FSR0L,  Int1Context+D'1'
+0652  CFF4F003  	MOVFF PRODH,  Int1Context+D'2'
+0656  CFF3F004  	MOVFF PRODL,  Int1Context+D'3'
+065A  C004FFF3  	MOVFF Int1Context+D'3',  PRODL
+065E  C003FFF4  	MOVFF Int1Context+D'2',  PRODH
+0662  C002FFE9  	MOVFF Int1Context+D'1',  FSR0L
+0666  C001FFEA  	MOVFF Int1Context,  FSR0H
+066A  0011      	RETFIE 1
+
+
+
+
+
+
+/*********************************************************************
+ *                  Flowcode CAL UART File
+ *
+ * File: PIC_CAL_UART.c
+ *
+ * (c) 2011 Matrix Multimedia Ltd.
+ * http://www.matrixmultimedia.com
+ *
+ * Software License Agreement
+ *
+ * The software supplied herewith by Matrix Multimedia Ltd (the
+ * “Company”) for its Flowcode graphical programming language is
+ * intended and supplied to you, the Company’s customer, for use
+ * solely and exclusively on the Company's products. The software
+ * is owned by the Company, and is protected under applicable
+ * copyright laws. All rights are reserved. Any use in violation
+ * of the foregoing restrictions may subject the user to criminal
+ * sanctions under applicable laws, as well as to civil liability
+ * for the breach of the terms and conditions of this licence.
+ *
+ * THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+ * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+ * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ *
+ * Changelog:
+ *
+ *  date  | by | description
+ * -------+----+-----------------------------------------------------
+ * 010911 | BR | Created
+ * 020911 | BR | Updated variables with typedef alternatives
+ * 011211 | BR | Converted to new dynamic defines mechanism
+ * 160112 | BR | Fixed issues with rx return type and low bauds on fast devices
+ * 020212 | ST | Added <MX_UART_2_PIE4> routing to account for differences in 16F and 18F devices with 2 UARTs
+ * 270212 | BR | Fixed a bug in the receive functionality
+ * 280212 | BR | Sorted out auto echo functionality
+ * 160412 | BR | Addition of HW change baud function
+ * 100912 | BR | Minor bug fix for UART 2 where pir3 was referenced instead of definition
+ * 240413 | LM | Fixed typo re PORT_1 -> PORT_X for Software UART
+ * 030713 | LM | Standard API calls
+ * 220713 | LM | Remappable registers to lower case (for @ defs)
+ * 300914 | BR | Tried to make the baud calculation a bit more reliable for higher speed bauds at odd crystal frequencies
+ * 161014 | LM | Register redefinitions (for PIC18F24K50)
+ */
+
+
+#if (!defined(BAUDCON) && defined(BAUDCON1))
+	#define baudcon baudcon1
+#endif
+#if (!defined(RCSTA) && defined(RCSTA1))
+	#define rcsta rcsta1
+#endif
+#if (!defined(SPBRG) && defined(SPBRG1))
+	#define spbrg spbrg1
+#endif
+#if (!defined(SPBRGH) && defined(SPBRGH1))
+	#define spbrgh spbrgh1
+#endif
+#if (!defined(TXREG) && defined(TXREG1))
+	#define txreg txreg1
+#endif
+#if (!defined(RCREG) && defined(RCREG1))
+	#define rcreg rcreg1
+#endif
+#if (!defined(TXSTA) && defined(TXSTA1))
+	#define txsta txsta1
+#endif
+
+#ifndef MX_UART_SW_DEFS
+	#define MX_UART_SW_DEFS
+
+	#ifdef _BOOSTC
+		#define INST_COUNT	45	//65 for lower speeds or 40 for higher speeds.
+	#endif
+	#ifdef HI_TECH_C
+		#define INST_COUNT	315
+	#endif
+
+	//Work out number of nops for software baud rate
+	#define MX_INSTRUCTION_SPEED 	(MX_CLK_SPEED / 4)
+	#define MX_OVERHEAD				(MX_INSTRUCTION_SPEED / INST_COUNT)
+	#define SW_OFFSET				(1000000 / MX_OVERHEAD)
+
+#endif
+
+ #if defined(MX_UART_CHANNEL_1) && (MX_UART_NUM==1)
+	#if (MX_UART_CHANNEL_1 == 0)
+
+		#define MX_SOFT_BAUD_1 (1000000 / MX_UART_BAUD_1) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_1 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_1	1
+		#define MX_HARD_BAUD_1	(((MX_CLK_SPEED / MX_UART_BAUD_1) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_1	0
+
+		#if (MX_HARD_BAUD_1 > 255)
+			#undef MX_HARD_BAUD_1
+			#undef MX_HARD_SLOW_1
+			#define MX_HARD_BAUD_1	(((MX_CLK_SPEED / MX_UART_BAUD_1) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_1	1
+
+			#if (MX_HARD_BAUD_1 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+
+	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_2) && (MX_UART_NUM==2)
+	#if (MX_UART_CHANNEL_2 == 0)
+
+		#define MX_SOFT_BAUD_2 (1000000 / MX_UART_BAUD_2) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_2 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_2	1
+		#define MX_HARD_BAUD_2	(((MX_CLK_SPEED / MX_UART_BAUD_2) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_2	0
+
+		#if (MX_HARD_BAUD_2 > 255)
+			#undef MX_HARD_BAUD_2
+			#undef MX_HARD_SLOW_2
+			#define MX_HARD_BAUD_2	(((MX_CLK_SPEED / MX_UART_BAUD_2) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_2	1
+
+			#if (MX_HARD_BAUD_2 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+		#endif
+ 	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_3) && (MX_UART_NUM==3)
+	#if (MX_UART_CHANNEL_3 == 0)
+
+		#define MX_SOFT_BAUD_3 (1000000 / MX_UART_BAUD_3) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_3 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_3	1
+		#define MX_HARD_BAUD_3	(((MX_CLK_SPEED / MX_UART_BAUD_3) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_3	0
+
+		#if (MX_HARD_BAUD_3 > 255)
+			#undef MX_HARD_BAUD_3
+			#undef MX_HARD_SLOW_3
+			#define MX_HARD_BAUD_3	(((MX_CLK_SPEED / MX_UART_BAUD_3) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_3	1
+
+			#if (MX_HARD_BAUD_3 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_4) && (MX_UART_NUM==4)
+	#if (MX_UART_CHANNEL_4 == 0)
+
+		#define MX_SOFT_BAUD_4 (1000000 / MX_UART_BAUD_4) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_4 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_4	1
+		#define MX_HARD_BAUD_4	(((MX_CLK_SPEED / MX_UART_BAUD_4) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_4	0
+
+		#if (MX_HARD_BAUD_4 > 255)
+			#undef MX_HARD_BAUD_4
+			#undef MX_HARD_SLOW_4
+			#define MX_HARD_BAUD_4	(((MX_CLK_SPEED / MX_UART_BAUD_4) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_4	1
+
+			#if (MX_HARD_BAUD_4 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+	#endif
+ #endif
+
+
+//Hardware Baud update definitions
+#ifndef MX_HARD_BAUD_CHANGE_DEFS
+	#define MX_HARD_BAUD_CHANGE_DEFS
+
+	#define MX_HARD_BAUD_1200	(((MX_CLK_SPEED / 1200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_1200 > 255)
+		#undef MX_HARD_BAUD_1200
+		#define MX_HARD_BAUD_1200	(((MX_CLK_SPEED / 1200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_1200	1
+	#else
+		#define MX_HARD_SLOW_1200	0
+	#endif
+
+	#define MX_HARD_BAUD_2400	(((MX_CLK_SPEED / 2400) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_2400 > 255)
+		#undef MX_HARD_BAUD_2400
+		#define MX_HARD_BAUD_2400	(((MX_CLK_SPEED / 2400) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_2400	1
+	#else
+		#define MX_HARD_SLOW_2400	0
+	#endif
+
+	#define MX_HARD_BAUD_4800	(((MX_CLK_SPEED / 4800) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_4800 > 255)
+		#undef MX_HARD_BAUD_4800
+		#define MX_HARD_BAUD_4800	(((MX_CLK_SPEED / 4800) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_4800	1
+	#else
+		#define MX_HARD_SLOW_4800	0
+	#endif
+
+	#define MX_HARD_BAUD_9600	(((MX_CLK_SPEED / 9600) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_9600 > 255)
+		#undef MX_HARD_BAUD_9600
+		#define MX_HARD_BAUD_9600	(((MX_CLK_SPEED / 9600) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_9600	1
+	#else
+		#define MX_HARD_SLOW_9600	0
+	#endif
+
+	#define MX_HARD_BAUD_19200	(((MX_CLK_SPEED / 19200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_19200 > 255)
+		#undef MX_HARD_BAUD_19200
+		#define MX_HARD_BAUD_19200	(((MX_CLK_SPEED / 19200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_19200	1
+	#else
+		#define MX_HARD_SLOW_19200	0
+	#endif
+
+	#define MX_HARD_BAUD_38400	(((MX_CLK_SPEED / 38400) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_38400 > 255)
+		#undef MX_HARD_BAUD_38400
+		#define MX_HARD_BAUD_38400	(((MX_CLK_SPEED / 38400) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_38400	1
+	#else
+		#define MX_HARD_SLOW_38400	0
+	#endif
+
+	#define MX_HARD_BAUD_57600	(((MX_CLK_SPEED / 57600) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_57600 > 255)
+		#undef MX_HARD_BAUD_57600
+		#define MX_HARD_BAUD_57600	(((MX_CLK_SPEED / 57600) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_57600	1
+	#else
+		#define MX_HARD_SLOW_57600	0
+	#endif
+
+	#define MX_HARD_BAUD_115200	(((MX_CLK_SPEED / 115200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_115200 > 255)
+		#undef MX_HARD_BAUD_115200
+		#define MX_HARD_BAUD_115200	(((MX_CLK_SPEED / 115200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_115200	1
+	#else
+		#define MX_HARD_SLOW_115200	0
+	#endif
+#endif
+
+#define MX_RECEIVE_DELAY 	(MX_CLK_SPEED / 400000)
+
+
+//Dynamic function naming based on defines and index number
+#define MX_UART_CHANNEL_X	CAL_APPEND(MX_UART_CHANNEL_, MX_UART_NUM)
+#define MX_UART_TX_PIN_X	CAL_APPEND(MX_UART_TX_PIN_, MX_UART_NUM)
+#define MX_UART_TX_PORT_X	CAL_APPEND(MX_UART_TX_PORT_, MX_UART_NUM)
+#define MX_UART_TX_TRIS_X	CAL_APPEND(MX_UART_TX_TRIS_, MX_UART_NUM)
+#define MX_UART_RX_PIN_X	CAL_APPEND(MX_UART_RX_PIN_, MX_UART_NUM)
+#define MX_UART_RX_PORT_X	CAL_APPEND(MX_UART_RX_PORT_, MX_UART_NUM)
+#define MX_UART_RX_TRIS_X	CAL_APPEND(MX_UART_RX_TRIS_, MX_UART_NUM)
+#define MX_UART_FLOWEN_X	CAL_APPEND(MX_UART_FLOWEN_, MX_UART_NUM)
+#define MX_UART_CTS_PIN_X	CAL_APPEND(MX_UART_CTS_PIN_, MX_UART_NUM)
+#define MX_UART_CTS_PORT_X	CAL_APPEND(MX_UART_CTS_PORT_, MX_UART_NUM)
+#define MX_UART_CTS_TRIS_X	CAL_APPEND(MX_UART_CTS_TRIS_, MX_UART_NUM)
+#define MX_UART_RTS_PIN_X	CAL_APPEND(MX_UART_RTS_PIN_, MX_UART_NUM)
+#define MX_UART_RTS_PORT_X	CAL_APPEND(MX_UART_RTS_PORT_, MX_UART_NUM)
+#define MX_UART_RTS_TRIS_X	CAL_APPEND(MX_UART_RTS_TRIS_, MX_UART_NUM)
+#define MX_UART_DBITS_X		CAL_APPEND(MX_UART_DBITS_, MX_UART_NUM)
+#define MX_UART_RETURN_X	CAL_APPEND(MX_UART_RETURN_, MX_UART_NUM)
+#define MX_UART_ECHO_X		CAL_APPEND(MX_UART_ECHO_, MX_UART_NUM)
+#define MX_UART_INT_X		CAL_APPEND(MX_UART_INT_, MX_UART_NUM)
+#define MX_UART_BAUD_X		CAL_APPEND(MX_HARD_BAUD_, MX_UART_NUM)
+#define MX_SOFT_BAUD_X		CAL_APPEND(MX_SOFT_BAUD_, MX_UART_NUM)
+#define MX_HARD_SLOW_X		CAL_APPEND(MX_HARD_SLOW_, MX_UART_NUM)
+
+#define UART_Delay_CAL		CAL_APPEND(FC_CAL_UART_Delay_, MX_UART_NUM)
+#define UART_Send			CAL_APPEND(FC_CAL_UART_Send_, MX_UART_NUM)
+#define UART_Uninit			CAL_APPEND(FC_CAL_UART_Uninit_, MX_UART_NUM)
+
+
+//Component Definitions
+#define UART_STATUS_LOOP	0
+#define UART_STATUS_TIMEOUT	1
+#define UART_STATUS_RXBYTE	2
+
+
+//Interrupt Definitions
+#ifdef MX_UART_2_PIE4
+  #define MX_UART2_PIE pie4
+  #define MX_UART2_PIR pir4
+  #define MX_UART2_TXSTA tx2sta
+  #define MX_UART2_RCSTA rc2sta
+  #define MX_UART2_TXREG tx2reg
+  #define MX_UART2_RCREG rc2reg
+#else
+  #define MX_UART2_PIE pie3
+  #define MX_UART2_PIR pir3
+  #define MX_UART2_TXSTA txsta2
+  #define MX_UART2_RCSTA rcsta2
+  #define MX_UART2_TXREG txreg2
+  #define MX_UART2_RCREG rcreg2
+#endif
+
+#if (MX_UART_INT_X == 1)
+
+	#ifndef MX_UART_INT_DEFS
+	#define MX_UART_INT_DEFS
+
+		#define MX_UART_INT_CH1_FUNC
+		#define MX_UART_INT_CH2_FUNC
+		#define MX_UART_INT_FUNC_END
+
+		#define MX_UART_INT_CH1_DET		ts_bit(pir1, RCIF) && ts_bit(pie1, RCIE)
+		#define MX_UART_INT_CH2_DET		ts_bit(MX_UART2_PIR, RC2IF) && ts_bit(MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_EN		st_bit (pie1, RCIE)
+		#define MX_UART_INT_CH2_EN		st_bit (MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_DIS		cr_bit (pie1, RCIE)
+		#define MX_UART_INT_CH2_DIS		cr_bit (MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_CLR		cr_bit (pir1, RCIF)
+		#define MX_UART_INT_CH2_CLR		cr_bit (MX_UART2_PIR, RC2IF)
+
+	#endif
+#endif
+
+
+//Function Prototypes
+CALFUNCTION(void, FC_CAL_UART_Init_, (void));
+CALFUNCTION(void, FC_CAL_UART_Uninit_, (void));
+CALFUNCTION(void, FC_CAL_UART_Send_, (MX_UINT16 nChar));
+CALFUNCTION(MX_SINT16, FC_CAL_UART_Receive_, (MX_UINT8 nTimeout));
+CALFUNCTION(void, FC_CAL_UART_Delay_, (void));
+CALFUNCTION(void, FC_CAL_UART_UpdateBaud_, (MX_UINT8 new_baud));
+
+
+//Peripheral Functions
+CALFUNCTION(void, FC_CAL_UART_Init_, (void))
+
+{
+
+	#if (MX_UART_CHANNEL_X == 0)
+		FC_CAL_Bit_In_DDR 	(MX_UART_RX_PORT_X, MX_UART_RX_TRIS_X, MX_UART_RX_PIN_X);		// Receive pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_TX_PORT_X, MX_UART_TX_TRIS_X, MX_UART_TX_PIN_X);		// Transmit pin is default high
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+
+		  #ifdef MX_UART_1_REMAPPABLE
+			MX_UART_1_TX_RPOR = MX_UART_1_TX_UTX;
+			MX_UART_1_RX_RPINR = MX_UART_1_RX_RP;
+		  #endif
+
+		  #if (MX_HARD_SLOW_X == 1)
+			cr_bit(txsta, BRGH);						//Low Speed
+		  #else
+			st_bit(txsta, BRGH);						//High Speed
+0322  84AC      	BSF gbl_txsta,2
+
+		  #endif
+			spbrg = MX_UART_BAUD_X;   					// set the baud rate
+0324  0E7F      	MOVLW 0x7F
+0326  6EAF      	MOVWF gbl_spbrg
+
+			rcsta = 0;                    				// 8-bit, disabled
+0328  6AAB      	CLRF gbl_rcsta
+
+
+			#if(MX_UART_DBITS_X == 9)
+				st_bit(txsta, TX9);   					// 9-bit TX
+				st_bit(rcsta, RX9);                    	// 9-bit RX
+			#endif
+
+			st_bit(rcsta, SPEN);         				// turn on serial interface
+032A  8EAB      	BSF gbl_rcsta,7
+
+			st_bit(txsta, TXEN);
+032C  8AAC      	BSF gbl_txsta,5
+
+			st_bit(rcsta, CREN);
+032E  88AB      	BSF gbl_rcsta,4
+
+
+			#if (MX_UART_INT_X == 1)
+				MX_UART_INT_CH1_EN;
+				st_bit(intcon, PEIE);
+				st_bit(intcon, GIE);
+			#else
+				cr_bit (pie1, RCIE);
+0330  9A9D      	BCF gbl_pie1,5
+
+			#endif
+
+	#endif
+
+
+	#if (MX_UART_CHANNEL_X == 2)
+
+		  #ifdef MX_UART_2_REMAPPABLE
+			MX_UART_2_TX_RPOR = MX_UART_2_TX_UTX;
+			MX_UART_2_RX_RPINR = MX_UART_2_RX_RP;
+		  #endif
+
+		  #if (MX_HARD_SLOW_X == 1)
+			cr_bit(MX_UART2_TXSTA, BRGH);				//Low Speed
+		  #else
+			st_bit(MX_UART2_TXSTA, BRGH);				//High Speed
+		  #endif
+
+			spbrg2 = MX_UART_BAUD_X;   					// set the baud rate
+			MX_UART2_RCSTA = 0;                    		// 8-bit, disabled
+
+			#if(MX_UART_DBITS_X == 9)
+				st_bit(MX_UART2_TXSTA, TX9);   			// 9-bit TX
+				st_bit(MX_UART2_RCSTA, RX9);            // 9-bit RX
+			#endif
+
+			st_bit(MX_UART2_RCSTA, SPEN);         		// turn on serial interface
+			st_bit(MX_UART2_TXSTA, TXEN);
+			st_bit(MX_UART2_RCSTA, CREN);
+
+			#if (MX_UART_INT_X == 1)
+				MX_UART_INT_CH2_EN;
+				st_bit(intcon, PEIE);
+				st_bit(intcon, GIE);
+			#else
+				cr_bit (MX_UART2_PIE, RC2IE);
+			#endif
+
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)						//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);	// CTS pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);	// RTS not ready to accept data
+	#endif
+
+}
+0332  0012      	RETURN
+
+
+
+
+CALFUNCTION(void, FC_CAL_UART_Uninit_, (void))
+{
+
+	#if (MX_UART_CHANNEL_X == 0)
+		FC_CAL_Bit_In_DDR (MX_UART_RX_PORT_X, MX_UART_RX_TRIS_X, MX_UART_RX_PIN_X);		// Receive pin is a input
+		FC_CAL_Bit_In_DDR (MX_UART_TX_PORT_X, MX_UART_TX_TRIS_X, MX_UART_TX_PIN_X);		// Transmit pin is default high
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+			rcsta = 0;                    								// 8-bit, disabled
+			txsta = 0;
+		  #ifdef MX_UART_RXINT
+			MX_UART_INT_CH1_DIS;
+		  #endif
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+			MX_UART2_RCSTA = 0;                    								// 8-bit, disabled
+			MX_UART2_TXSTA = 0;
+		  #ifdef MX_UART_RXINT
+			MX_UART_INT_CH2_DIS;
+		  #endif
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)										//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);		// CTS pin is a input
+		FC_CAL_Bit_In_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);		// RTS not ready to accept data
+	#endif
+}
+
+
+
+CALFUNCTION(void, FC_CAL_UART_Send_, (MX_UINT16 nChar))
+{
+	#if (MX_UART_FLOWEN_X == 1)
+		while (FC_CAL_Bit_In(MX_UART_CTS_PORT_X, MX_UART_CTS_PIN_X) != 0);	// Wait until CTS is low
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 0)													// Software UART TX
+		MX_UINT8 idx;
+		FC_CAL_Bit_Low(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);					// Send Start bit
+		UART_Delay_CAL();
+		for (idx = 0; idx < MX_UART_DBITS_X; idx++)
+		{
+			if (nChar & 0x01)														// Mask off data bit
+				FC_CAL_Bit_High(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);
+			else
+				FC_CAL_Bit_Low(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);
+			UART_Delay_CAL();
+			nChar = nChar >> 1;														// Move to next data bit
+		}
+		FC_CAL_Bit_High(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);					// Send Stop bit
+		UART_Delay_CAL();
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+		while (ts_bit(pir1, TXIF) == 0);
+
+		#if (MX_UART_DBITS_X == 9)
+			if (test_bit(nChar, 8))
+				st_bit(txsta, TX9D);
+			else
+				cr_bit(txsta, TX9D);
+	  	#endif
+		txreg = nChar;
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+		while (ts_bit(MX_UART2_PIR, TX2IF) == 0);
+
+		#if (MX_UART_DBITS_X == 9)
+			if (test_bit(nChar, 8))
+				st_bit(MX_UART2_TXSTA, TX9D);
+			else
+				cr_bit(MX_UART2_TXSTA, TX9D);
+		#endif
+		MX_UART2_TXREG = nChar;
+	#endif
+}
+
+
+CALFUNCTION(MX_SINT16, FC_CAL_UART_Receive_, (MX_UINT8 nTimeout))
+{
+  #if (MX_UART_RETURN_X == 1)
+	MX_UINT16 retVal = 512;
+  #else
+  	MX_UINT8 retVal = 255;
+  #endif
+
+	MX_UINT8 delay1 = 0;
+	MX_UINT8 regcheck = 0;
+	MX_UINT8 bWaitForever = 0;
+	MX_UINT8 rxStatus = UART_STATUS_LOOP;
+	MX_UINT16 delaycnt;
+
+  #if (MX_UART_CHANNEL_X == 0)
+  	MX_UINT8 idx;
+  #else
+  	MX_UINT8 dummy = 0;
+  #endif
+
+	if (nTimeout == 255)
+		bWaitForever = 1;
+
+	#if (MX_UART_FLOWEN_X == 1)
+		FC_CAL_Bit_Low (MX_UART_RTS_PORT_X, MX_UART_RTS_PIN_X);			// Ready to accept data
+	#endif
+
+	while (rxStatus == UART_STATUS_LOOP)
+	{
+		if (bWaitForever == 0)
+		{
+			if (nTimeout == 0)							//don't wait forever, so do timeout thing...
+			{
+				rxStatus = UART_STATUS_TIMEOUT;
+			}
+			else
+			{
+				for (delaycnt = 0; delaycnt < MX_RECEIVE_DELAY; delaycnt++);	//Delay without calling delay function
+				delay1 = delay1 + 1;
+				if(delay1 == 100)
+				{
+					nTimeout = nTimeout - 1;
+					MX_CLEAR_WATCHDOG;
+					delay1 = 0;
+				}
+			}
+		}
+
+		#if (MX_UART_CHANNEL_X == 0)
+			regcheck = FC_CAL_Bit_In(MX_UART_RX_PORT_X, MX_UART_RX_PIN_X);	//Test for start bit
+			if (regcheck == 0)
+				rxStatus = UART_STATUS_RXBYTE;
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 1)
+			regcheck = ts_bit(pir1, RCIF);
+			if (regcheck != 0)
+				rxStatus = UART_STATUS_RXBYTE;
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 2)
+			regcheck = ts_bit(MX_UART2_PIR, RC2IF);
+			if (regcheck != 0)
+				rxStatus = UART_STATUS_RXBYTE;
+		#endif
+
+	}
+
+	if (rxStatus == UART_STATUS_RXBYTE)
+	{
+		#if (MX_UART_CHANNEL_X == 0)
+
+			retVal = 0;
+			UART_Delay_CAL();
+
+			for (idx = 0; idx < MX_UART_DBITS_X; idx++)
+			{
+				if (FC_CAL_Bit_In(MX_UART_RX_PORT_X, MX_UART_RX_PIN_X))
+					retVal = retVal | (0x01 << idx);
+
+				UART_Delay_CAL();
+			}
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 1)
+			regcheck = ts_bit(rcsta, FERR);
+			if (regcheck != 0)
+			{
+				dummy = rcreg;						//need to read the rcreg to clear FERR
+				#if (MX_UART_RETURN_X == 1)
+					retVal = 0x400;					//Framing Error Flag
+				#endif
+			}
+			else
+			{
+				regcheck = ts_bit(rcsta, OERR);
+				if (regcheck != 0)
+				{
+					cr_bit(rcsta, CREN);			//Reset receiver to clear error
+					st_bit(rcsta, CREN);
+
+					#if (MX_UART_RETURN_X == 1)
+						retVal = 0x800;				//Overrun Error Flag
+					#endif
+				}
+				else
+				{
+					retVal = 0;
+
+					#if (MX_UART_DBITS_X == 9)
+						if(ts_bit(rcsta, RX9D))
+							retVal = 0x100;
+					#endif
+
+					retVal = retVal | rcreg; 			//no error, so rx byte is valid
+				}
+			}
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 2)
+			regcheck = ts_bit(MX_UART2_RCSTA, FERR);
+			if (regcheck != 0)
+			{
+				dummy = MX_UART2_RCREG;			//need to read the rcreg to clear FERR
+				#if (MX_UART_RETURN_X == 1)
+					retVal = 0x400;					//Framing Error Flag
+				#endif
+			}
+			else
+			{
+				regcheck = ts_bit(MX_UART2_RCSTA, OERR);
+				if (regcheck != 0)
+				{
+					cr_bit(MX_UART2_RCSTA, CREN);	//Reset receiver to clear error
+					st_bit(MX_UART2_RCSTA, CREN);
+					#if (MX_UART_RETURN_X == 1)
+						retVal = 0x800;				//Overrun Error Flag
+					#endif
+				}
+				else
+				{
+					retVal = 0;
+
+					#if (MX_UART_DBITS_X == 9)
+						if(ts_bit(MX_UART2_RCSTA, RX9D))
+							retVal = 0x100;
+					#endif
+
+					retVal = retVal | MX_UART2_RCREG; 			//no error, so rx byte is valid
+				}
+			}
+
+		#endif
+
+		#if (MX_UART_ECHO_X == 1)
+			UART_Send(retVal);
+		#endif
+	}
+
+	#if (MX_UART_FLOWEN_X == 1)
+		FC_CAL_Bit_High(MX_UART_RTS_PORT_X, MX_UART_RTS_PIN_X);		//not ready to accept data
+	#endif
+
+	return (retVal);
+}
+
+
+CALFUNCTION(void, FC_CAL_UART_Delay_, (void))
+{
+  #if (MX_UART_CHANNEL_X == 0)
+
+	MX_UINT16 delay = MX_SOFT_BAUD_X;
+
+	while (delay > 255)
+	{
+		delay_us(255);
+		delay = delay - 255;
+		MX_CLEAR_WATCHDOG;
+	}
+	delay_us(delay);
+	MX_CLEAR_WATCHDOG;
+
+  #endif
+}
+
+
+CALFUNCTION(void, FC_CAL_UART_UpdateBaud_, (MX_UINT8 new_baud))
+{
+	//Baud Rates - Function compatible with hardware mode only
+	/*
+	0 - 1200
+	1 - 2400
+	2 - 4800
+	3 - 9600
+	4 - 19200
+	5 - 38400
+	6 - 57600
+	7 - 115200
+	*/
+
+	MX_UINT8 baudrate, baudmode;
+
+	if (new_baud > 7)
+		return;
+
+	if (new_baud == 0)
+	{
+		baudrate = MX_HARD_BAUD_1200;
+		baudmode = MX_HARD_SLOW_1200;
+	}
+	else if (new_baud == 1)
+	{
+		baudrate = MX_HARD_BAUD_2400;
+		baudmode = MX_HARD_SLOW_2400;
+	}
+	else if (new_baud == 2)
+	{
+		baudrate = MX_HARD_BAUD_4800;
+		baudmode = MX_HARD_SLOW_4800;
+	}
+	else if (new_baud == 3)
+	{
+		baudrate = MX_HARD_BAUD_9600;
+		baudmode = MX_HARD_SLOW_9600;
+	}
+	else if (new_baud == 4)
+	{
+		baudrate = MX_HARD_BAUD_19200;
+		baudmode = MX_HARD_SLOW_19200;
+	}
+	else if (new_baud == 5)
+	{
+		baudrate = MX_HARD_BAUD_38400;
+		baudmode = MX_HARD_SLOW_38400;
+	}
+	else if (new_baud == 6)
+	{
+		baudrate = MX_HARD_BAUD_57600;
+		baudmode = MX_HARD_SLOW_57600;
+	}
+	else if (new_baud == 7)
+	{
+		baudrate = MX_HARD_BAUD_115200;
+		baudmode = MX_HARD_SLOW_115200;
+	}
+
+	UART_Uninit();
+
+	#if (MX_UART_CHANNEL_X == 1)
+
+	    if (baudmode == 1)
+			cr_bit(txsta, BRGH);					//Low Speed
+	    else
+			st_bit(txsta, BRGH);					//High Speed
+
+		spbrg = baudrate;   						// set the baud rate
+		rcsta = 0;                    				// 8-bit, disabled
+
+		#if(MX_UART_DBITS_X == 9)
+			st_bit(txsta, TX9);   					// 9-bit TX
+			st_bit(rcsta, RX9);                    	// 9-bit RX
+		#endif
+
+		st_bit(rcsta, SPEN);         				// turn on serial interface
+		st_bit(txsta, TXEN);
+		st_bit(rcsta, CREN);
+
+		#if (MX_UART_INT_X == 1)
+			MX_UART_INT_CH1_EN;
+			st_bit(intcon, PEIE);
+			st_bit(intcon, GIE);
+		#else
+			cr_bit (pie1, RCIE);
+		#endif
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+
+	  	if (baudmode == 1)
+			cr_bit(MX_UART2_TXSTA, BRGH);			//Low Speed
+	  	else
+			st_bit(MX_UART2_TXSTA, BRGH);			//High Speed
+
+		spbrg2 = baudrate;   						// set the baud rate
+		MX_UART2_RCSTA = 0;                    		// 8-bit, disabled
+
+		#if(MX_UART_DBITS_X == 9)
+			st_bit(MX_UART2_TXSTA, TX9);   			// 9-bit TX
+			st_bit(MX_UART2_RCSTA, RX9);            // 9-bit RX
+		#endif
+
+		st_bit(MX_UART2_RCSTA, SPEN);         		// turn on serial interface
+		st_bit(MX_UART2_TXSTA, TXEN);
+		st_bit(MX_UART2_RCSTA, CREN);
+
+		#if (MX_UART_INT_X == 1)
+			MX_UART_INT_CH2_EN;
+			st_bit(intcon, PEIE);
+			st_bit(intcon, GIE);
+		#else
+			cr_bit (MX_UART2_PIE, RC2IE);
+		#endif
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)						//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);	// CTS pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);	// RTS not ready to accept data
+	#endif
+
+}
+
+////////////////////////////////////////
+// Code with no source :-)
+////////////////////////////////////////
+0000  EFFFF002  	GOTO	_startup
+
+0008  EF25F003  	GOTO	interrupt
+000C            delay_us_00000
+000C            ; { delay_us ; function begin
+000C            label1
+000C  0000      	NOP
+000E  0000      	NOP
+0010  2E40      	DECFSZ delay_us_00000_arg_del, F
+0012  D7FC      	BRA	label1
+0014  0012      	RETURN
+0016            ; } delay_us function end
+
+0016            delay_ms_00000
+0016            ; { delay_ms ; function begin
+0016  5229      	MOVF delay_ms_00000_arg_del, F
+0018  0000      	NOP
+001A  E101      	BNZ	label2
+001C  0012      	RETURN
+001E            label2
+001E  0EF5      	MOVLW 0xF5
+0020            label3
+0020  0000      	NOP
+0022  0000      	NOP
+0024  0000      	NOP
+0026  0000      	NOP
+0028  0000      	NOP
+002A  0000      	NOP
+002C  0000      	NOP
+002E  0000      	NOP
+0030  0000      	NOP
+0032  0000      	NOP
+0034  0000      	NOP
+0036  0000      	NOP
+0038  0000      	NOP
+003A  0000      	NOP
+003C  0000      	NOP
+003E  0000      	NOP
+0040  0FFF      	ADDLW 0xFF
+0042  A4D8      	BTFSS STATUS,Z
+0044  D7ED      	BRA	label3
+0046  0000      	NOP
+0048  0000      	NOP
+004A  0000      	NOP
+004C  0000      	NOP
+004E  0000      	NOP
+0050  0000      	NOP
+0052  0000      	NOP
+0054  0000      	NOP
+0056  0000      	NOP
+0058  0000      	NOP
+005A  0000      	NOP
+005C  0000      	NOP
+005E  0000      	NOP
+0060  2E29      	DECFSZ delay_ms_00000_arg_del, F
+0062  D7DD      	BRA	label2
+0064  0012      	RETURN
+0066            ; } delay_ms function end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+05FE            _startup
+05FE  0ED5      	MOVLW 0xD5
+0600  6E05      	MOVWF gbl_14_LSR
+0602  0EC4      	MOVLW 0xC4
+0604  6E06      	MOVWF gbl_14_LSR+D'1'
+0606  0EBB      	MOVLW 0xBB
+0608  6E07      	MOVWF gbl_14_LSR+D'2'
+060A  0EDC      	MOVLW 0xDC
+060C  6E08      	MOVWF gbl_14_LSR+D'3'
+060E  6A09      	CLRF gbl_15_gbl_aSig
+0610  6A0A      	CLRF gbl_15_gbl_aSig+D'1'
+0612  6A0B      	CLRF gbl_15_gbl_aSig+D'2'
+0614  6A0C      	CLRF gbl_15_gbl_aSig+D'3'
+0616  6A0D      	CLRF gbl_15_gbl_bSig
+0618  6A0E      	CLRF gbl_15_gbl_bSig+D'1'
+061A  6A0F      	CLRF gbl_15_gbl_bSig+D'2'
+061C  6A10      	CLRF gbl_15_gbl_bSig+D'3'
+061E  6A11      	CLRF gbl_15_gbl_zSig
+0620  6A12      	CLRF gbl_15_gbl_zSig+D'1'
+0622  6A13      	CLRF gbl_15_gbl_zSig+D'2'
+0624  6A14      	CLRF gbl_15_gbl_zSig+D'3'
+0626  6A1E      	CLRF gbl_15_gbl_aExp
+0628  6A1F      	CLRF gbl_15_gbl_bExp
+062A  6A19      	CLRF gbl_15_gbl_zExp
+062C  6A1A      	CLRF gbl_15_gbl_zExp+D'1'
+062E  6A20      	CLRF gbl_15_gbl_aSign
+0630  6A21      	CLRF gbl_15_gbl_bSign
+0632  6A22      	CLRF gbl_15_gbl_zSign
+0634  6A23      	CLRF gbl_15_gbl_zSigZero
+0636  6A15      	CLRF gbl_15_gbl_ret
+0638  6A16      	CLRF gbl_15_gbl_ret+D'1'
+063A  6A17      	CLRF gbl_15_gbl_ret+D'2'
+063C  6A18      	CLRF gbl_15_gbl_ret+D'3'
+063E  6A1C      	CLRF gbl_float_rounding_mode
+0640  6A1D      	CLRF gbl_float_exception_flags
+0642  6A1B      	CLRF gbl_float_detect_tininess
+
+0646  EFF8F002  	GOTO	main
+
+300000  32FF      	DW 0x32FF
+300002  FEFF      	DW 0xFEFF
+300004  FBFF      	DW 0xFBFF
+300006  FFBA      	DW 0xFFBA
+300008  FFFF      	DW 0xFFFF
+30000A  FFFF      	DW 0xFFFF
+30000C  FFFF      	DW 0xFFFF

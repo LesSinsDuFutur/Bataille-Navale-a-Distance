@@ -1,0 +1,773 @@
+;/////////////////////////////////////////////////////////////////////////////////
+;// Code Generator: BoostC Compiler - http://www.sourceboost.com
+;// Version       : 7.20
+;// License Type  : Pro License
+;// Limitations   : PIC18 max code size:Unlimited, max RAM banks:Unlimited
+;/////////////////////////////////////////////////////////////////////////////////
+
+	ORG 0x00000000
+0000  EF78F002  	GOTO	_startup
+	ORG 0x00000008
+0008  EF9DF002  	GOTO	interrupt
+	ORG 0x0000000C
+000C            delay_us_00000
+000C            ; { delay_us ; function begin
+000C            label1
+000C  0000      	NOP
+000E  0000      	NOP
+0010  2E32      	DECFSZ delay_us_00000_arg_del, F
+0012  D7FC      	BRA	label1
+0014  0012      	RETURN
+0016            ; } delay_us function end
+
+	ORG 0x00000016
+0016            delay_ms_00000
+0016            ; { delay_ms ; function begin
+0016  5224      	MOVF delay_ms_00000_arg_del, F
+0018  0000      	NOP
+001A  E101      	BNZ	label2
+001C  0012      	RETURN
+001E            label2
+001E  0EF5      	MOVLW 0xF5
+0020            label3
+0020  0000      	NOP
+0022  0000      	NOP
+0024  0000      	NOP
+0026  0000      	NOP
+0028  0000      	NOP
+002A  0000      	NOP
+002C  0000      	NOP
+002E  0000      	NOP
+0030  0000      	NOP
+0032  0000      	NOP
+0034  0000      	NOP
+0036  0000      	NOP
+0038  0000      	NOP
+003A  0000      	NOP
+003C  0000      	NOP
+003E  0000      	NOP
+0040  0FFF      	ADDLW 0xFF
+0042  A4D8      	BTFSS STATUS,Z
+0044  D7ED      	BRA	label3
+0046  0000      	NOP
+0048  0000      	NOP
+004A  0000      	NOP
+004C  0000      	NOP
+004E  0000      	NOP
+0050  0000      	NOP
+0052  0000      	NOP
+0054  0000      	NOP
+0056  0000      	NOP
+0058  0000      	NOP
+005A  0000      	NOP
+005C  0000      	NOP
+005E  0000      	NOP
+0060  2E24      	DECFSZ delay_ms_00000_arg_del, F
+0062  D7DD      	BRA	label2
+0064  0012      	RETURN
+0066            ; } delay_ms function end
+
+	ORG 0x00000066
+0066            FCD_04071__00051
+0066            ; { FCD_04071_LCD__RawSend ; function begin
+0066  6A32      	CLRF FCD_04071__00051_2_ptmp
+0068  9092      	BCF gbl_trisa,0
+006A  5232      	MOVF FCD_04071__00051_2_ptmp, F
+006C  E004      	BZ	label4
+006E  0E01      	MOVLW 0x01
+0070  1089      	IORWF gbl_lata, W
+0072  6E80      	MOVWF gbl_porta
+0074  D003      	BRA	label5
+0076            label4
+0076  0EFE      	MOVLW 0xFE
+0078  1489      	ANDWF gbl_lata, W
+007A  6E80      	MOVWF gbl_porta
+007C            label5
+007C  6A32      	CLRF FCD_04071__00051_9_ptmp
+007E  9292      	BCF gbl_trisa,1
+0080  5232      	MOVF FCD_04071__00051_9_ptmp, F
+0082  E004      	BZ	label6
+0084  0E02      	MOVLW 0x02
+0086  1089      	IORWF gbl_lata, W
+0088  6E80      	MOVWF gbl_porta
+008A  D003      	BRA	label7
+008C            label6
+008C  0EFD      	MOVLW 0xFD
+008E  1489      	ANDWF gbl_lata, W
+0090  6E80      	MOVWF gbl_porta
+0092            label7
+0092  6A32      	CLRF FCD_04071__00051_16_ptmp
+0094  9492      	BCF gbl_trisa,2
+0096  5232      	MOVF FCD_04071__00051_16_ptmp, F
+0098  E004      	BZ	label8
+009A  0E04      	MOVLW 0x04
+009C  1089      	IORWF gbl_lata, W
+009E  6E80      	MOVWF gbl_porta
+00A0  D003      	BRA	label9
+00A2            label8
+00A2  0EFB      	MOVLW 0xFB
+00A4  1489      	ANDWF gbl_lata, W
+00A6  6E80      	MOVWF gbl_porta
+00A8            label9
+00A8  6A32      	CLRF FCD_04071__00051_23_ptmp
+00AA  9692      	BCF gbl_trisa,3
+00AC  5232      	MOVF FCD_04071__00051_23_ptmp, F
+00AE  E004      	BZ	label10
+00B0  0E08      	MOVLW 0x08
+00B2  1089      	IORWF gbl_lata, W
+00B4  6E80      	MOVWF gbl_porta
+00B6  D003      	BRA	label11
+00B8            label10
+00B8  0EF7      	MOVLW 0xF7
+00BA  1489      	ANDWF gbl_lata, W
+00BC  6E80      	MOVWF gbl_porta
+00BE            label11
+00BE  6A32      	CLRF FCD_04071__00051_30_ptmp
+00C0  9892      	BCF gbl_trisa,4
+00C2  5232      	MOVF FCD_04071__00051_30_ptmp, F
+00C4  E004      	BZ	label12
+00C6  0E10      	MOVLW 0x10
+00C8  1089      	IORWF gbl_lata, W
+00CA  6E80      	MOVWF gbl_porta
+00CC  D003      	BRA	label13
+00CE            label12
+00CE  0EEF      	MOVLW 0xEF
+00D0  1489      	ANDWF gbl_lata, W
+00D2  6E80      	MOVWF gbl_porta
+00D4            label13
+00D4  6A32      	CLRF FCD_04071__00051_37_ptmp
+00D6  9A92      	BCF gbl_trisa,5
+00D8  5232      	MOVF FCD_04071__00051_37_ptmp, F
+00DA  E004      	BZ	label14
+00DC  0E20      	MOVLW 0x20
+00DE  1089      	IORWF gbl_lata, W
+00E0  6E80      	MOVWF gbl_porta
+00E2  D003      	BRA	label15
+00E4            label14
+00E4  0EDF      	MOVLW 0xDF
+00E6  1489      	ANDWF gbl_lata, W
+00E8  6E80      	MOVWF gbl_porta
+00EA            label15
+00EA  382F      	SWAPF FCD_04071__00051_arg_FCL_DATA, W
+00EC  0B0F      	ANDLW 0x0F
+00EE  6E31      	MOVWF FCD_04071__00051_1_FCL_NIBBLE
+00F0  0E01      	MOVLW 0x01
+00F2  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+00F4  6E32      	MOVWF FCD_04071__00051_46_ptmp
+00F6  9092      	BCF gbl_trisa,0
+00F8  5232      	MOVF FCD_04071__00051_46_ptmp, F
+00FA  E004      	BZ	label16
+00FC  0E01      	MOVLW 0x01
+00FE  1089      	IORWF gbl_lata, W
+0100  6E80      	MOVWF gbl_porta
+0102  D003      	BRA	label17
+0104            label16
+0104  0EFE      	MOVLW 0xFE
+0106  1489      	ANDWF gbl_lata, W
+0108  6E80      	MOVWF gbl_porta
+010A            label17
+010A  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+010C  90D8      	BCF STATUS,C
+010E  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+0110  0E01      	MOVLW 0x01
+0112  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0114  6E32      	MOVWF FCD_04071__00051_55_ptmp
+0116  9292      	BCF gbl_trisa,1
+0118  5232      	MOVF FCD_04071__00051_55_ptmp, F
+011A  E004      	BZ	label18
+011C  0E02      	MOVLW 0x02
+011E  1089      	IORWF gbl_lata, W
+0120  6E80      	MOVWF gbl_porta
+0122  D003      	BRA	label19
+0124            label18
+0124  0EFD      	MOVLW 0xFD
+0126  1489      	ANDWF gbl_lata, W
+0128  6E80      	MOVWF gbl_porta
+012A            label19
+012A  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+012C  90D8      	BCF STATUS,C
+012E  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+0130  0E01      	MOVLW 0x01
+0132  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0134  6E32      	MOVWF FCD_04071__00051_64_ptmp
+0136  9492      	BCF gbl_trisa,2
+0138  5232      	MOVF FCD_04071__00051_64_ptmp, F
+013A  E004      	BZ	label20
+013C  0E04      	MOVLW 0x04
+013E  1089      	IORWF gbl_lata, W
+0140  6E80      	MOVWF gbl_porta
+0142  D003      	BRA	label21
+0144            label20
+0144  0EFB      	MOVLW 0xFB
+0146  1489      	ANDWF gbl_lata, W
+0148  6E80      	MOVWF gbl_porta
+014A            label21
+014A  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+014C  90D8      	BCF STATUS,C
+014E  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+0150  0E01      	MOVLW 0x01
+0152  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0154  6E32      	MOVWF FCD_04071__00051_73_ptmp
+0156  9692      	BCF gbl_trisa,3
+0158  5232      	MOVF FCD_04071__00051_73_ptmp, F
+015A  E004      	BZ	label22
+015C  0E08      	MOVLW 0x08
+015E  1089      	IORWF gbl_lata, W
+0160  6E80      	MOVWF gbl_porta
+0162  D003      	BRA	label23
+0164            label22
+0164  0EF7      	MOVLW 0xF7
+0166  1489      	ANDWF gbl_lata, W
+0168  6E80      	MOVWF gbl_porta
+016A            label23
+016A  A030      	BTFSS FCD_04071__00051_arg_FCL_TYPE,0
+016C  D00C      	BRA	label25
+016E  0E01      	MOVLW 0x01
+0170  6E32      	MOVWF FCD_04071__00051_82_ptmp
+0172  9892      	BCF gbl_trisa,4
+0174  5232      	MOVF FCD_04071__00051_82_ptmp, F
+0176  E004      	BZ	label24
+0178  0E10      	MOVLW 0x10
+017A  1089      	IORWF gbl_lata, W
+017C  6E80      	MOVWF gbl_porta
+017E  D003      	BRA	label25
+0180            label24
+0180  0EEF      	MOVLW 0xEF
+0182  1489      	ANDWF gbl_lata, W
+0184  6E80      	MOVWF gbl_porta
+0186            label25
+0186  0E64      	MOVLW 0x64
+0188  6E32      	MOVWF delay_us_00000_arg_del
+018A  EC06F000  	CALL delay_us_00000
+018E  0E01      	MOVLW 0x01
+0190  6E32      	MOVWF FCD_04071__00051_93_ptmp
+0192  9A92      	BCF gbl_trisa,5
+0194  5232      	MOVF FCD_04071__00051_93_ptmp, F
+0196  E004      	BZ	label26
+0198  0E20      	MOVLW 0x20
+019A  1089      	IORWF gbl_lata, W
+019C  6E80      	MOVWF gbl_porta
+019E  D003      	BRA	label27
+01A0            label26
+01A0  0EDF      	MOVLW 0xDF
+01A2  1489      	ANDWF gbl_lata, W
+01A4  6E80      	MOVWF gbl_porta
+01A6            label27
+01A6  0E64      	MOVLW 0x64
+01A8  6E32      	MOVWF delay_us_00000_arg_del
+01AA  EC06F000  	CALL delay_us_00000
+01AE  6A32      	CLRF FCD_04071__00051_104_ptmp
+01B0  9A92      	BCF gbl_trisa,5
+01B2  5232      	MOVF FCD_04071__00051_104_ptmp, F
+01B4  E004      	BZ	label28
+01B6  0E20      	MOVLW 0x20
+01B8  1089      	IORWF gbl_lata, W
+01BA  6E80      	MOVWF gbl_porta
+01BC  D003      	BRA	label29
+01BE            label28
+01BE  0EDF      	MOVLW 0xDF
+01C0  1489      	ANDWF gbl_lata, W
+01C2  6E80      	MOVWF gbl_porta
+01C4            label29
+01C4  0E64      	MOVLW 0x64
+01C6  6E32      	MOVWF delay_us_00000_arg_del
+01C8  EC06F000  	CALL delay_us_00000
+01CC  6A32      	CLRF FCD_04071__00051_115_ptmp
+01CE  9092      	BCF gbl_trisa,0
+01D0  5232      	MOVF FCD_04071__00051_115_ptmp, F
+01D2  E004      	BZ	label30
+01D4  0E01      	MOVLW 0x01
+01D6  1089      	IORWF gbl_lata, W
+01D8  6E80      	MOVWF gbl_porta
+01DA  D003      	BRA	label31
+01DC            label30
+01DC  0EFE      	MOVLW 0xFE
+01DE  1489      	ANDWF gbl_lata, W
+01E0  6E80      	MOVWF gbl_porta
+01E2            label31
+01E2  6A32      	CLRF FCD_04071__00051_122_ptmp
+01E4  9292      	BCF gbl_trisa,1
+01E6  5232      	MOVF FCD_04071__00051_122_ptmp, F
+01E8  E004      	BZ	label32
+01EA  0E02      	MOVLW 0x02
+01EC  1089      	IORWF gbl_lata, W
+01EE  6E80      	MOVWF gbl_porta
+01F0  D003      	BRA	label33
+01F2            label32
+01F2  0EFD      	MOVLW 0xFD
+01F4  1489      	ANDWF gbl_lata, W
+01F6  6E80      	MOVWF gbl_porta
+01F8            label33
+01F8  6A32      	CLRF FCD_04071__00051_129_ptmp
+01FA  9492      	BCF gbl_trisa,2
+01FC  5232      	MOVF FCD_04071__00051_129_ptmp, F
+01FE  E004      	BZ	label34
+0200  0E04      	MOVLW 0x04
+0202  1089      	IORWF gbl_lata, W
+0204  6E80      	MOVWF gbl_porta
+0206  D003      	BRA	label35
+0208            label34
+0208  0EFB      	MOVLW 0xFB
+020A  1489      	ANDWF gbl_lata, W
+020C  6E80      	MOVWF gbl_porta
+020E            label35
+020E  6A32      	CLRF FCD_04071__00051_136_ptmp
+0210  9692      	BCF gbl_trisa,3
+0212  5232      	MOVF FCD_04071__00051_136_ptmp, F
+0214  E004      	BZ	label36
+0216  0E08      	MOVLW 0x08
+0218  1089      	IORWF gbl_lata, W
+021A  6E80      	MOVWF gbl_porta
+021C  D003      	BRA	label37
+021E            label36
+021E  0EF7      	MOVLW 0xF7
+0220  1489      	ANDWF gbl_lata, W
+0222  6E80      	MOVWF gbl_porta
+0224            label37
+0224  6A32      	CLRF FCD_04071__00051_143_ptmp
+0226  9892      	BCF gbl_trisa,4
+0228  5232      	MOVF FCD_04071__00051_143_ptmp, F
+022A  E004      	BZ	label38
+022C  0E10      	MOVLW 0x10
+022E  1089      	IORWF gbl_lata, W
+0230  6E80      	MOVWF gbl_porta
+0232  D003      	BRA	label39
+0234            label38
+0234  0EEF      	MOVLW 0xEF
+0236  1489      	ANDWF gbl_lata, W
+0238  6E80      	MOVWF gbl_porta
+023A            label39
+023A  0E0F      	MOVLW 0x0F
+023C  142F      	ANDWF FCD_04071__00051_arg_FCL_DATA, W
+023E  6E32      	MOVWF CompTempVar2641
+0240  5032      	MOVF CompTempVar2641, W
+0242  6E31      	MOVWF FCD_04071__00051_1_FCL_NIBBLE
+0244  0E01      	MOVLW 0x01
+0246  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0248  6E32      	MOVWF FCD_04071__00051_152_ptmp
+024A  9092      	BCF gbl_trisa,0
+024C  5232      	MOVF FCD_04071__00051_152_ptmp, F
+024E  E004      	BZ	label40
+0250  0E01      	MOVLW 0x01
+0252  1089      	IORWF gbl_lata, W
+0254  6E80      	MOVWF gbl_porta
+0256  D003      	BRA	label41
+0258            label40
+0258  0EFE      	MOVLW 0xFE
+025A  1489      	ANDWF gbl_lata, W
+025C  6E80      	MOVWF gbl_porta
+025E            label41
+025E  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+0260  90D8      	BCF STATUS,C
+0262  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+0264  0E01      	MOVLW 0x01
+0266  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0268  6E32      	MOVWF FCD_04071__00051_161_ptmp
+026A  9292      	BCF gbl_trisa,1
+026C  5232      	MOVF FCD_04071__00051_161_ptmp, F
+026E  E004      	BZ	label42
+0270  0E02      	MOVLW 0x02
+0272  1089      	IORWF gbl_lata, W
+0274  6E80      	MOVWF gbl_porta
+0276  D003      	BRA	label43
+0278            label42
+0278  0EFD      	MOVLW 0xFD
+027A  1489      	ANDWF gbl_lata, W
+027C  6E80      	MOVWF gbl_porta
+027E            label43
+027E  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+0280  90D8      	BCF STATUS,C
+0282  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+0284  0E01      	MOVLW 0x01
+0286  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+0288  6E32      	MOVWF FCD_04071__00051_170_ptmp
+028A  9492      	BCF gbl_trisa,2
+028C  5232      	MOVF FCD_04071__00051_170_ptmp, F
+028E  E004      	BZ	label44
+0290  0E04      	MOVLW 0x04
+0292  1089      	IORWF gbl_lata, W
+0294  6E80      	MOVWF gbl_porta
+0296  D003      	BRA	label45
+0298            label44
+0298  0EFB      	MOVLW 0xFB
+029A  1489      	ANDWF gbl_lata, W
+029C  6E80      	MOVWF gbl_porta
+029E            label45
+029E  5231      	MOVF FCD_04071__00051_1_FCL_NIBBLE, F
+02A0  90D8      	BCF STATUS,C
+02A2  3231      	RRCF FCD_04071__00051_1_FCL_NIBBLE, F
+02A4  0E01      	MOVLW 0x01
+02A6  1431      	ANDWF FCD_04071__00051_1_FCL_NIBBLE, W
+02A8  6E32      	MOVWF FCD_04071__00051_179_ptmp
+02AA  9692      	BCF gbl_trisa,3
+02AC  5232      	MOVF FCD_04071__00051_179_ptmp, F
+02AE  E004      	BZ	label46
+02B0  0E08      	MOVLW 0x08
+02B2  1089      	IORWF gbl_lata, W
+02B4  6E80      	MOVWF gbl_porta
+02B6  D003      	BRA	label47
+02B8            label46
+02B8  0EF7      	MOVLW 0xF7
+02BA  1489      	ANDWF gbl_lata, W
+02BC  6E80      	MOVWF gbl_porta
+02BE            label47
+02BE  A030      	BTFSS FCD_04071__00051_arg_FCL_TYPE,0
+02C0  D00C      	BRA	label49
+02C2  0E01      	MOVLW 0x01
+02C4  6E32      	MOVWF FCD_04071__00051_188_ptmp
+02C6  9892      	BCF gbl_trisa,4
+02C8  5232      	MOVF FCD_04071__00051_188_ptmp, F
+02CA  E004      	BZ	label48
+02CC  0E10      	MOVLW 0x10
+02CE  1089      	IORWF gbl_lata, W
+02D0  6E80      	MOVWF gbl_porta
+02D2  D003      	BRA	label49
+02D4            label48
+02D4  0EEF      	MOVLW 0xEF
+02D6  1489      	ANDWF gbl_lata, W
+02D8  6E80      	MOVWF gbl_porta
+02DA            label49
+02DA  0E64      	MOVLW 0x64
+02DC  6E32      	MOVWF delay_us_00000_arg_del
+02DE  EC06F000  	CALL delay_us_00000
+02E2  0E01      	MOVLW 0x01
+02E4  6E32      	MOVWF FCD_04071__00051_199_ptmp
+02E6  9A92      	BCF gbl_trisa,5
+02E8  5232      	MOVF FCD_04071__00051_199_ptmp, F
+02EA  E004      	BZ	label50
+02EC  0E20      	MOVLW 0x20
+02EE  1089      	IORWF gbl_lata, W
+02F0  6E80      	MOVWF gbl_porta
+02F2  D003      	BRA	label51
+02F4            label50
+02F4  0EDF      	MOVLW 0xDF
+02F6  1489      	ANDWF gbl_lata, W
+02F8  6E80      	MOVWF gbl_porta
+02FA            label51
+02FA  0E64      	MOVLW 0x64
+02FC  6E32      	MOVWF delay_us_00000_arg_del
+02FE  EC06F000  	CALL delay_us_00000
+0302  6A32      	CLRF FCD_04071__00051_210_ptmp
+0304  9A92      	BCF gbl_trisa,5
+0306  5232      	MOVF FCD_04071__00051_210_ptmp, F
+0308  E004      	BZ	label52
+030A  0E20      	MOVLW 0x20
+030C  1089      	IORWF gbl_lata, W
+030E  6E80      	MOVWF gbl_porta
+0310  D003      	BRA	label53
+0312            label52
+0312  0EDF      	MOVLW 0xDF
+0314  1489      	ANDWF gbl_lata, W
+0316  6E80      	MOVWF gbl_porta
+0318            label53
+0318  0E64      	MOVLW 0x64
+031A  6E32      	MOVWF delay_us_00000_arg_del
+031C  EC06F000  	CALL delay_us_00000
+0320  0012      	RETURN
+0322            ; } FCD_04071_LCD__RawSend function end
+
+	ORG 0x00000322
+0322            FCI_GETLEN_00040
+0322            ; { FCI_GETLENGTH ; function begin
+0322  6A32      	CLRF FCI_GETLEN_00040_1_tmp
+0324            label54
+0324  5031      	MOVF FCI_GETLEN_00040_arg_iStr1_len, W
+0326  6032      	CPFSLT FCI_GETLEN_00040_1_tmp
+0328  D009      	BRA	label55
+032A  5030      	MOVF FCI_GETLEN_00040_arg_sStr1+D'1', W
+032C  6EEA      	MOVWF FSR0H
+032E  502F      	MOVF FCI_GETLEN_00040_arg_sStr1, W
+0330  2432      	ADDWF FCI_GETLEN_00040_1_tmp, W
+0332  6EE9      	MOVWF FSR0L
+0334  52EF      	MOVF INDF0, F
+0336  E002      	BZ	label55
+0338  2A32      	INCF FCI_GETLEN_00040_1_tmp, F
+033A  D7F4      	BRA	label54
+033C            label55
+033C  5032      	MOVF FCI_GETLEN_00040_1_tmp, W
+033E  6E33      	MOVWF CompTempVarRet1850
+0340  0012      	RETURN
+0342            ; } FCI_GETLENGTH function end
+
+	ORG 0x00000342
+0342            FCD_04071__00050
+0342            ; { FCD_04071_LCD__Clear ; function begin
+0342  0E01      	MOVLW 0x01
+0344  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0346  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0348  EC33F000  	CALL FCD_04071__00051
+034C  0E02      	MOVLW 0x02
+034E  6E24      	MOVWF delay_ms_00000_arg_del
+0350  EC0BF000  	CALL delay_ms_00000
+0354  0E02      	MOVLW 0x02
+0356  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0358  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+035A  EC33F000  	CALL FCD_04071__00051
+035E  0E02      	MOVLW 0x02
+0360  6E24      	MOVWF delay_ms_00000_arg_del
+0362  EC0BF000  	CALL delay_ms_00000
+0366  0012      	RETURN
+0368            ; } FCD_04071_LCD__Clear function end
+
+	ORG 0x00000368
+0368            FCD_04071__0005F
+0368            ; { FCD_04071_LCD__Start ; function begin
+0368  6A24      	CLRF FCD_04071__0005F_2_ptmp
+036A  9092      	BCF gbl_trisa,0
+036C  5224      	MOVF FCD_04071__0005F_2_ptmp, F
+036E  E004      	BZ	label56
+0370  0E01      	MOVLW 0x01
+0372  1089      	IORWF gbl_lata, W
+0374  6E80      	MOVWF gbl_porta
+0376  D003      	BRA	label57
+0378            label56
+0378  0EFE      	MOVLW 0xFE
+037A  1489      	ANDWF gbl_lata, W
+037C  6E80      	MOVWF gbl_porta
+037E            label57
+037E  6A24      	CLRF FCD_04071__0005F_9_ptmp
+0380  9292      	BCF gbl_trisa,1
+0382  5224      	MOVF FCD_04071__0005F_9_ptmp, F
+0384  E004      	BZ	label58
+0386  0E02      	MOVLW 0x02
+0388  1089      	IORWF gbl_lata, W
+038A  6E80      	MOVWF gbl_porta
+038C  D003      	BRA	label59
+038E            label58
+038E  0EFD      	MOVLW 0xFD
+0390  1489      	ANDWF gbl_lata, W
+0392  6E80      	MOVWF gbl_porta
+0394            label59
+0394  6A24      	CLRF FCD_04071__0005F_16_ptmp
+0396  9492      	BCF gbl_trisa,2
+0398  5224      	MOVF FCD_04071__0005F_16_ptmp, F
+039A  E004      	BZ	label60
+039C  0E04      	MOVLW 0x04
+039E  1089      	IORWF gbl_lata, W
+03A0  6E80      	MOVWF gbl_porta
+03A2  D003      	BRA	label61
+03A4            label60
+03A4  0EFB      	MOVLW 0xFB
+03A6  1489      	ANDWF gbl_lata, W
+03A8  6E80      	MOVWF gbl_porta
+03AA            label61
+03AA  6A24      	CLRF FCD_04071__0005F_23_ptmp
+03AC  9692      	BCF gbl_trisa,3
+03AE  5224      	MOVF FCD_04071__0005F_23_ptmp, F
+03B0  E004      	BZ	label62
+03B2  0E08      	MOVLW 0x08
+03B4  1089      	IORWF gbl_lata, W
+03B6  6E80      	MOVWF gbl_porta
+03B8  D003      	BRA	label63
+03BA            label62
+03BA  0EF7      	MOVLW 0xF7
+03BC  1489      	ANDWF gbl_lata, W
+03BE  6E80      	MOVWF gbl_porta
+03C0            label63
+03C0  6A24      	CLRF FCD_04071__0005F_30_ptmp
+03C2  9892      	BCF gbl_trisa,4
+03C4  5224      	MOVF FCD_04071__0005F_30_ptmp, F
+03C6  E004      	BZ	label64
+03C8  0E10      	MOVLW 0x10
+03CA  1089      	IORWF gbl_lata, W
+03CC  6E80      	MOVWF gbl_porta
+03CE  D003      	BRA	label65
+03D0            label64
+03D0  0EEF      	MOVLW 0xEF
+03D2  1489      	ANDWF gbl_lata, W
+03D4  6E80      	MOVWF gbl_porta
+03D6            label65
+03D6  6A24      	CLRF FCD_04071__0005F_37_ptmp
+03D8  9A92      	BCF gbl_trisa,5
+03DA  5224      	MOVF FCD_04071__0005F_37_ptmp, F
+03DC  E004      	BZ	label66
+03DE  0E20      	MOVLW 0x20
+03E0  1089      	IORWF gbl_lata, W
+03E2  6E80      	MOVWF gbl_porta
+03E4  D003      	BRA	label67
+03E6            label66
+03E6  0EDF      	MOVLW 0xDF
+03E8  1489      	ANDWF gbl_lata, W
+03EA  6E80      	MOVWF gbl_porta
+03EC            label67
+03EC  0E0C      	MOVLW 0x0C
+03EE  6E24      	MOVWF delay_ms_00000_arg_del
+03F0  EC0BF000  	CALL delay_ms_00000
+03F4  0E33      	MOVLW 0x33
+03F6  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+03F8  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+03FA  EC33F000  	CALL FCD_04071__00051
+03FE  0E02      	MOVLW 0x02
+0400  6E24      	MOVWF delay_ms_00000_arg_del
+0402  EC0BF000  	CALL delay_ms_00000
+0406  0E33      	MOVLW 0x33
+0408  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+040A  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+040C  EC33F000  	CALL FCD_04071__00051
+0410  0E02      	MOVLW 0x02
+0412  6E24      	MOVWF delay_ms_00000_arg_del
+0414  EC0BF000  	CALL delay_ms_00000
+0418  0E32      	MOVLW 0x32
+041A  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+041C  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+041E  EC33F000  	CALL FCD_04071__00051
+0422  0E02      	MOVLW 0x02
+0424  6E24      	MOVWF delay_ms_00000_arg_del
+0426  EC0BF000  	CALL delay_ms_00000
+042A  0E2C      	MOVLW 0x2C
+042C  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+042E  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0430  EC33F000  	CALL FCD_04071__00051
+0434  0E02      	MOVLW 0x02
+0436  6E24      	MOVWF delay_ms_00000_arg_del
+0438  EC0BF000  	CALL delay_ms_00000
+043C  0E06      	MOVLW 0x06
+043E  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0440  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0442  EC33F000  	CALL FCD_04071__00051
+0446  0E02      	MOVLW 0x02
+0448  6E24      	MOVWF delay_ms_00000_arg_del
+044A  EC0BF000  	CALL delay_ms_00000
+044E  0E0C      	MOVLW 0x0C
+0450  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0452  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0454  EC33F000  	CALL FCD_04071__00051
+0458  0E02      	MOVLW 0x02
+045A  6E24      	MOVWF delay_ms_00000_arg_del
+045C  EC0BF000  	CALL delay_ms_00000
+0460  0E01      	MOVLW 0x01
+0462  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0464  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0466  EC33F000  	CALL FCD_04071__00051
+046A  0E02      	MOVLW 0x02
+046C  6E24      	MOVWF delay_ms_00000_arg_del
+046E  EC0BF000  	CALL delay_ms_00000
+0472  0E02      	MOVLW 0x02
+0474  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+0476  9030      	BCF FCD_04071__00051_arg_FCL_TYPE,0
+0478  EC33F000  	CALL FCD_04071__00051
+047C  0E02      	MOVLW 0x02
+047E  6E24      	MOVWF delay_ms_00000_arg_del
+0480  EC0BF000  	CALL delay_ms_00000
+0484  ECA1F001  	CALL FCD_04071__00050
+0488  0012      	RETURN
+048A            ; } FCD_04071_LCD__Start function end
+
+	ORG 0x0000048A
+048A            FCD_04071__00052
+048A            ; { FCD_04071_LCD__PrintString ; function begin
+048A  6A2D      	CLRF FCD_04071__00052_1_FCL_IDX
+048C  5024      	MOVF FCD_04071__00052_arg_FCL_TEXT, W
+048E  6E2F      	MOVWF FCI_GETLEN_00040_arg_sStr1
+0490  5025      	MOVF FCD_04071__00052_arg_FCL_TEXT+D'1', W
+0492  6E30      	MOVWF FCI_GETLEN_00040_arg_sStr1+D'1'
+0494  502B      	MOVF FCD_04071__00052_arg_FCLsz_TEXT, W
+0496  6E31      	MOVWF FCI_GETLEN_00040_arg_iStr1_len
+0498  EC91F001  	CALL FCI_GETLEN_00040
+049C  5033      	MOVF CompTempVarRet1850, W
+049E  6E2E      	MOVWF FCD_04071__00052_1_FCL_COUNT
+04A0            label68
+04A0  502E      	MOVF FCD_04071__00052_1_FCL_COUNT, W
+04A2  602D      	CPFSLT FCD_04071__00052_1_FCL_IDX
+04A4  0012      	RETURN
+04A6  5025      	MOVF FCD_04071__00052_arg_FCL_TEXT+D'1', W
+04A8  6EEA      	MOVWF FSR0H
+04AA  5024      	MOVF FCD_04071__00052_arg_FCL_TEXT, W
+04AC  242D      	ADDWF FCD_04071__00052_1_FCL_IDX, W
+04AE  6EE9      	MOVWF FSR0L
+04B0  50EF      	MOVF INDF0, W
+04B2  6E2F      	MOVWF FCD_04071__00051_arg_FCL_DATA
+04B4  8030      	BSF FCD_04071__00051_arg_FCL_TYPE,0
+04B6  EC33F000  	CALL FCD_04071__00051
+04BA  282D      	INCF FCD_04071__00052_1_FCL_IDX, W
+04BC  6E2D      	MOVWF FCD_04071__00052_1_FCL_IDX
+04BE  D7F0      	BRA	label68
+04C0            ; } FCD_04071_LCD__PrintString function end
+
+	ORG 0x000004C0
+04C0            main
+04C0            ; { main ; function begin
+04C0  0E0F      	MOVLW 0x0F
+04C2  6EC1      	MOVWF gbl_adcon1
+04C4  ECB4F001  	CALL FCD_04071__0005F
+04C8  ECA1F001  	CALL FCD_04071__00050
+04CC  0E65      	MOVLW 0x65
+04CE  6E27      	MOVWF CompTempVar2746+D'1'
+04D0  0E73      	MOVLW 0x73
+04D2  6E28      	MOVWF CompTempVar2746+D'2'
+04D4  0E74      	MOVLW 0x74
+04D6  6E26      	MOVWF CompTempVar2746
+04D8  6E29      	MOVWF CompTempVar2746+D'3'
+04DA  6A2A      	CLRF CompTempVar2746+D'4'
+04DC  0E00      	MOVLW HIGH(CompTempVar2746+D'0')
+04DE  6E25      	MOVWF FCD_04071__00052_arg_FCL_TEXT+D'1'
+04E0  0E26      	MOVLW LOW(CompTempVar2746+D'0')
+04E2  6E24      	MOVWF FCD_04071__00052_arg_FCL_TEXT
+04E4  0E05      	MOVLW 0x05
+04E6  6E2B      	MOVWF FCD_04071__00052_arg_FCLsz_TEXT
+04E8  6A2C      	CLRF FCD_04071__00052_arg_FCLsz_TEXT+D'1'
+04EA  EC45F002  	CALL FCD_04071__00052
+04EE            label69
+04EE  D7FF      	BRA	label69
+04F0            ; } main function end
+
+	ORG 0x000004F0
+04F0            _startup
+04F0  0ED5      	MOVLW 0xD5
+04F2  6E05      	MOVWF gbl_14_LSR
+04F4  0EC4      	MOVLW 0xC4
+04F6  6E06      	MOVWF gbl_14_LSR+D'1'
+04F8  0EBB      	MOVLW 0xBB
+04FA  6E07      	MOVWF gbl_14_LSR+D'2'
+04FC  0EDC      	MOVLW 0xDC
+04FE  6E08      	MOVWF gbl_14_LSR+D'3'
+0500  6A09      	CLRF gbl_15_gbl_aSig
+0502  6A0A      	CLRF gbl_15_gbl_aSig+D'1'
+0504  6A0B      	CLRF gbl_15_gbl_aSig+D'2'
+0506  6A0C      	CLRF gbl_15_gbl_aSig+D'3'
+0508  6A0D      	CLRF gbl_15_gbl_bSig
+050A  6A0E      	CLRF gbl_15_gbl_bSig+D'1'
+050C  6A0F      	CLRF gbl_15_gbl_bSig+D'2'
+050E  6A10      	CLRF gbl_15_gbl_bSig+D'3'
+0510  6A11      	CLRF gbl_15_gbl_zSig
+0512  6A12      	CLRF gbl_15_gbl_zSig+D'1'
+0514  6A13      	CLRF gbl_15_gbl_zSig+D'2'
+0516  6A14      	CLRF gbl_15_gbl_zSig+D'3'
+0518  6A1E      	CLRF gbl_15_gbl_aExp
+051A  6A1F      	CLRF gbl_15_gbl_bExp
+051C  6A19      	CLRF gbl_15_gbl_zExp
+051E  6A1A      	CLRF gbl_15_gbl_zExp+D'1'
+0520  6A20      	CLRF gbl_15_gbl_aSign
+0522  6A21      	CLRF gbl_15_gbl_bSign
+0524  6A22      	CLRF gbl_15_gbl_zSign
+0526  6A23      	CLRF gbl_15_gbl_zSigZero
+0528  6A15      	CLRF gbl_15_gbl_ret
+052A  6A16      	CLRF gbl_15_gbl_ret+D'1'
+052C  6A17      	CLRF gbl_15_gbl_ret+D'2'
+052E  6A18      	CLRF gbl_15_gbl_ret+D'3'
+0530  6A1C      	CLRF gbl_float_rounding_mode
+0532  6A1D      	CLRF gbl_float_exception_flags
+0534  6A1B      	CLRF gbl_float_detect_tininess
+0536  EF60F002  	GOTO	main
+	ORG 0x0000053A
+053A            interrupt
+053A            ; { interrupt ; function begin
+053A  CFEAF001  	MOVFF FSR0H,  Int1Context
+053E  CFE9F002  	MOVFF FSR0L,  Int1Context+D'1'
+0542  CFF4F003  	MOVFF PRODH,  Int1Context+D'2'
+0546  CFF3F004  	MOVFF PRODL,  Int1Context+D'3'
+054A  C004FFF3  	MOVFF Int1Context+D'3',  PRODL
+054E  C003FFF4  	MOVFF Int1Context+D'2',  PRODH
+0552  C002FFE9  	MOVFF Int1Context+D'1',  FSR0L
+0556  C001FFEA  	MOVFF Int1Context,  FSR0H
+055A  0011      	RETFIE 1
+055C            ; } interrupt function end
+
+	ORG 0x00300000
+300000  32FF      	DW 0x32FF
+300002  FEF9      	DW 0xFEF9
+300004  79FF      	DW 0x79FF
+300006  FFBA      	DW 0xFFBA
+300008  FFFF      	DW 0xFFFF
+30000A  FFFF      	DW 0xFFFF
+30000C  FFFF      	DW 0xFFFF

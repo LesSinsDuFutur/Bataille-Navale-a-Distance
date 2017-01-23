@@ -1,0 +1,2671 @@
+;/////////////////////////////////////////////////////////////////////////////////
+;// Code Generator: BoostC Compiler - http://www.sourceboost.com
+;// Version       : 7.20
+;// License Type  : Pro License
+;// Limitations   : PIC18 max code size:Unlimited, max RAM banks:Unlimited
+;/////////////////////////////////////////////////////////////////////////////////
+
+	ORG 0x00000000
+0000  EF8FF009  	GOTO	_startup
+	ORG 0x00000008
+0008  EFB4F009  	GOTO	interrupt
+	ORG 0x0000000C
+000C            delay_us_00000
+000C            ; { delay_us ; function begin
+000C            label1
+000C  0000      	NOP
+000E  0000      	NOP
+0010  2E7C      	DECFSZ delay_us_00000_arg_del, F
+0012  D7FC      	BRA	label1
+0014  0012      	RETURN
+0016            ; } delay_us function end
+
+	ORG 0x00000016
+0016            delay_ms_00000
+0016            ; { delay_ms ; function begin
+0016  525C      	MOVF delay_ms_00000_arg_del, F
+0018  0000      	NOP
+001A  E101      	BNZ	label2
+001C  0012      	RETURN
+001E            label2
+001E  0EF5      	MOVLW 0xF5
+0020            label3
+0020  0000      	NOP
+0022  0000      	NOP
+0024  0000      	NOP
+0026  0000      	NOP
+0028  0000      	NOP
+002A  0000      	NOP
+002C  0000      	NOP
+002E  0000      	NOP
+0030  0000      	NOP
+0032  0000      	NOP
+0034  0000      	NOP
+0036  0000      	NOP
+0038  0000      	NOP
+003A  0000      	NOP
+003C  0000      	NOP
+003E  0000      	NOP
+0040  0FFF      	ADDLW 0xFF
+0042  A4D8      	BTFSS STATUS,Z
+0044  D7ED      	BRA	label3
+0046  0000      	NOP
+0048  0000      	NOP
+004A  0000      	NOP
+004C  0000      	NOP
+004E  0000      	NOP
+0050  0000      	NOP
+0052  0000      	NOP
+0054  0000      	NOP
+0056  0000      	NOP
+0058  0000      	NOP
+005A  0000      	NOP
+005C  0000      	NOP
+005E  0000      	NOP
+0060  2E5C      	DECFSZ delay_ms_00000_arg_del, F
+0062  D7DD      	BRA	label2
+0064  0012      	RETURN
+0066            ; } delay_ms function end
+
+	ORG 0x00000066
+0066            delay_s_00000
+0066            ; { delay_s ; function begin
+0066            label4
+0066  0EFA      	MOVLW 0xFA
+0068  6E5C      	MOVWF delay_ms_00000_arg_del
+006A  EC0BF000  	CALL delay_ms_00000
+006E  0EFA      	MOVLW 0xFA
+0070  6E5C      	MOVWF delay_ms_00000_arg_del
+0072  EC0BF000  	CALL delay_ms_00000
+0076  0EFA      	MOVLW 0xFA
+0078  6E5C      	MOVWF delay_ms_00000_arg_del
+007A  EC0BF000  	CALL delay_ms_00000
+007E  0EFA      	MOVLW 0xFA
+0080  6E5C      	MOVWF delay_ms_00000_arg_del
+0082  EC0BF000  	CALL delay_ms_00000
+0086  2E5A      	DECFSZ delay_s_00000_arg_del, F
+0088  D7EE      	BRA	label4
+008A  0012      	RETURN
+008C            ; } delay_s function end
+
+	ORG 0x0000008C
+008C            FC_CAL_UAR_0006E
+008C            ; { FC_CAL_UART_Send_1 ; function begin
+008C            label5
+008C  0E10      	MOVLW 0x10
+008E  149E      	ANDWF gbl_pir1, W
+0090  6E62      	MOVWF CompTempVar2730
+0092  5262      	MOVF CompTempVar2730, F
+0094  E0FB      	BZ	label5
+0096  5060      	MOVF FC_CAL_UAR_0006E_arg_nChar, W
+0098  6EAD      	MOVWF gbl_txreg
+009A  0012      	RETURN
+009C            ; } FC_CAL_UART_Send_1 function end
+
+	ORG 0x0000009C
+009C            FC_CAL_UAR_0006D
+009C            ; { FC_CAL_UART_Receive_1 ; function begin
+009C  6A67      	CLRF FC_CAL_UAR_0006D_1_retVal
+009E  0E02      	MOVLW 0x02
+00A0  6E68      	MOVWF FC_CAL_UAR_0006D_1_retVal+D'1'
+00A2  6A69      	CLRF FC_CAL_UAR_0006D_1_delay1
+00A4  6A6A      	CLRF FC_CAL_UAR_0006D_1_regcheck
+00A6  6A6B      	CLRF FC_CAL_UAR_0006D_1_bWaitForever
+00A8  6A6C      	CLRF FC_CAL_UAR_0006D_1_rxStatus
+00AA  6A6F      	CLRF FC_CAL_UAR_0006D_1_dummy
+00AC  2866      	INCF FC_CAL_UAR_0006D_arg_nTimeout, W
+00AE  E102      	BNZ	label6
+00B0  0E01      	MOVLW 0x01
+00B2  6E6B      	MOVWF FC_CAL_UAR_0006D_1_bWaitForever
+00B4            label6
+00B4  526C      	MOVF FC_CAL_UAR_0006D_1_rxStatus, F
+00B6  E124      	BNZ	label11
+00B8  526B      	MOVF FC_CAL_UAR_0006D_1_bWaitForever, F
+00BA  E118      	BNZ	label10
+00BC  5266      	MOVF FC_CAL_UAR_0006D_arg_nTimeout, F
+00BE  E103      	BNZ	label7
+00C0  0E01      	MOVLW 0x01
+00C2  6E6C      	MOVWF FC_CAL_UAR_0006D_1_rxStatus
+00C4  D013      	BRA	label10
+00C6            label7
+00C6  6A6D      	CLRF FC_CAL_UAR_0006D_1_delaycnt
+00C8  6A6E      	CLRF FC_CAL_UAR_0006D_1_delaycnt+D'1'
+00CA            label8
+00CA  0E31      	MOVLW 0x31
+00CC  5C6D      	SUBWF FC_CAL_UAR_0006D_1_delaycnt, W
+00CE  E205      	BC	label9
+00D0  666E      	TSTFSZ FC_CAL_UAR_0006D_1_delaycnt+D'1'
+00D2  D003      	BRA	label9
+00D4  4A6D      	INFSNZ FC_CAL_UAR_0006D_1_delaycnt, F
+00D6  2A6E      	INCF FC_CAL_UAR_0006D_1_delaycnt+D'1', F
+00D8  D7F8      	BRA	label8
+00DA            label9
+00DA  2869      	INCF FC_CAL_UAR_0006D_1_delay1, W
+00DC  6E69      	MOVWF FC_CAL_UAR_0006D_1_delay1
+00DE  0E64      	MOVLW 0x64
+00E0  6269      	CPFSEQ FC_CAL_UAR_0006D_1_delay1
+00E2  D004      	BRA	label10
+00E4  0466      	DECF FC_CAL_UAR_0006D_arg_nTimeout, W
+00E6  6E66      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+00E8  0004      	CLRWDT
+00EA  6A69      	CLRF FC_CAL_UAR_0006D_1_delay1
+00EC            label10
+00EC  0E20      	MOVLW 0x20
+00EE  149E      	ANDWF gbl_pir1, W
+00F0  6E70      	MOVWF CompTempVar2725
+00F2  5070      	MOVF CompTempVar2725, W
+00F4  6E6A      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+00F6  526A      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+00F8  E0DD      	BZ	label6
+00FA  0E02      	MOVLW 0x02
+00FC  6E6C      	MOVWF FC_CAL_UAR_0006D_1_rxStatus
+00FE  D7DA      	BRA	label6
+0100            label11
+0100  0E02      	MOVLW 0x02
+0102  626C      	CPFSEQ FC_CAL_UAR_0006D_1_rxStatus
+0104  D01F      	BRA	label14
+0106  0E04      	MOVLW 0x04
+0108  14AB      	ANDWF gbl_rcsta, W
+010A  6E70      	MOVWF CompTempVar2726
+010C  5070      	MOVF CompTempVar2726, W
+010E  6E6A      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+0110  526A      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+0112  E006      	BZ	label12
+0114  50AE      	MOVF gbl_rcreg, W
+0116  6E6F      	MOVWF FC_CAL_UAR_0006D_1_dummy
+0118  6A67      	CLRF FC_CAL_UAR_0006D_1_retVal
+011A  0E04      	MOVLW 0x04
+011C  6E68      	MOVWF FC_CAL_UAR_0006D_1_retVal+D'1'
+011E  D012      	BRA	label14
+0120            label12
+0120  0E02      	MOVLW 0x02
+0122  14AB      	ANDWF gbl_rcsta, W
+0124  6E70      	MOVWF CompTempVar2727
+0126  5070      	MOVF CompTempVar2727, W
+0128  6E6A      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+012A  526A      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+012C  E006      	BZ	label13
+012E  98AB      	BCF gbl_rcsta,4
+0130  88AB      	BSF gbl_rcsta,4
+0132  6A67      	CLRF FC_CAL_UAR_0006D_1_retVal
+0134  0E08      	MOVLW 0x08
+0136  6E68      	MOVWF FC_CAL_UAR_0006D_1_retVal+D'1'
+0138  D005      	BRA	label14
+013A            label13
+013A  6A67      	CLRF FC_CAL_UAR_0006D_1_retVal
+013C  6A68      	CLRF FC_CAL_UAR_0006D_1_retVal+D'1'
+013E  50AE      	MOVF gbl_rcreg, W
+0140  1267      	IORWF FC_CAL_UAR_0006D_1_retVal, F
+0142  5268      	MOVF FC_CAL_UAR_0006D_1_retVal+D'1', F
+0144            label14
+0144  5067      	MOVF FC_CAL_UAR_0006D_1_retVal, W
+0146  6E70      	MOVWF CompTempVarRet2724
+0148  5068      	MOVF FC_CAL_UAR_0006D_1_retVal+D'1', W
+014A  6E71      	MOVWF CompTempVarRet2724+D'1'
+014C  0012      	RETURN
+014E            ; } FC_CAL_UART_Receive_1 function end
+
+	ORG 0x0000014E
+014E            __mul_32_3_0000B
+014E            ; { __mul_32_32 ; function begin
+014E  6B85      	CLRF CompTempVarRet414, 1
+0150  6B86      	CLRF CompTempVarRet414+D'1', 1
+0152  6B87      	CLRF CompTempVarRet414+D'2', 1
+0154  6B88      	CLRF CompTempVarRet414+D'3', 1
+0156  6B87      	CLRF CompTempVarRet414+D'2', 1
+0158  6B88      	CLRF CompTempVarRet414+D'3', 1
+015A  5079      	MOVF __mul_32_3_0000B_arg_a, W
+015C  0380      	MULWF __mul_32_3_0000B_arg_b, 1
+015E  50F3      	MOVF gbl_prodl, W
+0160  6F85      	MOVWF CompTempVarRet414, 1
+0162  50F4      	MOVF gbl_prodh, W
+0164  6F86      	MOVWF CompTempVarRet414+D'1', 1
+0166  507A      	MOVF __mul_32_3_0000B_arg_a+D'1', W
+0168  0380      	MULWF __mul_32_3_0000B_arg_b, 1
+016A  50F3      	MOVF gbl_prodl, W
+016C  2786      	ADDWF CompTempVarRet414+D'1', F, 1
+016E  50F4      	MOVF gbl_prodh, W
+0170  2387      	ADDWFC CompTempVarRet414+D'2', F, 1
+0172  B0D8      	BTFSC gbl_status,0
+0174  2B88      	INCF CompTempVarRet414+D'3', F, 1
+0176  507B      	MOVF __mul_32_3_0000B_arg_a+D'2', W
+0178  0380      	MULWF __mul_32_3_0000B_arg_b, 1
+017A  50F3      	MOVF gbl_prodl, W
+017C  2787      	ADDWF CompTempVarRet414+D'2', F, 1
+017E  50F4      	MOVF gbl_prodh, W
+0180  2388      	ADDWFC CompTempVarRet414+D'3', F, 1
+0182  507C      	MOVF __mul_32_3_0000B_arg_a+D'3', W
+0184  0380      	MULWF __mul_32_3_0000B_arg_b, 1
+0186  50F3      	MOVF gbl_prodl, W
+0188  2788      	ADDWF CompTempVarRet414+D'3', F, 1
+018A  5079      	MOVF __mul_32_3_0000B_arg_a, W
+018C  0381      	MULWF __mul_32_3_0000B_arg_b+D'1', 1
+018E  50F3      	MOVF gbl_prodl, W
+0190  2786      	ADDWF CompTempVarRet414+D'1', F, 1
+0192  50F4      	MOVF gbl_prodh, W
+0194  2387      	ADDWFC CompTempVarRet414+D'2', F, 1
+0196  B0D8      	BTFSC gbl_status,0
+0198  2B88      	INCF CompTempVarRet414+D'3', F, 1
+019A  507A      	MOVF __mul_32_3_0000B_arg_a+D'1', W
+019C  0381      	MULWF __mul_32_3_0000B_arg_b+D'1', 1
+019E  50F3      	MOVF gbl_prodl, W
+01A0  2787      	ADDWF CompTempVarRet414+D'2', F, 1
+01A2  50F4      	MOVF gbl_prodh, W
+01A4  2388      	ADDWFC CompTempVarRet414+D'3', F, 1
+01A6  507B      	MOVF __mul_32_3_0000B_arg_a+D'2', W
+01A8  0381      	MULWF __mul_32_3_0000B_arg_b+D'1', 1
+01AA  50F3      	MOVF gbl_prodl, W
+01AC  2788      	ADDWF CompTempVarRet414+D'3', F, 1
+01AE  5079      	MOVF __mul_32_3_0000B_arg_a, W
+01B0  0382      	MULWF __mul_32_3_0000B_arg_b+D'2', 1
+01B2  50F3      	MOVF gbl_prodl, W
+01B4  2787      	ADDWF CompTempVarRet414+D'2', F, 1
+01B6  50F4      	MOVF gbl_prodh, W
+01B8  2388      	ADDWFC CompTempVarRet414+D'3', F, 1
+01BA  507A      	MOVF __mul_32_3_0000B_arg_a+D'1', W
+01BC  0382      	MULWF __mul_32_3_0000B_arg_b+D'2', 1
+01BE  50F3      	MOVF gbl_prodl, W
+01C0  2788      	ADDWF CompTempVarRet414+D'3', F, 1
+01C2  5079      	MOVF __mul_32_3_0000B_arg_a, W
+01C4  0383      	MULWF __mul_32_3_0000B_arg_b+D'3', 1
+01C6  50F3      	MOVF gbl_prodl, W
+01C8  2788      	ADDWF CompTempVarRet414+D'3', F, 1
+01CA  0012      	RETURN
+01CC            ; } __mul_32_32 function end
+
+	ORG 0x000001CC
+01CC            __div_32_3_00006
+01CC            ; { __div_32_32 ; function begin
+01CC  6B84      	CLRF __div_32_3_00006_1_r, 1
+01CE  6B85      	CLRF __div_32_3_00006_1_r+D'1', 1
+01D0  6B86      	CLRF __div_32_3_00006_1_r+D'2', 1
+01D2  6B87      	CLRF __div_32_3_00006_1_r+D'3', 1
+01D4  6B88      	CLRF CompTempVarRet172, 1
+01D6  6B89      	CLRF CompTempVarRet172+D'1', 1
+01D8  6B8A      	CLRF CompTempVarRet172+D'2', 1
+01DA  6B8B      	CLRF CompTempVarRet172+D'3', 1
+01DC  6A7D      	CLRF __div_32_3_00006_1_i
+01DE            label15
+01DE  0E20      	MOVLW 0x20
+01E0  147D      	ANDWF __div_32_3_00006_1_i, W
+01E2  6E7E      	MOVWF CompTempVar174
+01E4  667E      	TSTFSZ CompTempVar174
+01E6  0012      	RETURN
+01E8  90D8      	BCF STATUS,C
+01EA  3788      	RLCF CompTempVarRet172, F, 1
+01EC  3789      	RLCF CompTempVarRet172+D'1', F, 1
+01EE  378A      	RLCF CompTempVarRet172+D'2', F, 1
+01F0  378B      	RLCF CompTempVarRet172+D'3', F, 1
+01F2  3679      	RLCF __div_32_3_00006_arg_a, F
+01F4  367A      	RLCF __div_32_3_00006_arg_a+D'1', F
+01F6  367B      	RLCF __div_32_3_00006_arg_a+D'2', F
+01F8  367C      	RLCF __div_32_3_00006_arg_a+D'3', F
+01FA  3784      	RLCF __div_32_3_00006_1_r, F, 1
+01FC  3785      	RLCF __div_32_3_00006_1_r+D'1', F, 1
+01FE  3786      	RLCF __div_32_3_00006_1_r+D'2', F, 1
+0200  3787      	RLCF __div_32_3_00006_1_r+D'3', F, 1
+0202  5183      	MOVF __div_32_3_00006_arg_b+D'3', W, 1
+0204  5D87      	SUBWF __div_32_3_00006_1_r+D'3', W, 1
+0206  E108      	BNZ	label16
+0208  5182      	MOVF __div_32_3_00006_arg_b+D'2', W, 1
+020A  5D86      	SUBWF __div_32_3_00006_1_r+D'2', W, 1
+020C  E105      	BNZ	label16
+020E  5181      	MOVF __div_32_3_00006_arg_b+D'1', W, 1
+0210  5D85      	SUBWF __div_32_3_00006_1_r+D'1', W, 1
+0212  E102      	BNZ	label16
+0214  5180      	MOVF __div_32_3_00006_arg_b, W, 1
+0216  5D84      	SUBWF __div_32_3_00006_1_r, W, 1
+0218            label16
+0218  E309      	BNC	label17
+021A  5180      	MOVF __div_32_3_00006_arg_b, W, 1
+021C  5F84      	SUBWF __div_32_3_00006_1_r, F, 1
+021E  5181      	MOVF __div_32_3_00006_arg_b+D'1', W, 1
+0220  5B85      	SUBWFB __div_32_3_00006_1_r+D'1', F, 1
+0222  5182      	MOVF __div_32_3_00006_arg_b+D'2', W, 1
+0224  5B86      	SUBWFB __div_32_3_00006_1_r+D'2', F, 1
+0226  5183      	MOVF __div_32_3_00006_arg_b+D'3', W, 1
+0228  5B87      	SUBWFB __div_32_3_00006_1_r+D'3', F, 1
+022A  8188      	BSF CompTempVarRet172,0, 1
+022C            label17
+022C  2A7D      	INCF __div_32_3_00006_1_i, F
+022E  D7D7      	BRA	label15
+0230            ; } __div_32_32 function end
+
+	ORG 0x00000230
+0230            FCI_GETLEN_00040
+0230            ; { FCI_GETLENGTH ; function begin
+0230  6A7C      	CLRF FCI_GETLEN_00040_1_tmp
+0232            label18
+0232  507B      	MOVF FCI_GETLEN_00040_arg_iStr1_len, W
+0234  607C      	CPFSLT FCI_GETLEN_00040_1_tmp
+0236  D009      	BRA	label19
+0238  507A      	MOVF FCI_GETLEN_00040_arg_sStr1+D'1', W
+023A  6EEA      	MOVWF FSR0H
+023C  5079      	MOVF FCI_GETLEN_00040_arg_sStr1, W
+023E  247C      	ADDWF FCI_GETLEN_00040_1_tmp, W
+0240  6EE9      	MOVWF FSR0L
+0242  52EF      	MOVF INDF0, F
+0244  E002      	BZ	label19
+0246  2A7C      	INCF FCI_GETLEN_00040_1_tmp, F
+0248  D7F4      	BRA	label18
+024A            label19
+024A  507C      	MOVF FCI_GETLEN_00040_1_tmp, W
+024C  6E7D      	MOVWF CompTempVarRet1850
+024E  0012      	RETURN
+0250            ; } FCI_GETLENGTH function end
+
+	ORG 0x00000250
+0250            FCD_05181__00075
+0250            ; { FCD_05181_Bluetooth1__Read_byte ; function begin
+0250  5062      	MOVF FCD_05181__00075_arg_FCL_TIMEOUT, W
+0252  6E66      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+0254  EC4EF000  	CALL FC_CAL_UAR_0006D
+0258  5070      	MOVF CompTempVarRet2724, W
+025A  6E63      	MOVWF FCD_05181__00075_1_FCL_RXINT
+025C  5071      	MOVF CompTempVarRet2724+D'1', W
+025E  6E64      	MOVWF FCD_05181__00075_1_FCL_RXINT+D'1'
+0260  5064      	MOVF FCD_05181__00075_1_FCL_RXINT+D'1', W
+0262  0801      	SUBLW 0x01
+0264  E102      	BNZ	label20
+0266  5063      	MOVF FCD_05181__00075_1_FCL_RXINT, W
+0268  0800      	SUBLW 0x00
+026A            label20
+026A  E301      	BNC	label21
+026C  E110      	BNZ	label24
+026E            label21
+026E  BE64      	BTFSC FCD_05181__00075_1_FCL_RXINT+D'1',7
+0270  D00E      	BRA	label24
+0272  6865      	SETF FCD_05181__00075_1_FCR_RETVAL
+0274  A064      	BTFSS FCD_05181__00075_1_FCL_RXINT+D'1',0
+0276  D003      	BRA	label22
+0278  0E01      	MOVLW 0x01
+027A  6E59      	MOVWF gbl_FCV_05181_Bluetooth1___00003
+027C  D00B      	BRA	label25
+027E            label22
+027E  A264      	BTFSS FCD_05181__00075_1_FCL_RXINT+D'1',1
+0280  D003      	BRA	label23
+0282  0E04      	MOVLW 0x04
+0284  6E59      	MOVWF gbl_FCV_05181_Bluetooth1___00003
+0286  D006      	BRA	label25
+0288            label23
+0288  0E03      	MOVLW 0x03
+028A  6E59      	MOVWF gbl_FCV_05181_Bluetooth1___00003
+028C  D003      	BRA	label25
+028E            label24
+028E  6A59      	CLRF gbl_FCV_05181_Bluetooth1___00003
+0290  5063      	MOVF FCD_05181__00075_1_FCL_RXINT, W
+0292  6E65      	MOVWF FCD_05181__00075_1_FCR_RETVAL
+0294            label25
+0294  5065      	MOVF FCD_05181__00075_1_FCR_RETVAL, W
+0296  6E66      	MOVWF CompTempVarRet2747
+0298  0012      	RETURN
+029A            ; } FCD_05181_Bluetooth1__Read_byte function end
+
+	ORG 0x0000029A
+029A            FCD_05181__00074
+029A            ; { FCD_05181_Bluetooth1__Send_byte ; function begin
+029A  505F      	MOVF FCD_05181__00074_arg_FCL_BYTEVAL, W
+029C  6E60      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+029E  6A61      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+02A0  EC46F000  	CALL FC_CAL_UAR_0006E
+02A4  0012      	RETURN
+02A6            ; } FCD_05181_Bluetooth1__Send_byte function end
+
+	ORG 0x000002A6
+02A6            FCD_04071__0005B
+02A6            ; { FCD_04071_LCD__RawSend ; function begin
+02A6  6A7C      	CLRF FCD_04071__0005B_2_ptmp
+02A8  9093      	BCF gbl_trisb,0
+02AA  527C      	MOVF FCD_04071__0005B_2_ptmp, F
+02AC  E004      	BZ	label26
+02AE  0E01      	MOVLW 0x01
+02B0  108A      	IORWF gbl_latb, W
+02B2  6E81      	MOVWF gbl_portb
+02B4  D003      	BRA	label27
+02B6            label26
+02B6  0EFE      	MOVLW 0xFE
+02B8  148A      	ANDWF gbl_latb, W
+02BA  6E81      	MOVWF gbl_portb
+02BC            label27
+02BC  6A7C      	CLRF FCD_04071__0005B_9_ptmp
+02BE  9293      	BCF gbl_trisb,1
+02C0  527C      	MOVF FCD_04071__0005B_9_ptmp, F
+02C2  E004      	BZ	label28
+02C4  0E02      	MOVLW 0x02
+02C6  108A      	IORWF gbl_latb, W
+02C8  6E81      	MOVWF gbl_portb
+02CA  D003      	BRA	label29
+02CC            label28
+02CC  0EFD      	MOVLW 0xFD
+02CE  148A      	ANDWF gbl_latb, W
+02D0  6E81      	MOVWF gbl_portb
+02D2            label29
+02D2  6A7C      	CLRF FCD_04071__0005B_16_ptmp
+02D4  9493      	BCF gbl_trisb,2
+02D6  527C      	MOVF FCD_04071__0005B_16_ptmp, F
+02D8  E004      	BZ	label30
+02DA  0E04      	MOVLW 0x04
+02DC  108A      	IORWF gbl_latb, W
+02DE  6E81      	MOVWF gbl_portb
+02E0  D003      	BRA	label31
+02E2            label30
+02E2  0EFB      	MOVLW 0xFB
+02E4  148A      	ANDWF gbl_latb, W
+02E6  6E81      	MOVWF gbl_portb
+02E8            label31
+02E8  6A7C      	CLRF FCD_04071__0005B_23_ptmp
+02EA  9693      	BCF gbl_trisb,3
+02EC  527C      	MOVF FCD_04071__0005B_23_ptmp, F
+02EE  E004      	BZ	label32
+02F0  0E08      	MOVLW 0x08
+02F2  108A      	IORWF gbl_latb, W
+02F4  6E81      	MOVWF gbl_portb
+02F6  D003      	BRA	label33
+02F8            label32
+02F8  0EF7      	MOVLW 0xF7
+02FA  148A      	ANDWF gbl_latb, W
+02FC  6E81      	MOVWF gbl_portb
+02FE            label33
+02FE  6A7C      	CLRF FCD_04071__0005B_30_ptmp
+0300  9893      	BCF gbl_trisb,4
+0302  527C      	MOVF FCD_04071__0005B_30_ptmp, F
+0304  E004      	BZ	label34
+0306  0E10      	MOVLW 0x10
+0308  108A      	IORWF gbl_latb, W
+030A  6E81      	MOVWF gbl_portb
+030C  D003      	BRA	label35
+030E            label34
+030E  0EEF      	MOVLW 0xEF
+0310  148A      	ANDWF gbl_latb, W
+0312  6E81      	MOVWF gbl_portb
+0314            label35
+0314  6A7C      	CLRF FCD_04071__0005B_37_ptmp
+0316  9A93      	BCF gbl_trisb,5
+0318  527C      	MOVF FCD_04071__0005B_37_ptmp, F
+031A  E004      	BZ	label36
+031C  0E20      	MOVLW 0x20
+031E  108A      	IORWF gbl_latb, W
+0320  6E81      	MOVWF gbl_portb
+0322  D003      	BRA	label37
+0324            label36
+0324  0EDF      	MOVLW 0xDF
+0326  148A      	ANDWF gbl_latb, W
+0328  6E81      	MOVWF gbl_portb
+032A            label37
+032A  3879      	SWAPF FCD_04071__0005B_arg_FCL_DATA, W
+032C  0B0F      	ANDLW 0x0F
+032E  6E7B      	MOVWF FCD_04071__0005B_1_FCL_NIBBLE
+0330  0E01      	MOVLW 0x01
+0332  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+0334  6E7C      	MOVWF FCD_04071__0005B_46_ptmp
+0336  9093      	BCF gbl_trisb,0
+0338  527C      	MOVF FCD_04071__0005B_46_ptmp, F
+033A  E004      	BZ	label38
+033C  0E01      	MOVLW 0x01
+033E  108A      	IORWF gbl_latb, W
+0340  6E81      	MOVWF gbl_portb
+0342  D003      	BRA	label39
+0344            label38
+0344  0EFE      	MOVLW 0xFE
+0346  148A      	ANDWF gbl_latb, W
+0348  6E81      	MOVWF gbl_portb
+034A            label39
+034A  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+034C  90D8      	BCF STATUS,C
+034E  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+0350  0E01      	MOVLW 0x01
+0352  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+0354  6E7C      	MOVWF FCD_04071__0005B_55_ptmp
+0356  9293      	BCF gbl_trisb,1
+0358  527C      	MOVF FCD_04071__0005B_55_ptmp, F
+035A  E004      	BZ	label40
+035C  0E02      	MOVLW 0x02
+035E  108A      	IORWF gbl_latb, W
+0360  6E81      	MOVWF gbl_portb
+0362  D003      	BRA	label41
+0364            label40
+0364  0EFD      	MOVLW 0xFD
+0366  148A      	ANDWF gbl_latb, W
+0368  6E81      	MOVWF gbl_portb
+036A            label41
+036A  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+036C  90D8      	BCF STATUS,C
+036E  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+0370  0E01      	MOVLW 0x01
+0372  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+0374  6E7C      	MOVWF FCD_04071__0005B_64_ptmp
+0376  9493      	BCF gbl_trisb,2
+0378  527C      	MOVF FCD_04071__0005B_64_ptmp, F
+037A  E004      	BZ	label42
+037C  0E04      	MOVLW 0x04
+037E  108A      	IORWF gbl_latb, W
+0380  6E81      	MOVWF gbl_portb
+0382  D003      	BRA	label43
+0384            label42
+0384  0EFB      	MOVLW 0xFB
+0386  148A      	ANDWF gbl_latb, W
+0388  6E81      	MOVWF gbl_portb
+038A            label43
+038A  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+038C  90D8      	BCF STATUS,C
+038E  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+0390  0E01      	MOVLW 0x01
+0392  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+0394  6E7C      	MOVWF FCD_04071__0005B_73_ptmp
+0396  9693      	BCF gbl_trisb,3
+0398  527C      	MOVF FCD_04071__0005B_73_ptmp, F
+039A  E004      	BZ	label44
+039C  0E08      	MOVLW 0x08
+039E  108A      	IORWF gbl_latb, W
+03A0  6E81      	MOVWF gbl_portb
+03A2  D003      	BRA	label45
+03A4            label44
+03A4  0EF7      	MOVLW 0xF7
+03A6  148A      	ANDWF gbl_latb, W
+03A8  6E81      	MOVWF gbl_portb
+03AA            label45
+03AA  A07A      	BTFSS FCD_04071__0005B_arg_FCL_TYPE,0
+03AC  D00C      	BRA	label47
+03AE  0E01      	MOVLW 0x01
+03B0  6E7C      	MOVWF FCD_04071__0005B_82_ptmp
+03B2  9893      	BCF gbl_trisb,4
+03B4  527C      	MOVF FCD_04071__0005B_82_ptmp, F
+03B6  E004      	BZ	label46
+03B8  0E10      	MOVLW 0x10
+03BA  108A      	IORWF gbl_latb, W
+03BC  6E81      	MOVWF gbl_portb
+03BE  D003      	BRA	label47
+03C0            label46
+03C0  0EEF      	MOVLW 0xEF
+03C2  148A      	ANDWF gbl_latb, W
+03C4  6E81      	MOVWF gbl_portb
+03C6            label47
+03C6  0E64      	MOVLW 0x64
+03C8  6E7C      	MOVWF delay_us_00000_arg_del
+03CA  EC06F000  	CALL delay_us_00000
+03CE  0E01      	MOVLW 0x01
+03D0  6E7C      	MOVWF FCD_04071__0005B_93_ptmp
+03D2  9A93      	BCF gbl_trisb,5
+03D4  527C      	MOVF FCD_04071__0005B_93_ptmp, F
+03D6  E004      	BZ	label48
+03D8  0E20      	MOVLW 0x20
+03DA  108A      	IORWF gbl_latb, W
+03DC  6E81      	MOVWF gbl_portb
+03DE  D003      	BRA	label49
+03E0            label48
+03E0  0EDF      	MOVLW 0xDF
+03E2  148A      	ANDWF gbl_latb, W
+03E4  6E81      	MOVWF gbl_portb
+03E6            label49
+03E6  0E64      	MOVLW 0x64
+03E8  6E7C      	MOVWF delay_us_00000_arg_del
+03EA  EC06F000  	CALL delay_us_00000
+03EE  6A7C      	CLRF FCD_04071__0005B_104_ptmp
+03F0  9A93      	BCF gbl_trisb,5
+03F2  527C      	MOVF FCD_04071__0005B_104_ptmp, F
+03F4  E004      	BZ	label50
+03F6  0E20      	MOVLW 0x20
+03F8  108A      	IORWF gbl_latb, W
+03FA  6E81      	MOVWF gbl_portb
+03FC  D003      	BRA	label51
+03FE            label50
+03FE  0EDF      	MOVLW 0xDF
+0400  148A      	ANDWF gbl_latb, W
+0402  6E81      	MOVWF gbl_portb
+0404            label51
+0404  0E64      	MOVLW 0x64
+0406  6E7C      	MOVWF delay_us_00000_arg_del
+0408  EC06F000  	CALL delay_us_00000
+040C  6A7C      	CLRF FCD_04071__0005B_115_ptmp
+040E  9093      	BCF gbl_trisb,0
+0410  527C      	MOVF FCD_04071__0005B_115_ptmp, F
+0412  E004      	BZ	label52
+0414  0E01      	MOVLW 0x01
+0416  108A      	IORWF gbl_latb, W
+0418  6E81      	MOVWF gbl_portb
+041A  D003      	BRA	label53
+041C            label52
+041C  0EFE      	MOVLW 0xFE
+041E  148A      	ANDWF gbl_latb, W
+0420  6E81      	MOVWF gbl_portb
+0422            label53
+0422  6A7C      	CLRF FCD_04071__0005B_122_ptmp
+0424  9293      	BCF gbl_trisb,1
+0426  527C      	MOVF FCD_04071__0005B_122_ptmp, F
+0428  E004      	BZ	label54
+042A  0E02      	MOVLW 0x02
+042C  108A      	IORWF gbl_latb, W
+042E  6E81      	MOVWF gbl_portb
+0430  D003      	BRA	label55
+0432            label54
+0432  0EFD      	MOVLW 0xFD
+0434  148A      	ANDWF gbl_latb, W
+0436  6E81      	MOVWF gbl_portb
+0438            label55
+0438  6A7C      	CLRF FCD_04071__0005B_129_ptmp
+043A  9493      	BCF gbl_trisb,2
+043C  527C      	MOVF FCD_04071__0005B_129_ptmp, F
+043E  E004      	BZ	label56
+0440  0E04      	MOVLW 0x04
+0442  108A      	IORWF gbl_latb, W
+0444  6E81      	MOVWF gbl_portb
+0446  D003      	BRA	label57
+0448            label56
+0448  0EFB      	MOVLW 0xFB
+044A  148A      	ANDWF gbl_latb, W
+044C  6E81      	MOVWF gbl_portb
+044E            label57
+044E  6A7C      	CLRF FCD_04071__0005B_136_ptmp
+0450  9693      	BCF gbl_trisb,3
+0452  527C      	MOVF FCD_04071__0005B_136_ptmp, F
+0454  E004      	BZ	label58
+0456  0E08      	MOVLW 0x08
+0458  108A      	IORWF gbl_latb, W
+045A  6E81      	MOVWF gbl_portb
+045C  D003      	BRA	label59
+045E            label58
+045E  0EF7      	MOVLW 0xF7
+0460  148A      	ANDWF gbl_latb, W
+0462  6E81      	MOVWF gbl_portb
+0464            label59
+0464  6A7C      	CLRF FCD_04071__0005B_143_ptmp
+0466  9893      	BCF gbl_trisb,4
+0468  527C      	MOVF FCD_04071__0005B_143_ptmp, F
+046A  E004      	BZ	label60
+046C  0E10      	MOVLW 0x10
+046E  108A      	IORWF gbl_latb, W
+0470  6E81      	MOVWF gbl_portb
+0472  D003      	BRA	label61
+0474            label60
+0474  0EEF      	MOVLW 0xEF
+0476  148A      	ANDWF gbl_latb, W
+0478  6E81      	MOVWF gbl_portb
+047A            label61
+047A  0E0F      	MOVLW 0x0F
+047C  1479      	ANDWF FCD_04071__0005B_arg_FCL_DATA, W
+047E  6E7C      	MOVWF CompTempVar2703
+0480  507C      	MOVF CompTempVar2703, W
+0482  6E7B      	MOVWF FCD_04071__0005B_1_FCL_NIBBLE
+0484  0E01      	MOVLW 0x01
+0486  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+0488  6E7C      	MOVWF FCD_04071__0005B_152_ptmp
+048A  9093      	BCF gbl_trisb,0
+048C  527C      	MOVF FCD_04071__0005B_152_ptmp, F
+048E  E004      	BZ	label62
+0490  0E01      	MOVLW 0x01
+0492  108A      	IORWF gbl_latb, W
+0494  6E81      	MOVWF gbl_portb
+0496  D003      	BRA	label63
+0498            label62
+0498  0EFE      	MOVLW 0xFE
+049A  148A      	ANDWF gbl_latb, W
+049C  6E81      	MOVWF gbl_portb
+049E            label63
+049E  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+04A0  90D8      	BCF STATUS,C
+04A2  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+04A4  0E01      	MOVLW 0x01
+04A6  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+04A8  6E7C      	MOVWF FCD_04071__0005B_161_ptmp
+04AA  9293      	BCF gbl_trisb,1
+04AC  527C      	MOVF FCD_04071__0005B_161_ptmp, F
+04AE  E004      	BZ	label64
+04B0  0E02      	MOVLW 0x02
+04B2  108A      	IORWF gbl_latb, W
+04B4  6E81      	MOVWF gbl_portb
+04B6  D003      	BRA	label65
+04B8            label64
+04B8  0EFD      	MOVLW 0xFD
+04BA  148A      	ANDWF gbl_latb, W
+04BC  6E81      	MOVWF gbl_portb
+04BE            label65
+04BE  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+04C0  90D8      	BCF STATUS,C
+04C2  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+04C4  0E01      	MOVLW 0x01
+04C6  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+04C8  6E7C      	MOVWF FCD_04071__0005B_170_ptmp
+04CA  9493      	BCF gbl_trisb,2
+04CC  527C      	MOVF FCD_04071__0005B_170_ptmp, F
+04CE  E004      	BZ	label66
+04D0  0E04      	MOVLW 0x04
+04D2  108A      	IORWF gbl_latb, W
+04D4  6E81      	MOVWF gbl_portb
+04D6  D003      	BRA	label67
+04D8            label66
+04D8  0EFB      	MOVLW 0xFB
+04DA  148A      	ANDWF gbl_latb, W
+04DC  6E81      	MOVWF gbl_portb
+04DE            label67
+04DE  527B      	MOVF FCD_04071__0005B_1_FCL_NIBBLE, F
+04E0  90D8      	BCF STATUS,C
+04E2  327B      	RRCF FCD_04071__0005B_1_FCL_NIBBLE, F
+04E4  0E01      	MOVLW 0x01
+04E6  147B      	ANDWF FCD_04071__0005B_1_FCL_NIBBLE, W
+04E8  6E7C      	MOVWF FCD_04071__0005B_179_ptmp
+04EA  9693      	BCF gbl_trisb,3
+04EC  527C      	MOVF FCD_04071__0005B_179_ptmp, F
+04EE  E004      	BZ	label68
+04F0  0E08      	MOVLW 0x08
+04F2  108A      	IORWF gbl_latb, W
+04F4  6E81      	MOVWF gbl_portb
+04F6  D003      	BRA	label69
+04F8            label68
+04F8  0EF7      	MOVLW 0xF7
+04FA  148A      	ANDWF gbl_latb, W
+04FC  6E81      	MOVWF gbl_portb
+04FE            label69
+04FE  A07A      	BTFSS FCD_04071__0005B_arg_FCL_TYPE,0
+0500  D00C      	BRA	label71
+0502  0E01      	MOVLW 0x01
+0504  6E7C      	MOVWF FCD_04071__0005B_188_ptmp
+0506  9893      	BCF gbl_trisb,4
+0508  527C      	MOVF FCD_04071__0005B_188_ptmp, F
+050A  E004      	BZ	label70
+050C  0E10      	MOVLW 0x10
+050E  108A      	IORWF gbl_latb, W
+0510  6E81      	MOVWF gbl_portb
+0512  D003      	BRA	label71
+0514            label70
+0514  0EEF      	MOVLW 0xEF
+0516  148A      	ANDWF gbl_latb, W
+0518  6E81      	MOVWF gbl_portb
+051A            label71
+051A  0E64      	MOVLW 0x64
+051C  6E7C      	MOVWF delay_us_00000_arg_del
+051E  EC06F000  	CALL delay_us_00000
+0522  0E01      	MOVLW 0x01
+0524  6E7C      	MOVWF FCD_04071__0005B_199_ptmp
+0526  9A93      	BCF gbl_trisb,5
+0528  527C      	MOVF FCD_04071__0005B_199_ptmp, F
+052A  E004      	BZ	label72
+052C  0E20      	MOVLW 0x20
+052E  108A      	IORWF gbl_latb, W
+0530  6E81      	MOVWF gbl_portb
+0532  D003      	BRA	label73
+0534            label72
+0534  0EDF      	MOVLW 0xDF
+0536  148A      	ANDWF gbl_latb, W
+0538  6E81      	MOVWF gbl_portb
+053A            label73
+053A  0E64      	MOVLW 0x64
+053C  6E7C      	MOVWF delay_us_00000_arg_del
+053E  EC06F000  	CALL delay_us_00000
+0542  6A7C      	CLRF FCD_04071__0005B_210_ptmp
+0544  9A93      	BCF gbl_trisb,5
+0546  527C      	MOVF FCD_04071__0005B_210_ptmp, F
+0548  E004      	BZ	label74
+054A  0E20      	MOVLW 0x20
+054C  108A      	IORWF gbl_latb, W
+054E  6E81      	MOVWF gbl_portb
+0550  D003      	BRA	label75
+0552            label74
+0552  0EDF      	MOVLW 0xDF
+0554  148A      	ANDWF gbl_latb, W
+0556  6E81      	MOVWF gbl_portb
+0558            label75
+0558  0E64      	MOVLW 0x64
+055A  6E7C      	MOVWF delay_us_00000_arg_del
+055C  EC06F000  	CALL delay_us_00000
+0560  0012      	RETURN
+0562            ; } FCD_04071_LCD__RawSend function end
+
+	ORG 0x00000562
+0562            FC_CAL_UAR_0006F
+0562            ; { FC_CAL_UART_Init_1 ; function begin
+0562  84AC      	BSF gbl_txsta,2
+0564  0E7F      	MOVLW 0x7F
+0566  6EAF      	MOVWF gbl_spbrg
+0568  6AAB      	CLRF gbl_rcsta
+056A  8EAB      	BSF gbl_rcsta,7
+056C  8AAC      	BSF gbl_txsta,5
+056E  88AB      	BSF gbl_rcsta,4
+0570  9A9D      	BCF gbl_pie1,5
+0572  0012      	RETURN
+0574            ; } FC_CAL_UART_Init_1 function end
+
+	ORG 0x00000574
+0574            FCI_TOSTRI_00044
+0574            ; { FCI_TOSTRING ; function begin
+0574  5066      	MOVF FCI_TOSTRI_00044_arg_iSrc1, W
+0576  6E6E      	MOVWF FCI_TOSTRI_00044_1_iSrc
+0578  5067      	MOVF FCI_TOSTRI_00044_arg_iSrc1+D'1', W
+057A  6E6F      	MOVWF FCI_TOSTRI_00044_1_iSrc+D'1'
+057C  5068      	MOVF FCI_TOSTRI_00044_arg_iSrc1+D'2', W
+057E  6E70      	MOVWF FCI_TOSTRI_00044_1_iSrc+D'2'
+0580  5069      	MOVF FCI_TOSTRI_00044_arg_iSrc1+D'3', W
+0582  6E71      	MOVWF FCI_TOSTRI_00044_1_iSrc+D'3'
+0584  6A72      	CLRF FCI_TOSTRI_00044_1_top
+0586  0ECA      	MOVLW 0xCA
+0588  6E73      	MOVWF FCI_TOSTRI_00044_1_top+D'1'
+058A  0E9A      	MOVLW 0x9A
+058C  6E74      	MOVWF FCI_TOSTRI_00044_1_top+D'2'
+058E  0E3B      	MOVLW 0x3B
+0590  6E75      	MOVWF FCI_TOSTRI_00044_1_top+D'3'
+0592  6A76      	CLRF FCI_TOSTRI_00044_1_idx
+0594  526C      	MOVF FCI_TOSTRI_00044_arg_iDst_len, F
+0596  E105      	BNZ	label76
+0598  506A      	MOVF FCI_TOSTRI_00044_arg_sDst, W
+059A  6E77      	MOVWF CompTempVarRet1863
+059C  506B      	MOVF FCI_TOSTRI_00044_arg_sDst+D'1', W
+059E  6E78      	MOVWF CompTempVarRet1863+D'1'
+05A0  0012      	RETURN
+05A2            label76
+05A2  AE71      	BTFSS FCI_TOSTRI_00044_1_iSrc+D'3',7
+05A4  D014      	BRA	label77
+05A6  506B      	MOVF FCI_TOSTRI_00044_arg_sDst+D'1', W
+05A8  6EEA      	MOVWF FSR0H
+05AA  506A      	MOVF FCI_TOSTRI_00044_arg_sDst, W
+05AC  6EE9      	MOVWF FSR0L
+05AE  6A79      	CLRF CompTempVar1865
+05B0  5079      	MOVF CompTempVar1865, W
+05B2  26E9      	ADDWF FSR0L, F
+05B4  0E2D      	MOVLW 0x2D
+05B6  6EEF      	MOVWF INDF0
+05B8  2A76      	INCF FCI_TOSTRI_00044_1_idx, F
+05BA  1E6E      	COMF FCI_TOSTRI_00044_1_iSrc, F
+05BC  1E6F      	COMF FCI_TOSTRI_00044_1_iSrc+D'1', F
+05BE  1E70      	COMF FCI_TOSTRI_00044_1_iSrc+D'2', F
+05C0  1E71      	COMF FCI_TOSTRI_00044_1_iSrc+D'3', F
+05C2  3E6E      	INCFSZ FCI_TOSTRI_00044_1_iSrc, F
+05C4  D004      	BRA	label77
+05C6  3E6F      	INCFSZ FCI_TOSTRI_00044_1_iSrc+D'1', F
+05C8  D002      	BRA	label77
+05CA  4A70      	INFSNZ FCI_TOSTRI_00044_1_iSrc+D'2', F
+05CC  2A71      	INCF FCI_TOSTRI_00044_1_iSrc+D'3', F
+05CE            label77
+05CE  6A6D      	CLRF FCI_TOSTRI_00044_1_tmp1
+05D0  506E      	MOVF FCI_TOSTRI_00044_1_iSrc, W
+05D2  106F      	IORWF FCI_TOSTRI_00044_1_iSrc+D'1', W
+05D4  1070      	IORWF FCI_TOSTRI_00044_1_iSrc+D'2', W
+05D6  1071      	IORWF FCI_TOSTRI_00044_1_iSrc+D'3', W
+05D8  0BFF      	ANDLW 0xFF
+05DA  E106      	BNZ	label78
+05DC  0E01      	MOVLW 0x01
+05DE  6E6D      	MOVWF FCI_TOSTRI_00044_1_tmp1
+05E0  6E72      	MOVWF FCI_TOSTRI_00044_1_top
+05E2  6A73      	CLRF FCI_TOSTRI_00044_1_top+D'1'
+05E4  6A74      	CLRF FCI_TOSTRI_00044_1_top+D'2'
+05E6  6A75      	CLRF FCI_TOSTRI_00044_1_top+D'3'
+05E8            label78
+05E8  506C      	MOVF FCI_TOSTRI_00044_arg_iDst_len, W
+05EA  6076      	CPFSLT FCI_TOSTRI_00044_1_idx
+05EC  D074      	BRA	label83
+05EE  5075      	MOVF FCI_TOSTRI_00044_1_top+D'3', W
+05F0  0800      	SUBLW 0x00
+05F2  E108      	BNZ	label79
+05F4  5074      	MOVF FCI_TOSTRI_00044_1_top+D'2', W
+05F6  0800      	SUBLW 0x00
+05F8  E105      	BNZ	label79
+05FA  5073      	MOVF FCI_TOSTRI_00044_1_top+D'1', W
+05FC  0800      	SUBLW 0x00
+05FE  E102      	BNZ	label79
+0600  5072      	MOVF FCI_TOSTRI_00044_1_top, W
+0602  0800      	SUBLW 0x00
+0604            label79
+0604  E268      	BC	label83
+0606  5075      	MOVF FCI_TOSTRI_00044_1_top+D'3', W
+0608  5C71      	SUBWF FCI_TOSTRI_00044_1_iSrc+D'3', W
+060A  E108      	BNZ	label80
+060C  5074      	MOVF FCI_TOSTRI_00044_1_top+D'2', W
+060E  5C70      	SUBWF FCI_TOSTRI_00044_1_iSrc+D'2', W
+0610  E105      	BNZ	label80
+0612  5073      	MOVF FCI_TOSTRI_00044_1_top+D'1', W
+0614  5C6F      	SUBWF FCI_TOSTRI_00044_1_iSrc+D'1', W
+0616  E102      	BNZ	label80
+0618  5072      	MOVF FCI_TOSTRI_00044_1_top, W
+061A  5C6E      	SUBWF FCI_TOSTRI_00044_1_iSrc, W
+061C            label80
+061C  E202      	BC	label81
+061E  526D      	MOVF FCI_TOSTRI_00044_1_tmp1, F
+0620  E041      	BZ	label82
+0622            label81
+0622  506E      	MOVF FCI_TOSTRI_00044_1_iSrc, W
+0624  6E79      	MOVWF __div_32_3_00006_arg_a
+0626  506F      	MOVF FCI_TOSTRI_00044_1_iSrc+D'1', W
+0628  6E7A      	MOVWF __div_32_3_00006_arg_a+D'1'
+062A  5070      	MOVF FCI_TOSTRI_00044_1_iSrc+D'2', W
+062C  6E7B      	MOVWF __div_32_3_00006_arg_a+D'2'
+062E  5071      	MOVF FCI_TOSTRI_00044_1_iSrc+D'3', W
+0630  6E7C      	MOVWF __div_32_3_00006_arg_a+D'3'
+0632  5072      	MOVF FCI_TOSTRI_00044_1_top, W
+0634  0100      	MOVLB 0x00
+0636  6F80      	MOVWF __div_32_3_00006_arg_b, 1
+0638  5073      	MOVF FCI_TOSTRI_00044_1_top+D'1', W
+063A  6F81      	MOVWF __div_32_3_00006_arg_b+D'1', 1
+063C  5074      	MOVF FCI_TOSTRI_00044_1_top+D'2', W
+063E  6F82      	MOVWF __div_32_3_00006_arg_b+D'2', 1
+0640  5075      	MOVF FCI_TOSTRI_00044_1_top+D'3', W
+0642  6F83      	MOVWF __div_32_3_00006_arg_b+D'3', 1
+0644  ECE6F000  	CALL __div_32_3_00006
+0648  5188      	MOVF CompTempVarRet172, W, 1
+064A  6E6D      	MOVWF FCI_TOSTRI_00044_1_tmp1
+064C  506D      	MOVF FCI_TOSTRI_00044_1_tmp1, W
+064E  0F30      	ADDLW 0x30
+0650  6E79      	MOVWF CompTempVar1871
+0652  506B      	MOVF FCI_TOSTRI_00044_arg_sDst+D'1', W
+0654  6EEA      	MOVWF FSR0H
+0656  506A      	MOVF FCI_TOSTRI_00044_arg_sDst, W
+0658  2476      	ADDWF FCI_TOSTRI_00044_1_idx, W
+065A  6EE9      	MOVWF FSR0L
+065C  5079      	MOVF CompTempVar1871, W
+065E  6EEF      	MOVWF INDF0
+0660  2A76      	INCF FCI_TOSTRI_00044_1_idx, F
+0662  506D      	MOVF FCI_TOSTRI_00044_1_tmp1, W
+0664  6E79      	MOVWF __mul_32_3_0000B_arg_a
+0666  6A7A      	CLRF __mul_32_3_0000B_arg_a+D'1'
+0668  6A7B      	CLRF __mul_32_3_0000B_arg_a+D'2'
+066A  6A7C      	CLRF __mul_32_3_0000B_arg_a+D'3'
+066C  5072      	MOVF FCI_TOSTRI_00044_1_top, W
+066E  6F80      	MOVWF __mul_32_3_0000B_arg_b, 1
+0670  5073      	MOVF FCI_TOSTRI_00044_1_top+D'1', W
+0672  6F81      	MOVWF __mul_32_3_0000B_arg_b+D'1', 1
+0674  5074      	MOVF FCI_TOSTRI_00044_1_top+D'2', W
+0676  6F82      	MOVWF __mul_32_3_0000B_arg_b+D'2', 1
+0678  5075      	MOVF FCI_TOSTRI_00044_1_top+D'3', W
+067A  6F83      	MOVWF __mul_32_3_0000B_arg_b+D'3', 1
+067C  ECA7F000  	CALL __mul_32_3_0000B
+0680  5185      	MOVF CompTempVarRet414, W, 1
+0682  6E7D      	MOVWF CompTempVar1872
+0684  5186      	MOVF CompTempVarRet414+D'1', W, 1
+0686  6E7E      	MOVWF CompTempVar1873
+0688  5187      	MOVF CompTempVarRet414+D'2', W, 1
+068A  6E7F      	MOVWF CompTempVar1874
+068C  5188      	MOVF CompTempVarRet414+D'3', W, 1
+068E  6F84      	MOVWF CompTempVar1875, 1
+0690  507D      	MOVF CompTempVar1872, W
+0692  5E6E      	SUBWF FCI_TOSTRI_00044_1_iSrc, F
+0694  507E      	MOVF CompTempVar1873, W
+0696  5A6F      	SUBWFB FCI_TOSTRI_00044_1_iSrc+D'1', F
+0698  507F      	MOVF CompTempVar1874, W
+069A  5A70      	SUBWFB FCI_TOSTRI_00044_1_iSrc+D'2', F
+069C  5184      	MOVF CompTempVar1875, W, 1
+069E  5A71      	SUBWFB FCI_TOSTRI_00044_1_iSrc+D'3', F
+06A0  0E01      	MOVLW 0x01
+06A2  6E6D      	MOVWF FCI_TOSTRI_00044_1_tmp1
+06A4            label82
+06A4  5072      	MOVF FCI_TOSTRI_00044_1_top, W
+06A6  6E79      	MOVWF __div_32_3_00006_arg_a
+06A8  5073      	MOVF FCI_TOSTRI_00044_1_top+D'1', W
+06AA  6E7A      	MOVWF __div_32_3_00006_arg_a+D'1'
+06AC  5074      	MOVF FCI_TOSTRI_00044_1_top+D'2', W
+06AE  6E7B      	MOVWF __div_32_3_00006_arg_a+D'2'
+06B0  5075      	MOVF FCI_TOSTRI_00044_1_top+D'3', W
+06B2  6E7C      	MOVWF __div_32_3_00006_arg_a+D'3'
+06B4  0E0A      	MOVLW 0x0A
+06B6  0100      	MOVLB 0x00
+06B8  6F80      	MOVWF __div_32_3_00006_arg_b, 1
+06BA  6B81      	CLRF __div_32_3_00006_arg_b+D'1', 1
+06BC  6B82      	CLRF __div_32_3_00006_arg_b+D'2', 1
+06BE  6B83      	CLRF __div_32_3_00006_arg_b+D'3', 1
+06C0  ECE6F000  	CALL __div_32_3_00006
+06C4  5188      	MOVF CompTempVarRet172, W, 1
+06C6  6E72      	MOVWF FCI_TOSTRI_00044_1_top
+06C8  5189      	MOVF CompTempVarRet172+D'1', W, 1
+06CA  6E73      	MOVWF FCI_TOSTRI_00044_1_top+D'1'
+06CC  518A      	MOVF CompTempVarRet172+D'2', W, 1
+06CE  6E74      	MOVWF FCI_TOSTRI_00044_1_top+D'2'
+06D0  518B      	MOVF CompTempVarRet172+D'3', W, 1
+06D2  6E75      	MOVWF FCI_TOSTRI_00044_1_top+D'3'
+06D4  D789      	BRA	label78
+06D6            label83
+06D6  506C      	MOVF FCI_TOSTRI_00044_arg_iDst_len, W
+06D8  6076      	CPFSLT FCI_TOSTRI_00044_1_idx
+06DA  D007      	BRA	label84
+06DC  506B      	MOVF FCI_TOSTRI_00044_arg_sDst+D'1', W
+06DE  6EEA      	MOVWF FSR0H
+06E0  506A      	MOVF FCI_TOSTRI_00044_arg_sDst, W
+06E2  2476      	ADDWF FCI_TOSTRI_00044_1_idx, W
+06E4  6EE9      	MOVWF FSR0L
+06E6  0E00      	MOVLW 0x00
+06E8  6EEF      	MOVWF INDF0
+06EA            label84
+06EA  506A      	MOVF FCI_TOSTRI_00044_arg_sDst, W
+06EC  6E77      	MOVWF CompTempVarRet1863
+06EE  506B      	MOVF FCI_TOSTRI_00044_arg_sDst+D'1', W
+06F0  6E78      	MOVWF CompTempVarRet1863+D'1'
+06F2  0012      	RETURN
+06F4            ; } FCI_TOSTRING function end
+
+	ORG 0x000006F4
+06F4            FCD_05181__00056
+06F4            ; { FCD_05181_Bluetooth1__WaitForResponse ; function begin
+06F4  6A5C      	CLRF FCD_05181__00056_1_FCL_RESP_SIZE
+06F6  6A5F      	CLRF FCD_05181__00056_1_FCL_CRL_00058
+06F8  6A60      	CLRF FCD_05181__00056_1_FCL_UNE_00059
+06FA  6A61      	CLRF FCD_05181__00056_1_FCR_RETVAL
+06FC  045A      	DECF FCD_05181__00056_arg_FCL_R_00057, W
+06FE  E018      	BZ	label90
+0700  0E02      	MOVLW 0x02
+0702  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+0704  D001      	BRA	label85
+0706  D01B      	BRA	label91
+0708            label85
+0708  0E03      	MOVLW 0x03
+070A  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+070C  D001      	BRA	label86
+070E  D025      	BRA	label92
+0710            label86
+0710  0E04      	MOVLW 0x04
+0712  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+0714  D001      	BRA	label87
+0716  D033      	BRA	label93
+0718            label87
+0718  0E05      	MOVLW 0x05
+071A  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+071C  D001      	BRA	label88
+071E  D045      	BRA	label94
+0720            label88
+0720  0E06      	MOVLW 0x06
+0722  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+0724  D001      	BRA	label89
+0726  D050      	BRA	label95
+0728            label89
+0728  0E07      	MOVLW 0x07
+072A  625A      	CPFSEQ FCD_05181__00056_arg_FCL_R_00057
+072C  D067      	BRA	label97
+072E  D059      	BRA	label96
+0730            label90
+0730  0E4F      	MOVLW 0x4F
+0732  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+0734  0E4B      	MOVLW 0x4B
+0736  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+0738  0E02      	MOVLW 0x02
+073A  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+073C  D060      	BRA	label98
+073E            label91
+073E  0E45      	MOVLW 0x45
+0740  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+0742  0E52      	MOVLW 0x52
+0744  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+0746  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+0748  0E4F      	MOVLW 0x4F
+074A  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+074C  0E52      	MOVLW 0x52
+074E  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+0750  0E20      	MOVLW 0x20
+0752  6E2A      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'5'
+0754  0E06      	MOVLW 0x06
+0756  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+0758  D052      	BRA	label98
+075A            label92
+075A  0E43      	MOVLW 0x43
+075C  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+075E  0E4F      	MOVLW 0x4F
+0760  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+0762  0E4E      	MOVLW 0x4E
+0764  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+0766  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+0768  0E45      	MOVLW 0x45
+076A  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+076C  0E43      	MOVLW 0x43
+076E  6E2A      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'5'
+0770  0E54      	MOVLW 0x54
+0772  6E2B      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'6'
+0774  0E20      	MOVLW 0x20
+0776  6E2C      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'7'
+0778  0E08      	MOVLW 0x08
+077A  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+077C  D040      	BRA	label98
+077E            label93
+077E  0E4E      	MOVLW 0x4E
+0780  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+0782  0E4F      	MOVLW 0x4F
+0784  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+0786  0E20      	MOVLW 0x20
+0788  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+078A  0E43      	MOVLW 0x43
+078C  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+078E  0E41      	MOVLW 0x41
+0790  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+0792  0E52      	MOVLW 0x52
+0794  6E2A      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'5'
+0796  6E2B      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'6'
+0798  0E49      	MOVLW 0x49
+079A  6E2C      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'7'
+079C  0E45      	MOVLW 0x45
+079E  6E2D      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'8'
+07A0  0E52      	MOVLW 0x52
+07A2  6E2E      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'9'
+07A4  0E0A      	MOVLW 0x0A
+07A6  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+07A8  D02A      	BRA	label98
+07AA            label94
+07AA  0E41      	MOVLW 0x41
+07AC  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+07AE  0E55      	MOVLW 0x55
+07B0  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+07B2  0E44      	MOVLW 0x44
+07B4  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+07B6  0E49      	MOVLW 0x49
+07B8  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+07BA  0E4F      	MOVLW 0x4F
+07BC  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+07BE  0E20      	MOVLW 0x20
+07C0  6E2A      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'5'
+07C2  0E06      	MOVLW 0x06
+07C4  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+07C6  D01B      	BRA	label98
+07C8            label95
+07C8  0E50      	MOVLW 0x50
+07CA  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+07CC  0E41      	MOVLW 0x41
+07CE  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+07D0  0E49      	MOVLW 0x49
+07D2  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+07D4  0E52      	MOVLW 0x52
+07D6  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+07D8  0E20      	MOVLW 0x20
+07DA  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+07DC  0E05      	MOVLW 0x05
+07DE  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+07E0  D00E      	BRA	label98
+07E2            label96
+07E2  0E52      	MOVLW 0x52
+07E4  6E25      	MOVWF gbl_FCV_05181_Bluetooth1___00004
+07E6  0E49      	MOVLW 0x49
+07E8  6E26      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'1'
+07EA  0E4E      	MOVLW 0x4E
+07EC  6E27      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'2'
+07EE  0E47      	MOVLW 0x47
+07F0  6E28      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'3'
+07F2  0E20      	MOVLW 0x20
+07F4  6E29      	MOVWF gbl_FCV_05181_Bluetooth1___00004+D'4'
+07F6  0E05      	MOVLW 0x05
+07F8  6E5C      	MOVWF FCD_05181__00056_1_FCL_RESP_SIZE
+07FA  D001      	BRA	label98
+07FC            label97
+07FC  6861      	SETF FCD_05181__00056_1_FCR_RETVAL
+07FE            label98
+07FE  5261      	MOVF FCD_05181__00056_1_FCR_RETVAL, F
+0800  A4D8      	BTFSS STATUS,Z
+0802  D064      	BRA	label113
+0804  6A57      	CLRF gbl_FCV_05181_Bluetooth1___00000
+0806  6A5E      	CLRF FCD_05181__00056_1_FCL_RX_PTR
+0808            label99
+0808  0E03      	MOVLW 0x03
+080A  605F      	CPFSLT FCD_05181__00056_1_FCL_CRL_00058
+080C  D05B      	BRA	label112
+080E  0E4B      	MOVLW 0x4B
+0810  6E62      	MOVWF FCD_05181__00075_arg_FCL_TIMEOUT
+0812  EC28F001  	CALL FCD_05181__00075
+0816  5066      	MOVF CompTempVarRet2747, W
+0818  6E5D      	MOVWF FCD_05181__00056_1_FCL_CH
+081A            label100
+081A  5259      	MOVF gbl_FCV_05181_Bluetooth1___00003, F
+081C  E010      	BZ	label102
+081E  525B      	MOVF FCD_05181__00056_arg_FCL_TIMEOUT, F
+0820  E009      	BZ	label101
+0822  045B      	DECF FCD_05181__00056_arg_FCL_TIMEOUT, W
+0824  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0826  0EC8      	MOVLW 0xC8
+0828  6E62      	MOVWF FCD_05181__00075_arg_FCL_TIMEOUT
+082A  EC28F001  	CALL FCD_05181__00075
+082E  5066      	MOVF CompTempVarRet2747, W
+0830  6E5D      	MOVWF FCD_05181__00056_1_FCL_CH
+0832  D7F3      	BRA	label100
+0834            label101
+0834  6861      	SETF FCD_05181__00056_1_FCR_RETVAL
+0836  6A59      	CLRF gbl_FCV_05181_Bluetooth1___00003
+0838  0E03      	MOVLW 0x03
+083A  6E5F      	MOVWF FCD_05181__00056_1_FCL_CRL_00058
+083C  D7EE      	BRA	label100
+083E            label102
+083E  5261      	MOVF FCD_05181__00056_1_FCR_RETVAL, F
+0840  E1E3      	BNZ	label99
+0842  0E0D      	MOVLW 0x0D
+0844  625D      	CPFSEQ FCD_05181__00056_1_FCL_CH
+0846  D001      	BRA	label103
+0848  D004      	BRA	label104
+084A            label103
+084A  0E0A      	MOVLW 0x0A
+084C  625D      	CPFSEQ FCD_05181__00056_1_FCL_CH
+084E  D009      	BRA	label106
+0850  D004      	BRA	label105
+0852            label104
+0852  0E01      	MOVLW 0x01
+0854  105F      	IORWF FCD_05181__00056_1_FCL_CRL_00058, W
+0856  6E5F      	MOVWF FCD_05181__00056_1_FCL_CRL_00058
+0858  D026      	BRA	label110
+085A            label105
+085A  0E02      	MOVLW 0x02
+085C  105F      	IORWF FCD_05181__00056_1_FCL_CRL_00058, W
+085E  6E5F      	MOVWF FCD_05181__00056_1_FCL_CRL_00058
+0860  D022      	BRA	label110
+0862            label106
+0862  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+0866  50E9      	MOVF FSR0L, W
+0868  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+086A  26E9      	ADDWF FSR0L, F
+086C  505D      	MOVF FCD_05181__00056_1_FCL_CH, W
+086E  6EEF      	MOVWF INDF0
+0870  2857      	INCF gbl_FCV_05181_Bluetooth1___00000, W
+0872  6E57      	MOVWF gbl_FCV_05181_Bluetooth1___00000
+0874  0E20      	MOVLW 0x20
+0876  6057      	CPFSLT gbl_FCV_05181_Bluetooth1___00000
+0878  D001      	BRA	label107
+087A  D005      	BRA	label108
+087C            label107
+087C  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+087E  6E61      	MOVWF FCD_05181__00056_1_FCR_RETVAL
+0880  0E03      	MOVLW 0x03
+0882  6E5F      	MOVWF FCD_05181__00056_1_FCL_CRL_00058
+0884  D010      	BRA	label110
+0886            label108
+0886  5260      	MOVF FCD_05181__00056_1_FCL_UNE_00059, F
+0888  E10E      	BNZ	label110
+088A  6A5F      	CLRF FCD_05181__00056_1_FCL_CRL_00058
+088C  EE00F025  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00004
+0890  50E9      	MOVF FSR0L, W
+0892  505E      	MOVF FCD_05181__00056_1_FCL_RX_PTR, W
+0894  26E9      	ADDWF FSR0L, F
+0896  50EF      	MOVF INDF0, W
+0898  625D      	CPFSEQ FCD_05181__00056_1_FCL_CH
+089A  62EF      	CPFSEQ INDF0
+089C  D002      	BRA	label109
+089E  0E01      	MOVLW 0x01
+08A0  6E60      	MOVWF FCD_05181__00056_1_FCL_UNE_00059
+08A2            label109
+08A2  285E      	INCF FCD_05181__00056_1_FCL_RX_PTR, W
+08A4  6E5E      	MOVWF FCD_05181__00056_1_FCL_RX_PTR
+08A6            label110
+08A6  6A63      	CLRF CompTempVar2692
+08A8  2A63      	INCF CompTempVar2692, F
+08AA  6660      	TSTFSZ FCD_05181__00056_1_FCL_UNE_00059
+08AC  9063      	BCF CompTempVar2692,0
+08AE  6A62      	CLRF CompTempVar2691
+08B0  505C      	MOVF FCD_05181__00056_1_FCL_RESP_SIZE, W
+08B2  625E      	CPFSEQ FCD_05181__00056_1_FCL_RX_PTR
+08B4  D001      	BRA	label111
+08B6  2A62      	INCF CompTempVar2691, F
+08B8            label111
+08B8  5062      	MOVF CompTempVar2691, W
+08BA  1463      	ANDWF CompTempVar2692, W
+08BC  E0A5      	BZ	label99
+08BE  0E03      	MOVLW 0x03
+08C0  6E5F      	MOVWF FCD_05181__00056_1_FCL_CRL_00058
+08C2  D7A2      	BRA	label99
+08C4            label112
+08C4  5260      	MOVF FCD_05181__00056_1_FCL_UNE_00059, F
+08C6  E002      	BZ	label113
+08C8  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+08CA  6E61      	MOVWF FCD_05181__00056_1_FCR_RETVAL
+08CC            label113
+08CC  5061      	MOVF FCD_05181__00056_1_FCR_RETVAL, W
+08CE  6E62      	MOVWF CompTempVarRet2648
+08D0  0012      	RETURN
+08D2            ; } FCD_05181_Bluetooth1__WaitForResponse function end
+
+	ORG 0x000008D2
+08D2            FCD_05181__00054
+08D2            ; { FCD_05181_Bluetooth1__SendCommand ; function begin
+08D2  6A5C      	CLRF FCD_05181__00054_1_FCL_IDX
+08D4  5258      	MOVF gbl_FCV_05181_Bluetooth1___00002, F
+08D6  E029      	BZ	label118
+08D8            label114
+08D8  5058      	MOVF gbl_FCV_05181_Bluetooth1___00002, W
+08DA  605C      	CPFSLT FCD_05181__00054_1_FCL_IDX
+08DC  D014      	BRA	label116
+08DE  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+08E2  50E9      	MOVF FSR0L, W
+08E4  505C      	MOVF FCD_05181__00054_1_FCL_IDX, W
+08E6  26E9      	ADDWF FSR0L, F
+08E8  50EF      	MOVF INDF0, W
+08EA  6E5F      	MOVWF FCD_05181__00074_arg_FCL_BYTEVAL
+08EC  EC4DF001  	CALL FCD_05181__00074
+08F0  525A      	MOVF FCD_05181__00054_arg_FCL_E_00055, F
+08F2  E006      	BZ	label115
+08F4  0EC8      	MOVLW 0xC8
+08F6  6E62      	MOVWF FCD_05181__00075_arg_FCL_TIMEOUT
+08F8  EC28F001  	CALL FCD_05181__00075
+08FC  5066      	MOVF CompTempVarRet2747, W
+08FE  6E5D      	MOVWF FCD_05181__00054_1_FCL_DUMMY
+0900            label115
+0900  285C      	INCF FCD_05181__00054_1_FCL_IDX, W
+0902  6E5C      	MOVWF FCD_05181__00054_1_FCL_IDX
+0904  D7E9      	BRA	label114
+0906            label116
+0906  525B      	MOVF FCD_05181__00054_arg_FCL_SENDCR, F
+0908  E00C      	BZ	label117
+090A  0E0D      	MOVLW 0x0D
+090C  6E5F      	MOVWF FCD_05181__00074_arg_FCL_BYTEVAL
+090E  EC4DF001  	CALL FCD_05181__00074
+0912  525A      	MOVF FCD_05181__00054_arg_FCL_E_00055, F
+0914  E006      	BZ	label117
+0916  0EC8      	MOVLW 0xC8
+0918  6E62      	MOVWF FCD_05181__00075_arg_FCL_TIMEOUT
+091A  EC28F001  	CALL FCD_05181__00075
+091E  5066      	MOVF CompTempVarRet2747, W
+0920  6E5D      	MOVWF FCD_05181__00054_1_FCL_DUMMY
+0922            label117
+0922  6A58      	CLRF gbl_FCV_05181_Bluetooth1___00002
+0924  0E01      	MOVLW 0x01
+0926  6E5E      	MOVWF FCD_05181__00054_1_FCR_RETVAL
+0928  D001      	BRA	label119
+092A            label118
+092A  6A5E      	CLRF FCD_05181__00054_1_FCR_RETVAL
+092C            label119
+092C  505E      	MOVF FCD_05181__00054_1_FCR_RETVAL, W
+092E  6E5F      	MOVWF CompTempVarRet2644
+0930  0012      	RETURN
+0932            ; } FCD_05181_Bluetooth1__SendCommand function end
+
+	ORG 0x00000932
+0932            FCD_05181__00053
+0932            ; { FCD_05181_Bluetooth1__CreateCommandString ; function begin
+0932  6A72      	CLRF FCD_05181__00053_1_FCL_IDX
+0934  505A      	MOVF FCD_05181__00053_arg_FCL_DATA, W
+0936  6E79      	MOVWF FCI_GETLEN_00040_arg_sStr1
+0938  505B      	MOVF FCD_05181__00053_arg_FCL_DATA+D'1', W
+093A  6E7A      	MOVWF FCI_GETLEN_00040_arg_sStr1+D'1'
+093C  506F      	MOVF FCD_05181__00053_arg_FCLsz_DATA, W
+093E  6E7B      	MOVWF FCI_GETLEN_00040_arg_iStr1_len
+0940  EC18F001  	CALL FCI_GETLEN_00040
+0944  507D      	MOVF CompTempVarRet1850, W
+0946  6E71      	MOVWF FCD_05181__00053_1_FCL_LEN
+0948  0E20      	MOVLW 0x20
+094A  6071      	CPFSLT FCD_05181__00053_1_FCL_LEN
+094C  D01C      	BRA	label122
+094E            label120
+094E  5071      	MOVF FCD_05181__00053_1_FCL_LEN, W
+0950  6072      	CPFSLT FCD_05181__00053_1_FCL_IDX
+0952  D014      	BRA	label121
+0954  505B      	MOVF FCD_05181__00053_arg_FCL_DATA+D'1', W
+0956  6EEA      	MOVWF FSR0H
+0958  505A      	MOVF FCD_05181__00053_arg_FCL_DATA, W
+095A  6EE9      	MOVWF FSR0L
+095C  5072      	MOVF FCD_05181__00053_1_FCL_IDX, W
+095E  6E74      	MOVWF CompTempVar2642
+0960  5074      	MOVF CompTempVar2642, W
+0962  26E9      	ADDWF FSR0L, F
+0964  50EF      	MOVF INDF0, W
+0966  6E75      	MOVWF CompTempVar2643
+0968  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+096C  50E9      	MOVF FSR0L, W
+096E  5072      	MOVF FCD_05181__00053_1_FCL_IDX, W
+0970  26E9      	ADDWF FSR0L, F
+0972  5075      	MOVF CompTempVar2643, W
+0974  6EEF      	MOVWF INDF0
+0976  2872      	INCF FCD_05181__00053_1_FCL_IDX, W
+0978  6E72      	MOVWF FCD_05181__00053_1_FCL_IDX
+097A  D7E9      	BRA	label120
+097C            label121
+097C  5071      	MOVF FCD_05181__00053_1_FCL_LEN, W
+097E  6E58      	MOVWF gbl_FCV_05181_Bluetooth1___00002
+0980  0E01      	MOVLW 0x01
+0982  6E73      	MOVWF FCD_05181__00053_1_FCR_RETVAL
+0984  D001      	BRA	label123
+0986            label122
+0986  6A73      	CLRF FCD_05181__00053_1_FCR_RETVAL
+0988            label123
+0988  5073      	MOVF FCD_05181__00053_1_FCR_RETVAL, W
+098A  6E74      	MOVWF CompTempVarRet2639
+098C  0012      	RETURN
+098E            ; } FCD_05181_Bluetooth1__CreateCommandString function end
+
+	ORG 0x0000098E
+098E            FCD_04071__0005C
+098E            ; { FCD_04071_LCD__PrintString ; function begin
+098E  6A77      	CLRF FCD_04071__0005C_1_FCL_IDX
+0990  5066      	MOVF FCD_04071__0005C_arg_FCL_TEXT, W
+0992  6E79      	MOVWF FCI_GETLEN_00040_arg_sStr1
+0994  5067      	MOVF FCD_04071__0005C_arg_FCL_TEXT+D'1', W
+0996  6E7A      	MOVWF FCI_GETLEN_00040_arg_sStr1+D'1'
+0998  5075      	MOVF FCD_04071__0005C_arg_FCLsz_TEXT, W
+099A  6E7B      	MOVWF FCI_GETLEN_00040_arg_iStr1_len
+099C  EC18F001  	CALL FCI_GETLEN_00040
+09A0  507D      	MOVF CompTempVarRet1850, W
+09A2  6E78      	MOVWF FCD_04071__0005C_1_FCL_COUNT
+09A4            label124
+09A4  5078      	MOVF FCD_04071__0005C_1_FCL_COUNT, W
+09A6  6077      	CPFSLT FCD_04071__0005C_1_FCL_IDX
+09A8  0012      	RETURN
+09AA  5067      	MOVF FCD_04071__0005C_arg_FCL_TEXT+D'1', W
+09AC  6EEA      	MOVWF FSR0H
+09AE  5066      	MOVF FCD_04071__0005C_arg_FCL_TEXT, W
+09B0  2477      	ADDWF FCD_04071__0005C_1_FCL_IDX, W
+09B2  6EE9      	MOVWF FSR0L
+09B4  50EF      	MOVF INDF0, W
+09B6  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+09B8  807A      	BSF FCD_04071__0005B_arg_FCL_TYPE,0
+09BA  EC53F001  	CALL FCD_04071__0005B
+09BE  2877      	INCF FCD_04071__0005C_1_FCL_IDX, W
+09C0  6E77      	MOVWF FCD_04071__0005C_1_FCL_IDX
+09C2  D7F0      	BRA	label124
+09C4            ; } FCD_04071_LCD__PrintString function end
+
+	ORG 0x000009C4
+09C4            FCD_04071__0005A
+09C4            ; { FCD_04071_LCD__Clear ; function begin
+09C4  0E01      	MOVLW 0x01
+09C6  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+09C8  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+09CA  EC53F001  	CALL FCD_04071__0005B
+09CE  0E02      	MOVLW 0x02
+09D0  6E5C      	MOVWF delay_ms_00000_arg_del
+09D2  EC0BF000  	CALL delay_ms_00000
+09D6  0E02      	MOVLW 0x02
+09D8  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+09DA  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+09DC  EC53F001  	CALL FCD_04071__0005B
+09E0  0E02      	MOVLW 0x02
+09E2  6E5C      	MOVWF delay_ms_00000_arg_del
+09E4  EC0BF000  	CALL delay_ms_00000
+09E8  0012      	RETURN
+09EA            ; } FCD_04071_LCD__Clear function end
+
+	ORG 0x000009EA
+09EA            FC_CAL_Por_00037
+09EA            ; { FC_CAL_Port_In_DDR__x ; function begin
+09EA  505D      	MOVF FC_CAL_Por_00037_arg_Tris+D'1', W
+09EC  6EEA      	MOVWF FSR0H
+09EE  505C      	MOVF FC_CAL_Por_00037_arg_Tris, W
+09F0  6EE9      	MOVWF FSR0L
+09F2  505E      	MOVF FC_CAL_Por_00037_arg_InMask, W
+09F4  10EF      	IORWF INDF0, W
+09F6  6E60      	MOVWF CompTempVar1825
+09F8  5060      	MOVF CompTempVar1825, W
+09FA  6EEF      	MOVWF INDF0
+09FC  505B      	MOVF FC_CAL_Por_00037_arg_Port+D'1', W
+09FE  6EEA      	MOVWF FSR0H
+0A00  505A      	MOVF FC_CAL_Por_00037_arg_Port, W
+0A02  6EE9      	MOVWF FSR0L
+0A04  505E      	MOVF FC_CAL_Por_00037_arg_InMask, W
+0A06  14EF      	ANDWF INDF0, W
+0A08  6E60      	MOVWF CompTempVarRet1822
+0A0A  505F      	MOVF FC_CAL_Por_00037_arg_Shift, W
+0A0C  6E61      	MOVWF CompTempVar1827
+0A0E            label125
+0A0E  B4D8      	BTFSC STATUS,Z
+0A10  0012      	RETURN
+0A12  90D8      	BCF STATUS,C
+0A14  3260      	RRCF CompTempVarRet1822, F
+0A16  0661      	DECF CompTempVar1827, F
+0A18  D7FA      	BRA	label125
+0A1A            ; } FC_CAL_Port_In_DDR__x function end
+
+	ORG 0x00000A1A
+0A1A            FCM_ESCAPE_00000
+0A1A            ; { FCM_ESCAPE ; function begin
+0A1A  0E96      	MOVLW 0x96
+0A1C  6E5C      	MOVWF delay_ms_00000_arg_del
+0A1E  EC0BF000  	CALL delay_ms_00000
+0A22  0E5E      	MOVLW 0x5E
+0A24  6E5C      	MOVWF CompTempVar2633
+0A26  6A5D      	CLRF CompTempVar2633+D'1'
+0A28  0E00      	MOVLW HIGH(CompTempVar2633+D'0')
+0A2A  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0A2C  0E5C      	MOVLW LOW(CompTempVar2633+D'0')
+0A2E  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0A30  0E02      	MOVLW 0x02
+0A32  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0A34  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0A36  EC99F004  	CALL FCD_05181__00053
+0A3A  5074      	MOVF CompTempVarRet2639, W
+0A3C  6E55      	MOVWF gbl_FCV_RET
+0A3E  6A5A      	CLRF FCD_05181__00054_arg_FCL_E_00055
+0A40  6A5B      	CLRF FCD_05181__00054_arg_FCL_SENDCR
+0A42  EC69F004  	CALL FCD_05181__00054
+0A46  505F      	MOVF CompTempVarRet2644, W
+0A48  6E55      	MOVWF gbl_FCV_RET
+0A4A  0E96      	MOVLW 0x96
+0A4C  6E5C      	MOVWF delay_ms_00000_arg_del
+0A4E  EC0BF000  	CALL delay_ms_00000
+0A52  0E5E      	MOVLW 0x5E
+0A54  6E5C      	MOVWF CompTempVar2635
+0A56  6A5D      	CLRF CompTempVar2635+D'1'
+0A58  0E00      	MOVLW HIGH(CompTempVar2635+D'0')
+0A5A  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0A5C  0E5C      	MOVLW LOW(CompTempVar2635+D'0')
+0A5E  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0A60  0E02      	MOVLW 0x02
+0A62  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0A64  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0A66  EC99F004  	CALL FCD_05181__00053
+0A6A  5074      	MOVF CompTempVarRet2639, W
+0A6C  6E55      	MOVWF gbl_FCV_RET
+0A6E  6A5A      	CLRF FCD_05181__00054_arg_FCL_E_00055
+0A70  6A5B      	CLRF FCD_05181__00054_arg_FCL_SENDCR
+0A72  EC69F004  	CALL FCD_05181__00054
+0A76  0E96      	MOVLW 0x96
+0A78  6E5C      	MOVWF delay_ms_00000_arg_del
+0A7A  EC0BF000  	CALL delay_ms_00000
+0A7E  0E5E      	MOVLW 0x5E
+0A80  6E5C      	MOVWF CompTempVar2637
+0A82  6A5D      	CLRF CompTempVar2637+D'1'
+0A84  0E00      	MOVLW HIGH(CompTempVar2637+D'0')
+0A86  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0A88  0E5C      	MOVLW LOW(CompTempVar2637+D'0')
+0A8A  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0A8C  0E02      	MOVLW 0x02
+0A8E  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0A90  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0A92  EC99F004  	CALL FCD_05181__00053
+0A96  5074      	MOVF CompTempVarRet2639, W
+0A98  6E55      	MOVWF gbl_FCV_RET
+0A9A  6A5A      	CLRF FCD_05181__00054_arg_FCL_E_00055
+0A9C  6A5B      	CLRF FCD_05181__00054_arg_FCL_SENDCR
+0A9E  EC69F004  	CALL FCD_05181__00054
+0AA2  505F      	MOVF CompTempVarRet2644, W
+0AA4  6E55      	MOVWF gbl_FCV_RET
+0AA6  0E96      	MOVLW 0x96
+0AA8  6E5C      	MOVWF delay_ms_00000_arg_del
+0AAA  EC0BF000  	CALL delay_ms_00000
+0AAE  0E01      	MOVLW 0x01
+0AB0  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0AB2  0EC8      	MOVLW 0xC8
+0AB4  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0AB6  EC7AF003  	CALL FCD_05181__00056
+0ABA  5062      	MOVF CompTempVarRet2648, W
+0ABC  6E55      	MOVWF gbl_FCV_RET
+0ABE  0012      	RETURN
+0AC0            ; } FCM_ESCAPE function end
+
+	ORG 0x00000AC0
+0AC0            FCD_05181__0007A
+0AC0            ; { FCD_05181_Bluetooth1__Initialise ; function begin
+0AC0  6A58      	CLRF gbl_FCV_05181_Bluetooth1___00002
+0AC2  6A57      	CLRF gbl_FCV_05181_Bluetooth1___00000
+0AC4  ECB1F002  	CALL FC_CAL_UAR_0006F
+0AC8  0012      	RETURN
+0ACA            ; } FCD_05181_Bluetooth1__Initialise function end
+
+	ORG 0x00000ACA
+0ACA            FCD_05181__00078
+0ACA            ; { FCD_05181_Bluetooth1__CreateCommand ; function begin
+0ACA  0E20      	MOVLW 0x20
+0ACC  6058      	CPFSLT gbl_FCV_05181_Bluetooth1___00002
+0ACE  D00C      	BRA	label126
+0AD0  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+0AD4  50E9      	MOVF FSR0L, W
+0AD6  5058      	MOVF gbl_FCV_05181_Bluetooth1___00002, W
+0AD8  26E9      	ADDWF FSR0L, F
+0ADA  505A      	MOVF FCD_05181__00078_arg_FCL_C_00079, W
+0ADC  6EEF      	MOVWF INDF0
+0ADE  2858      	INCF gbl_FCV_05181_Bluetooth1___00002, W
+0AE0  6E58      	MOVWF gbl_FCV_05181_Bluetooth1___00002
+0AE2  0E01      	MOVLW 0x01
+0AE4  6E5B      	MOVWF FCD_05181__00078_1_FCR_RETVAL
+0AE6  D001      	BRA	label127
+0AE8            label126
+0AE8  6A5B      	CLRF FCD_05181__00078_1_FCR_RETVAL
+0AEA            label127
+0AEA  505B      	MOVF FCD_05181__00078_1_FCR_RETVAL, W
+0AEC  6E5C      	MOVWF CompTempVarRet2750
+0AEE  0012      	RETURN
+0AF0            ; } FCD_05181_Bluetooth1__CreateCommand function end
+
+	ORG 0x00000AF0
+0AF0            FCD_05181__00076
+0AF0            ; { FCD_05181_Bluetooth1__StringReceive ; function begin
+0AF0  6A5B      	CLRF FCD_05181__00076_1_FCL_CRL_00077
+0AF2  6A5C      	CLRF FCD_05181__00076_1_FCL_TIMEOUT
+0AF4  6A57      	CLRF gbl_FCV_05181_Bluetooth1___00000
+0AF6  6A59      	CLRF gbl_FCV_05181_Bluetooth1___00003
+0AF8            label128
+0AF8  505B      	MOVF FCD_05181__00076_1_FCL_CRL_00077, W
+0AFA  0802      	SUBLW 0x02
+0AFC  E331      	BNC	label136
+0AFE  0EC8      	MOVLW 0xC8
+0B00  6E62      	MOVWF FCD_05181__00075_arg_FCL_TIMEOUT
+0B02  EC28F001  	CALL FCD_05181__00075
+0B06  5066      	MOVF CompTempVarRet2747, W
+0B08  6E5A      	MOVWF FCD_05181__00076_1_FCL_CH
+0B0A  5259      	MOVF gbl_FCV_05181_Bluetooth1___00003, F
+0B0C  E120      	BNZ	label134
+0B0E  0E0D      	MOVLW 0x0D
+0B10  625A      	CPFSEQ FCD_05181__00076_1_FCL_CH
+0B12  D001      	BRA	label129
+0B14  D004      	BRA	label130
+0B16            label129
+0B16  0E0A      	MOVLW 0x0A
+0B18  625A      	CPFSEQ FCD_05181__00076_1_FCL_CH
+0B1A  D009      	BRA	label132
+0B1C  D004      	BRA	label131
+0B1E            label130
+0B1E  0E01      	MOVLW 0x01
+0B20  105B      	IORWF FCD_05181__00076_1_FCL_CRL_00077, W
+0B22  6E5B      	MOVWF FCD_05181__00076_1_FCL_CRL_00077
+0B24  D01A      	BRA	label135
+0B26            label131
+0B26  0E02      	MOVLW 0x02
+0B28  105B      	IORWF FCD_05181__00076_1_FCL_CRL_00077, W
+0B2A  6E5B      	MOVWF FCD_05181__00076_1_FCL_CRL_00077
+0B2C  D016      	BRA	label135
+0B2E            label132
+0B2E  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+0B32  50E9      	MOVF FSR0L, W
+0B34  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+0B36  26E9      	ADDWF FSR0L, F
+0B38  505A      	MOVF FCD_05181__00076_1_FCL_CH, W
+0B3A  6EEF      	MOVWF INDF0
+0B3C  2857      	INCF gbl_FCV_05181_Bluetooth1___00000, W
+0B3E  6E57      	MOVWF gbl_FCV_05181_Bluetooth1___00000
+0B40  6A5C      	CLRF FCD_05181__00076_1_FCL_TIMEOUT
+0B42  0E20      	MOVLW 0x20
+0B44  6057      	CPFSLT gbl_FCV_05181_Bluetooth1___00000
+0B46  D001      	BRA	label133
+0B48  D008      	BRA	label135
+0B4A            label133
+0B4A  685B      	SETF FCD_05181__00076_1_FCL_CRL_00077
+0B4C  D006      	BRA	label135
+0B4E            label134
+0B4E  285C      	INCF FCD_05181__00076_1_FCL_TIMEOUT, W
+0B50  6E5C      	MOVWF FCD_05181__00076_1_FCL_TIMEOUT
+0B52  0E01      	MOVLW 0x01
+0B54  645C      	CPFSGT FCD_05181__00076_1_FCL_TIMEOUT
+0B56  D001      	BRA	label135
+0B58  685B      	SETF FCD_05181__00076_1_FCL_CRL_00077
+0B5A            label135
+0B5A  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+0B5C  6E5D      	MOVWF FCD_05181__00076_1_FCR_RETVAL
+0B5E  D7CC      	BRA	label128
+0B60            label136
+0B60  505D      	MOVF FCD_05181__00076_1_FCR_RETVAL, W
+0B62  6E5E      	MOVWF CompTempVarRet2748
+0B64  0012      	RETURN
+0B66            ; } FCD_05181_Bluetooth1__StringReceive function end
+
+	ORG 0x00000B66
+0B66            FCD_05181__00071
+0B66            ; { FCD_05181_Bluetooth1__StringRead ; function begin
+0B66  5057      	MOVF gbl_FCV_05181_Bluetooth1___00000, W
+0B68  605A      	CPFSLT FCD_05181__00071_arg_FCL_IDX
+0B6A  D008      	BRA	label137
+0B6C  EE00F005  	LFSR 0x00, gbl_FCV_05181_Bluetooth1___00001
+0B70  50E9      	MOVF FSR0L, W
+0B72  505A      	MOVF FCD_05181__00071_arg_FCL_IDX, W
+0B74  26E9      	ADDWF FSR0L, F
+0B76  50EF      	MOVF INDF0, W
+0B78  6E5B      	MOVWF FCD_05181__00071_1_FCR_RETVAL
+0B7A  D001      	BRA	label138
+0B7C            label137
+0B7C  6A5B      	CLRF FCD_05181__00071_1_FCR_RETVAL
+0B7E            label138
+0B7E  505B      	MOVF FCD_05181__00071_1_FCR_RETVAL, W
+0B80  6E5C      	MOVWF CompTempVarRet2731
+0B82  0012      	RETURN
+0B84            ; } FCD_05181_Bluetooth1__StringRead function end
+
+	ORG 0x00000B84
+0B84            FCD_04071__00069
+0B84            ; { FCD_04071_LCD__Start ; function begin
+0B84  6A5A      	CLRF FCD_04071__00069_2_ptmp
+0B86  9093      	BCF gbl_trisb,0
+0B88  525A      	MOVF FCD_04071__00069_2_ptmp, F
+0B8A  E004      	BZ	label139
+0B8C  0E01      	MOVLW 0x01
+0B8E  108A      	IORWF gbl_latb, W
+0B90  6E81      	MOVWF gbl_portb
+0B92  D003      	BRA	label140
+0B94            label139
+0B94  0EFE      	MOVLW 0xFE
+0B96  148A      	ANDWF gbl_latb, W
+0B98  6E81      	MOVWF gbl_portb
+0B9A            label140
+0B9A  6A5A      	CLRF FCD_04071__00069_9_ptmp
+0B9C  9293      	BCF gbl_trisb,1
+0B9E  525A      	MOVF FCD_04071__00069_9_ptmp, F
+0BA0  E004      	BZ	label141
+0BA2  0E02      	MOVLW 0x02
+0BA4  108A      	IORWF gbl_latb, W
+0BA6  6E81      	MOVWF gbl_portb
+0BA8  D003      	BRA	label142
+0BAA            label141
+0BAA  0EFD      	MOVLW 0xFD
+0BAC  148A      	ANDWF gbl_latb, W
+0BAE  6E81      	MOVWF gbl_portb
+0BB0            label142
+0BB0  6A5A      	CLRF FCD_04071__00069_16_ptmp
+0BB2  9493      	BCF gbl_trisb,2
+0BB4  525A      	MOVF FCD_04071__00069_16_ptmp, F
+0BB6  E004      	BZ	label143
+0BB8  0E04      	MOVLW 0x04
+0BBA  108A      	IORWF gbl_latb, W
+0BBC  6E81      	MOVWF gbl_portb
+0BBE  D003      	BRA	label144
+0BC0            label143
+0BC0  0EFB      	MOVLW 0xFB
+0BC2  148A      	ANDWF gbl_latb, W
+0BC4  6E81      	MOVWF gbl_portb
+0BC6            label144
+0BC6  6A5A      	CLRF FCD_04071__00069_23_ptmp
+0BC8  9693      	BCF gbl_trisb,3
+0BCA  525A      	MOVF FCD_04071__00069_23_ptmp, F
+0BCC  E004      	BZ	label145
+0BCE  0E08      	MOVLW 0x08
+0BD0  108A      	IORWF gbl_latb, W
+0BD2  6E81      	MOVWF gbl_portb
+0BD4  D003      	BRA	label146
+0BD6            label145
+0BD6  0EF7      	MOVLW 0xF7
+0BD8  148A      	ANDWF gbl_latb, W
+0BDA  6E81      	MOVWF gbl_portb
+0BDC            label146
+0BDC  6A5A      	CLRF FCD_04071__00069_30_ptmp
+0BDE  9893      	BCF gbl_trisb,4
+0BE0  525A      	MOVF FCD_04071__00069_30_ptmp, F
+0BE2  E004      	BZ	label147
+0BE4  0E10      	MOVLW 0x10
+0BE6  108A      	IORWF gbl_latb, W
+0BE8  6E81      	MOVWF gbl_portb
+0BEA  D003      	BRA	label148
+0BEC            label147
+0BEC  0EEF      	MOVLW 0xEF
+0BEE  148A      	ANDWF gbl_latb, W
+0BF0  6E81      	MOVWF gbl_portb
+0BF2            label148
+0BF2  6A5A      	CLRF FCD_04071__00069_37_ptmp
+0BF4  9A93      	BCF gbl_trisb,5
+0BF6  525A      	MOVF FCD_04071__00069_37_ptmp, F
+0BF8  E004      	BZ	label149
+0BFA  0E20      	MOVLW 0x20
+0BFC  108A      	IORWF gbl_latb, W
+0BFE  6E81      	MOVWF gbl_portb
+0C00  D003      	BRA	label150
+0C02            label149
+0C02  0EDF      	MOVLW 0xDF
+0C04  148A      	ANDWF gbl_latb, W
+0C06  6E81      	MOVWF gbl_portb
+0C08            label150
+0C08  0E0C      	MOVLW 0x0C
+0C0A  6E5C      	MOVWF delay_ms_00000_arg_del
+0C0C  EC0BF000  	CALL delay_ms_00000
+0C10  0E33      	MOVLW 0x33
+0C12  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C14  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C16  EC53F001  	CALL FCD_04071__0005B
+0C1A  0E02      	MOVLW 0x02
+0C1C  6E5C      	MOVWF delay_ms_00000_arg_del
+0C1E  EC0BF000  	CALL delay_ms_00000
+0C22  0E33      	MOVLW 0x33
+0C24  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C26  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C28  EC53F001  	CALL FCD_04071__0005B
+0C2C  0E02      	MOVLW 0x02
+0C2E  6E5C      	MOVWF delay_ms_00000_arg_del
+0C30  EC0BF000  	CALL delay_ms_00000
+0C34  0E32      	MOVLW 0x32
+0C36  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C38  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C3A  EC53F001  	CALL FCD_04071__0005B
+0C3E  0E02      	MOVLW 0x02
+0C40  6E5C      	MOVWF delay_ms_00000_arg_del
+0C42  EC0BF000  	CALL delay_ms_00000
+0C46  0E2C      	MOVLW 0x2C
+0C48  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C4A  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C4C  EC53F001  	CALL FCD_04071__0005B
+0C50  0E02      	MOVLW 0x02
+0C52  6E5C      	MOVWF delay_ms_00000_arg_del
+0C54  EC0BF000  	CALL delay_ms_00000
+0C58  0E06      	MOVLW 0x06
+0C5A  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C5C  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C5E  EC53F001  	CALL FCD_04071__0005B
+0C62  0E02      	MOVLW 0x02
+0C64  6E5C      	MOVWF delay_ms_00000_arg_del
+0C66  EC0BF000  	CALL delay_ms_00000
+0C6A  0E0C      	MOVLW 0x0C
+0C6C  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C6E  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C70  EC53F001  	CALL FCD_04071__0005B
+0C74  0E02      	MOVLW 0x02
+0C76  6E5C      	MOVWF delay_ms_00000_arg_del
+0C78  EC0BF000  	CALL delay_ms_00000
+0C7C  0E01      	MOVLW 0x01
+0C7E  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C80  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C82  EC53F001  	CALL FCD_04071__0005B
+0C86  0E02      	MOVLW 0x02
+0C88  6E5C      	MOVWF delay_ms_00000_arg_del
+0C8A  EC0BF000  	CALL delay_ms_00000
+0C8E  0E02      	MOVLW 0x02
+0C90  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0C92  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0C94  EC53F001  	CALL FCD_04071__0005B
+0C98  0E02      	MOVLW 0x02
+0C9A  6E5C      	MOVWF delay_ms_00000_arg_del
+0C9C  EC0BF000  	CALL delay_ms_00000
+0CA0  ECE2F004  	CALL FCD_04071__0005A
+0CA4  0012      	RETURN
+0CA6            ; } FCD_04071_LCD__Start function end
+
+	ORG 0x00000CA6
+0CA6            FCD_04071__00062
+0CA6            ; { FCD_04071_LCD__Cursor ; function begin
+0CA6  525B      	MOVF FCD_04071__00062_arg_FCL_Y, F
+0CA8  E103      	BNZ	label151
+0CAA  0E80      	MOVLW 0x80
+0CAC  6E5B      	MOVWF FCD_04071__00062_arg_FCL_Y
+0CAE  D002      	BRA	label152
+0CB0            label151
+0CB0  0EC0      	MOVLW 0xC0
+0CB2  6E5B      	MOVWF FCD_04071__00062_arg_FCL_Y
+0CB4            label152
+0CB4  505A      	MOVF FCD_04071__00062_arg_FCL_X, W
+0CB6  245B      	ADDWF FCD_04071__00062_arg_FCL_Y, W
+0CB8  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0CBA  907A      	BCF FCD_04071__0005B_arg_FCL_TYPE,0
+0CBC  EC53F001  	CALL FCD_04071__0005B
+0CC0  0E02      	MOVLW 0x02
+0CC2  6E5C      	MOVWF delay_ms_00000_arg_del
+0CC4  EC0BF000  	CALL delay_ms_00000
+0CC8  0012      	RETURN
+0CCA            ; } FCD_04071_LCD__Cursor function end
+
+	ORG 0x00000CCA
+0CCA            FCD_04071__0005F
+0CCA            ; { FCD_04071_LCD__PrintNumber ; function begin
+0CCA  505A      	MOVF FCD_04071__0005F_arg_FCL_NUMBER, W
+0CCC  6E66      	MOVWF FCI_TOSTRI_00044_arg_iSrc1
+0CCE  505B      	MOVF FCD_04071__0005F_arg_FCL_NUMBER+D'1', W
+0CD0  6E67      	MOVWF FCI_TOSTRI_00044_arg_iSrc1+D'1'
+0CD2  6A68      	CLRF FCI_TOSTRI_00044_arg_iSrc1+D'2'
+0CD4  6A69      	CLRF FCI_TOSTRI_00044_arg_iSrc1+D'3'
+0CD6  AE5B      	BTFSS FCD_04071__0005F_arg_FCL_NUMBER+D'1',7
+0CD8  D002      	BRA	label153
+0CDA  0668      	DECF FCI_TOSTRI_00044_arg_iSrc1+D'2', F
+0CDC  0669      	DECF FCI_TOSTRI_00044_arg_iSrc1+D'3', F
+0CDE            label153
+0CDE  0E00      	MOVLW HIGH(FCD_04071__0005F_1_FCL_S+D'0')
+0CE0  6E6B      	MOVWF FCI_TOSTRI_00044_arg_sDst+D'1'
+0CE2  0E5C      	MOVLW LOW(FCD_04071__0005F_1_FCL_S+D'0')
+0CE4  6E6A      	MOVWF FCI_TOSTRI_00044_arg_sDst
+0CE6  0E0A      	MOVLW 0x0A
+0CE8  6E6C      	MOVWF FCI_TOSTRI_00044_arg_iDst_len
+0CEA  ECBAF002  	CALL FCI_TOSTRI_00044
+0CEE  0E00      	MOVLW HIGH(FCD_04071__0005F_1_FCL_S+D'0')
+0CF0  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+0CF2  0E5C      	MOVLW LOW(FCD_04071__0005F_1_FCL_S+D'0')
+0CF4  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+0CF6  0E0A      	MOVLW 0x0A
+0CF8  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+0CFA  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+0CFC  ECC7F004  	CALL FCD_04071__0005C
+0D00  0012      	RETURN
+0D02            ; } FCD_04071_LCD__PrintNumber function end
+
+	ORG 0x00000D02
+0D02            FCD_04071__0005D
+0D02            ; { FCD_04071_LCD__PrintAscii ; function begin
+0D02  505A      	MOVF FCD_04071__0005D_arg_FCL_C_0005E, W
+0D04  6E79      	MOVWF FCD_04071__0005B_arg_FCL_DATA
+0D06  807A      	BSF FCD_04071__0005B_arg_FCL_TYPE,0
+0D08  EC53F001  	CALL FCD_04071__0005B
+0D0C  0012      	RETURN
+0D0E            ; } FCD_04071_LCD__PrintAscii function end
+
+	ORG 0x00000D0E
+0D0E            main
+0D0E            ; { main ; function begin
+0D0E  0E0F      	MOVLW 0x0F
+0D10  6EC1      	MOVWF gbl_adcon1
+0D12  ECC2F005  	CALL FCD_04071__00069
+0D16  0E72      	MOVLW 0x72
+0D18  6E5C      	MOVWF CompTempVar2752
+0D1A  0E78      	MOVLW 0x78
+0D1C  6E5D      	MOVWF CompTempVar2752+D'1'
+0D1E  0E2E      	MOVLW 0x2E
+0D20  6E5E      	MOVWF CompTempVar2752+D'2'
+0D22  6A5F      	CLRF CompTempVar2752+D'3'
+0D24  0E00      	MOVLW HIGH(CompTempVar2752+D'0')
+0D26  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+0D28  0E5C      	MOVLW LOW(CompTempVar2752+D'0')
+0D2A  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+0D2C  0E04      	MOVLW 0x04
+0D2E  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+0D30  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+0D32  ECC7F004  	CALL FCD_04071__0005C
+0D36  EC60F005  	CALL FCD_05181__0007A
+0D3A  0E64      	MOVLW 0x64
+0D3C  6E5C      	MOVWF CompTempVar2754
+0D3E  0E6F      	MOVLW 0x6F
+0D40  6E5D      	MOVWF CompTempVar2754+D'1'
+0D42  0E6E      	MOVLW 0x6E
+0D44  6E5E      	MOVWF CompTempVar2754+D'2'
+0D46  0E65      	MOVLW 0x65
+0D48  6E5F      	MOVWF CompTempVar2754+D'3'
+0D4A  0E2E      	MOVLW 0x2E
+0D4C  6E60      	MOVWF CompTempVar2754+D'4'
+0D4E  6A61      	CLRF CompTempVar2754+D'5'
+0D50  0E00      	MOVLW HIGH(CompTempVar2754+D'0')
+0D52  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+0D54  0E5C      	MOVLW LOW(CompTempVar2754+D'0')
+0D56  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+0D58  0E06      	MOVLW 0x06
+0D5A  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+0D5C  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+0D5E  ECC7F004  	CALL FCD_04071__0005C
+0D62  EC78F005  	CALL FCD_05181__00076
+0D66  505E      	MOVF CompTempVarRet2748, W
+0D68  6E55      	MOVWF gbl_FCV_RET
+0D6A  EC78F005  	CALL FCD_05181__00076
+0D6E  505E      	MOVF CompTempVarRet2748, W
+0D70  6E55      	MOVWF gbl_FCV_RET
+0D72  EC78F005  	CALL FCD_05181__00076
+0D76  505E      	MOVF CompTempVarRet2748, W
+0D78  6E55      	MOVWF gbl_FCV_RET
+0D7A  0E01      	MOVLW 0x01
+0D7C  6E5A      	MOVWF delay_s_00000_arg_del
+0D7E  EC33F000  	CALL delay_s_00000
+0D82  6A54      	CLRF gbl_FCV_ERR
+0D84  ECE2F004  	CALL FCD_04071__0005A
+0D88  0E41      	MOVLW 0x41
+0D8A  6E5C      	MOVWF CompTempVar2756
+0D8C  0E54      	MOVLW 0x54
+0D8E  6E5D      	MOVWF CompTempVar2756+D'1'
+0D90  0E26      	MOVLW 0x26
+0D92  6E5E      	MOVWF CompTempVar2756+D'2'
+0D94  0E66      	MOVLW 0x66
+0D96  6E5F      	MOVWF CompTempVar2756+D'3'
+0D98  0E2A      	MOVLW 0x2A
+0D9A  6E60      	MOVWF CompTempVar2756+D'4'
+0D9C  6A61      	CLRF CompTempVar2756+D'5'
+0D9E  0E00      	MOVLW HIGH(CompTempVar2756+D'0')
+0DA0  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0DA2  0E5C      	MOVLW LOW(CompTempVar2756+D'0')
+0DA4  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0DA6  0E06      	MOVLW 0x06
+0DA8  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0DAA  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0DAC  EC99F004  	CALL FCD_05181__00053
+0DB0  5074      	MOVF CompTempVarRet2639, W
+0DB2  6E55      	MOVWF gbl_FCV_RET
+0DB4  0E01      	MOVLW 0x01
+0DB6  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+0DB8  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+0DBA  EC69F004  	CALL FCD_05181__00054
+0DBE  505F      	MOVF CompTempVarRet2644, W
+0DC0  6E55      	MOVWF gbl_FCV_RET
+0DC2  0E2E      	MOVLW 0x2E
+0DC4  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+0DC6  EC81F006  	CALL FCD_04071__0005D
+0DCA  0E01      	MOVLW 0x01
+0DCC  6E5A      	MOVWF delay_s_00000_arg_del
+0DCE  EC33F000  	CALL delay_s_00000
+0DD2  0E01      	MOVLW 0x01
+0DD4  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0DD6  0E64      	MOVLW 0x64
+0DD8  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0DDA  EC7AF003  	CALL FCD_05181__00056
+0DDE  5062      	MOVF CompTempVarRet2648, W
+0DE0  6E55      	MOVWF gbl_FCV_RET
+0DE2  5255      	MOVF gbl_FCV_RET, F
+0DE4  A4D8      	BTFSS STATUS,Z
+0DE6  D24E      	BRA	label156
+0DE8  2854      	INCF gbl_FCV_ERR, W
+0DEA  6E54      	MOVWF gbl_FCV_ERR
+0DEC  0E41      	MOVLW 0x41
+0DEE  6E5C      	MOVWF CompTempVar2758
+0DF0  0E54      	MOVLW 0x54
+0DF2  6E5D      	MOVWF CompTempVar2758+D'1'
+0DF4  0E5A      	MOVLW 0x5A
+0DF6  6E5E      	MOVWF CompTempVar2758+D'2'
+0DF8  6A5F      	CLRF CompTempVar2758+D'3'
+0DFA  0E00      	MOVLW HIGH(CompTempVar2758+D'0')
+0DFC  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0DFE  0E5C      	MOVLW LOW(CompTempVar2758+D'0')
+0E00  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0E02  0E04      	MOVLW 0x04
+0E04  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0E06  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0E08  EC99F004  	CALL FCD_05181__00053
+0E0C  5074      	MOVF CompTempVarRet2639, W
+0E0E  6E55      	MOVWF gbl_FCV_RET
+0E10  0E01      	MOVLW 0x01
+0E12  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+0E14  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+0E16  EC69F004  	CALL FCD_05181__00054
+0E1A  505F      	MOVF CompTempVarRet2644, W
+0E1C  6E55      	MOVWF gbl_FCV_RET
+0E1E  0E2E      	MOVLW 0x2E
+0E20  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+0E22  EC81F006  	CALL FCD_04071__0005D
+0E26  0E01      	MOVLW 0x01
+0E28  6E5A      	MOVWF delay_s_00000_arg_del
+0E2A  EC33F000  	CALL delay_s_00000
+0E2E  0E01      	MOVLW 0x01
+0E30  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0E32  0E0A      	MOVLW 0x0A
+0E34  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0E36  EC7AF003  	CALL FCD_05181__00056
+0E3A  5062      	MOVF CompTempVarRet2648, W
+0E3C  6E55      	MOVWF gbl_FCV_RET
+0E3E  5255      	MOVF gbl_FCV_RET, F
+0E40  A4D8      	BTFSS STATUS,Z
+0E42  D220      	BRA	label156
+0E44  2854      	INCF gbl_FCV_ERR, W
+0E46  6E54      	MOVWF gbl_FCV_ERR
+0E48  0E2B      	MOVLW 0x2B
+0E4A  6E5E      	MOVWF CompTempVar2760+D'2'
+0E4C  0E3D      	MOVLW 0x3D
+0E4E  6E62      	MOVWF CompTempVar2760+D'6'
+0E50  0E41      	MOVLW 0x41
+0E52  6E5C      	MOVWF CompTempVar2760
+0E54  0E42      	MOVLW 0x42
+0E56  6E5F      	MOVWF CompTempVar2760+D'3'
+0E58  0E4B      	MOVLW 0x4B
+0E5A  6E61      	MOVWF CompTempVar2760+D'5'
+0E5C  0E54      	MOVLW 0x54
+0E5E  6E5D      	MOVWF CompTempVar2760+D'1'
+0E60  6E60      	MOVWF CompTempVar2760+D'4'
+0E62  6A63      	CLRF CompTempVar2760+D'7'
+0E64  0E00      	MOVLW HIGH(CompTempVar2760+D'0')
+0E66  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0E68  0E5C      	MOVLW LOW(CompTempVar2760+D'0')
+0E6A  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0E6C  0E08      	MOVLW 0x08
+0E6E  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0E70  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0E72  EC99F004  	CALL FCD_05181__00053
+0E76  5074      	MOVF CompTempVarRet2639, W
+0E78  6E55      	MOVWF gbl_FCV_RET
+0E7A  0E22      	MOVLW 0x22
+0E7C  6E5A      	MOVWF FCD_05181__00078_arg_FCL_C_00079
+0E7E  EC65F005  	CALL FCD_05181__00078
+0E82  505C      	MOVF CompTempVarRet2750, W
+0E84  6E55      	MOVWF gbl_FCV_RET
+0E86  0E30      	MOVLW 0x30
+0E88  6E5C      	MOVWF CompTempVar2762
+0E8A  6E5D      	MOVWF CompTempVar2762+D'1'
+0E8C  6E5E      	MOVWF CompTempVar2762+D'2'
+0E8E  6E5F      	MOVWF CompTempVar2762+D'3'
+0E90  6A60      	CLRF CompTempVar2762+D'4'
+0E92  0E00      	MOVLW HIGH(CompTempVar2762+D'0')
+0E94  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0E96  0E5C      	MOVLW LOW(CompTempVar2762+D'0')
+0E98  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0E9A  0E05      	MOVLW 0x05
+0E9C  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0E9E  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0EA0  EC99F004  	CALL FCD_05181__00053
+0EA4  5074      	MOVF CompTempVarRet2639, W
+0EA6  6E55      	MOVWF gbl_FCV_RET
+0EA8  0E22      	MOVLW 0x22
+0EAA  6E5A      	MOVWF FCD_05181__00078_arg_FCL_C_00079
+0EAC  EC65F005  	CALL FCD_05181__00078
+0EB0  505C      	MOVF CompTempVarRet2750, W
+0EB2  6E55      	MOVWF gbl_FCV_RET
+0EB4  0E2E      	MOVLW 0x2E
+0EB6  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+0EB8  EC81F006  	CALL FCD_04071__0005D
+0EBC  0E01      	MOVLW 0x01
+0EBE  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+0EC0  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+0EC2  EC69F004  	CALL FCD_05181__00054
+0EC6  505F      	MOVF CompTempVarRet2644, W
+0EC8  6E55      	MOVWF gbl_FCV_RET
+0ECA  0E01      	MOVLW 0x01
+0ECC  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0ECE  0E0A      	MOVLW 0x0A
+0ED0  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0ED2  EC7AF003  	CALL FCD_05181__00056
+0ED6  5062      	MOVF CompTempVarRet2648, W
+0ED8  6E55      	MOVWF gbl_FCV_RET
+0EDA  5255      	MOVF gbl_FCV_RET, F
+0EDC  A4D8      	BTFSS STATUS,Z
+0EDE  D1D2      	BRA	label156
+0EE0  2854      	INCF gbl_FCV_ERR, W
+0EE2  6E54      	MOVWF gbl_FCV_ERR
+0EE4  0E2B      	MOVLW 0x2B
+0EE6  6E5E      	MOVWF CompTempVar2764+D'2'
+0EE8  0E30      	MOVLW 0x30
+0EEA  6E62      	MOVWF CompTempVar2764+D'6'
+0EEC  6E63      	MOVWF CompTempVar2764+D'7'
+0EEE  6E65      	MOVWF CompTempVar2764+D'9'
+0EF0  0E31      	MOVLW 0x31
+0EF2  6E6D      	MOVWF CompTempVar2764+D'17'
+0EF4  0E34      	MOVLW 0x34
+0EF6  6E69      	MOVWF CompTempVar2764+D'13'
+0EF8  6E6A      	MOVWF CompTempVar2764+D'14'
+0EFA  0E36      	MOVLW 0x36
+0EFC  6E6C      	MOVWF CompTempVar2764+D'16'
+0EFE  0E38      	MOVLW 0x38
+0F00  6E64      	MOVWF CompTempVar2764+D'8'
+0F02  6E67      	MOVWF CompTempVar2764+D'11'
+0F04  0E39      	MOVLW 0x39
+0F06  6E66      	MOVWF CompTempVar2764+D'10'
+0F08  6E6B      	MOVWF CompTempVar2764+D'15'
+0F0A  0E41      	MOVLW 0x41
+0F0C  6E5C      	MOVWF CompTempVar2764
+0F0E  0E42      	MOVLW 0x42
+0F10  6E5F      	MOVWF CompTempVar2764+D'3'
+0F12  0E45      	MOVLW 0x45
+0F14  6E68      	MOVWF CompTempVar2764+D'12'
+0F16  0E54      	MOVLW 0x54
+0F18  6E5D      	MOVWF CompTempVar2764+D'1'
+0F1A  6E60      	MOVWF CompTempVar2764+D'4'
+0F1C  0E57      	MOVLW 0x57
+0F1E  6E61      	MOVWF CompTempVar2764+D'5'
+0F20  6A6E      	CLRF CompTempVar2764+D'18'
+0F22  0E00      	MOVLW HIGH(CompTempVar2764+D'0')
+0F24  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+0F26  0E5C      	MOVLW LOW(CompTempVar2764+D'0')
+0F28  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+0F2A  0E13      	MOVLW 0x13
+0F2C  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+0F2E  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+0F30  EC99F004  	CALL FCD_05181__00053
+0F34  5074      	MOVF CompTempVarRet2639, W
+0F36  6E55      	MOVWF gbl_FCV_RET
+0F38  0E01      	MOVLW 0x01
+0F3A  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+0F3C  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+0F3E  EC69F004  	CALL FCD_05181__00054
+0F42  505F      	MOVF CompTempVarRet2644, W
+0F44  6E55      	MOVWF gbl_FCV_RET
+0F46  0E2E      	MOVLW 0x2E
+0F48  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+0F4A  EC81F006  	CALL FCD_04071__0005D
+0F4E  0E01      	MOVLW 0x01
+0F50  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0F52  0E0A      	MOVLW 0x0A
+0F54  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0F56  EC7AF003  	CALL FCD_05181__00056
+0F5A  5062      	MOVF CompTempVarRet2648, W
+0F5C  6E55      	MOVWF gbl_FCV_RET
+0F5E  5255      	MOVF gbl_FCV_RET, F
+0F60  A4D8      	BTFSS STATUS,Z
+0F62  D190      	BRA	label156
+0F64  2854      	INCF gbl_FCV_ERR, W
+0F66  6E54      	MOVWF gbl_FCV_ERR
+0F68  0E04      	MOVLW 0x04
+0F6A  6E5A      	MOVWF delay_s_00000_arg_del
+0F6C  EC33F000  	CALL delay_s_00000
+0F70  0E06      	MOVLW 0x06
+0F72  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+0F74  0EFA      	MOVLW 0xFA
+0F76  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+0F78  EC7AF003  	CALL FCD_05181__00056
+0F7C  5062      	MOVF CompTempVarRet2648, W
+0F7E  6E55      	MOVWF gbl_FCV_RET
+0F80  5255      	MOVF gbl_FCV_RET, F
+0F82  A4D8      	BTFSS STATUS,Z
+0F84  D17F      	BRA	label156
+0F86  2854      	INCF gbl_FCV_ERR, W
+0F88  6E54      	MOVWF gbl_FCV_ERR
+0F8A  EC78F005  	CALL FCD_05181__00076
+0F8E  505E      	MOVF CompTempVarRet2748, W
+0F90  6E55      	MOVWF gbl_FCV_RET
+0F92  5255      	MOVF gbl_FCV_RET, F
+0F94  B4D8      	BTFSC STATUS,Z
+0F96  D176      	BRA	label156
+0F98  2854      	INCF gbl_FCV_ERR, W
+0F9A  6E54      	MOVWF gbl_FCV_ERR
+0F9C  6A5A      	CLRF FCD_05181__00071_arg_FCL_IDX
+0F9E  ECB3F005  	CALL FCD_05181__00071
+0FA2  505C      	MOVF CompTempVarRet2731, W
+0FA4  6E53      	MOVWF gbl_FCV_CHAR
+0FA6  0E30      	MOVLW 0x30
+0FA8  6253      	CPFSEQ gbl_FCV_CHAR
+0FAA  D16C      	BRA	label156
+0FAC  EC78F005  	CALL FCD_05181__00076
+0FB0  505E      	MOVF CompTempVarRet2748, W
+0FB2  6E55      	MOVWF gbl_FCV_RET
+0FB4  EC78F005  	CALL FCD_05181__00076
+0FB8  505E      	MOVF CompTempVarRet2748, W
+0FBA  6E55      	MOVWF gbl_FCV_RET
+0FBC  EC78F005  	CALL FCD_05181__00076
+0FC0  505E      	MOVF CompTempVarRet2748, W
+0FC2  6E55      	MOVWF gbl_FCV_RET
+0FC4  2854      	INCF gbl_FCV_ERR, W
+0FC6  6E54      	MOVWF gbl_FCV_ERR
+0FC8  0E30      	MOVLW 0x30
+0FCA  6E5F      	MOVWF CompTempVar2766+D'3'
+0FCC  6E60      	MOVWF CompTempVar2766+D'4'
+0FCE  6E62      	MOVWF CompTempVar2766+D'6'
+0FD0  0E31      	MOVLW 0x31
+0FD2  6E6A      	MOVWF CompTempVar2766+D'14'
+0FD4  0E34      	MOVLW 0x34
+0FD6  6E66      	MOVWF CompTempVar2766+D'10'
+0FD8  6E67      	MOVWF CompTempVar2766+D'11'
+0FDA  0E36      	MOVLW 0x36
+0FDC  6E69      	MOVWF CompTempVar2766+D'13'
+0FDE  0E38      	MOVLW 0x38
+0FE0  6E61      	MOVWF CompTempVar2766+D'5'
+0FE2  6E64      	MOVWF CompTempVar2766+D'8'
+0FE4  0E39      	MOVLW 0x39
+0FE6  6E63      	MOVWF CompTempVar2766+D'7'
+0FE8  6E68      	MOVWF CompTempVar2766+D'12'
+0FEA  0E41      	MOVLW 0x41
+0FEC  6E5C      	MOVWF CompTempVar2766
+0FEE  0E44      	MOVLW 0x44
+0FF0  6E5E      	MOVWF CompTempVar2766+D'2'
+0FF2  0E45      	MOVLW 0x45
+0FF4  6E65      	MOVWF CompTempVar2766+D'9'
+0FF6  0E54      	MOVLW 0x54
+0FF8  6E5D      	MOVWF CompTempVar2766+D'1'
+0FFA  6A6B      	CLRF CompTempVar2766+D'15'
+0FFC  0E00      	MOVLW HIGH(CompTempVar2766+D'0')
+0FFE  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+1000  0E5C      	MOVLW LOW(CompTempVar2766+D'0')
+1002  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+1004  0E10      	MOVLW 0x10
+1006  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+1008  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+100A  EC99F004  	CALL FCD_05181__00053
+100E  5074      	MOVF CompTempVarRet2639, W
+1010  6E55      	MOVWF gbl_FCV_RET
+1012  0E01      	MOVLW 0x01
+1014  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+1016  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+1018  EC69F004  	CALL FCD_05181__00054
+101C  505F      	MOVF CompTempVarRet2644, W
+101E  6E55      	MOVWF gbl_FCV_RET
+1020  0E2E      	MOVLW 0x2E
+1022  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+1024  EC81F006  	CALL FCD_04071__0005D
+1028  2854      	INCF gbl_FCV_ERR, W
+102A  6E54      	MOVWF gbl_FCV_ERR
+102C  0E01      	MOVLW 0x01
+102E  6E5A      	MOVWF delay_s_00000_arg_del
+1030  EC33F000  	CALL delay_s_00000
+1034  0E03      	MOVLW 0x03
+1036  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+1038  0E64      	MOVLW 0x64
+103A  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+103C  EC7AF003  	CALL FCD_05181__00056
+1040  5062      	MOVF CompTempVarRet2648, W
+1042  6E55      	MOVWF gbl_FCV_RET
+1044  5255      	MOVF gbl_FCV_RET, F
+1046  A4D8      	BTFSS STATUS,Z
+1048  D11D      	BRA	label156
+104A  0E63      	MOVLW 0x63
+104C  6E5C      	MOVWF CompTempVar2768
+104E  6E61      	MOVWF CompTempVar2768+D'5'
+1050  0E64      	MOVLW 0x64
+1052  6E64      	MOVWF CompTempVar2768+D'8'
+1054  0E65      	MOVLW 0x65
+1056  6E60      	MOVWF CompTempVar2768+D'4'
+1058  6E63      	MOVWF CompTempVar2768+D'7'
+105A  0E6E      	MOVLW 0x6E
+105C  6E5E      	MOVWF CompTempVar2768+D'2'
+105E  6E5F      	MOVWF CompTempVar2768+D'3'
+1060  0E6F      	MOVLW 0x6F
+1062  6E5D      	MOVWF CompTempVar2768+D'1'
+1064  0E74      	MOVLW 0x74
+1066  6E62      	MOVWF CompTempVar2768+D'6'
+1068  6A65      	CLRF CompTempVar2768+D'9'
+106A  0E00      	MOVLW HIGH(CompTempVar2768+D'0')
+106C  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+106E  0E5C      	MOVLW LOW(CompTempVar2768+D'0')
+1070  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+1072  0E0A      	MOVLW 0x0A
+1074  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+1076  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+1078  ECC7F004  	CALL FCD_04071__0005C
+107C  0E02      	MOVLW 0x02
+107E  6E5A      	MOVWF delay_s_00000_arg_del
+1080  EC33F000  	CALL delay_s_00000
+1084  ECE2F004  	CALL FCD_04071__0005A
+1088  0E2E      	MOVLW 0x2E
+108A  6E6F      	MOVWF CompTempVar2770+D'7'
+108C  6E70      	MOVWF CompTempVar2770+D'8'
+108E  6E71      	MOVWF CompTempVar2770+D'9'
+1090  0E64      	MOVLW 0x64
+1092  6E6B      	MOVWF CompTempVar2770+D'3'
+1094  0E65      	MOVLW 0x65
+1096  6E69      	MOVWF CompTempVar2770+D'1'
+1098  0E67      	MOVLW 0x67
+109A  6E6E      	MOVWF CompTempVar2770+D'6'
+109C  0E69      	MOVLW 0x69
+109E  6E6C      	MOVWF CompTempVar2770+D'4'
+10A0  0E6E      	MOVLW 0x6E
+10A2  6E6A      	MOVWF CompTempVar2770+D'2'
+10A4  6E6D      	MOVWF CompTempVar2770+D'5'
+10A6  0E73      	MOVLW 0x73
+10A8  6E68      	MOVWF CompTempVar2770
+10AA  6A72      	CLRF CompTempVar2770+D'10'
+10AC  0E00      	MOVLW HIGH(CompTempVar2770+D'0')
+10AE  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+10B0  0E68      	MOVLW LOW(CompTempVar2770+D'0')
+10B2  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+10B4  0E0B      	MOVLW 0x0B
+10B6  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+10B8  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+10BA  ECC7F004  	CALL FCD_04071__0005C
+10BE  0E20      	MOVLW 0x20
+10C0  6E61      	MOVWF CompTempVar2772+D'5'
+10C2  0E2A      	MOVLW 0x2A
+10C4  6E5C      	MOVWF CompTempVar2772
+10C6  6E68      	MOVWF CompTempVar2772+D'12'
+10C8  0E55      	MOVLW 0x55
+10CA  6E5D      	MOVWF CompTempVar2772+D'1'
+10CC  0E61      	MOVLW 0x61
+10CE  6E63      	MOVWF CompTempVar2772+D'7'
+10D0  0E64      	MOVLW 0x64
+10D2  6E67      	MOVWF CompTempVar2772+D'11'
+10D4  0E65      	MOVLW 0x65
+10D6  6E66      	MOVWF CompTempVar2772+D'10'
+10D8  0E69      	MOVLW 0x69
+10DA  6E5F      	MOVWF CompTempVar2772+D'3'
+10DC  0E6E      	MOVLW 0x6E
+10DE  6E5E      	MOVWF CompTempVar2772+D'2'
+10E0  0E70      	MOVLW 0x70
+10E2  6E62      	MOVWF CompTempVar2772+D'6'
+10E4  0E73      	MOVLW 0x73
+10E6  6E64      	MOVWF CompTempVar2772+D'8'
+10E8  6E65      	MOVWF CompTempVar2772+D'9'
+10EA  0E74      	MOVLW 0x74
+10EC  6E60      	MOVWF CompTempVar2772+D'4'
+10EE  6A69      	CLRF CompTempVar2772+D'13'
+10F0  0E00      	MOVLW HIGH(CompTempVar2772+D'0')
+10F2  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+10F4  0E5C      	MOVLW LOW(CompTempVar2772+D'0')
+10F6  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+10F8  0E0E      	MOVLW 0x0E
+10FA  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+10FC  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+10FE  EC99F004  	CALL FCD_05181__00053
+1102  5074      	MOVF CompTempVarRet2639, W
+1104  6E55      	MOVWF gbl_FCV_RET
+1106  6A5A      	CLRF FCD_05181__00054_arg_FCL_E_00055
+1108  6A5B      	CLRF FCD_05181__00054_arg_FCL_SENDCR
+110A  EC69F004  	CALL FCD_05181__00054
+110E  505F      	MOVF CompTempVarRet2644, W
+1110  6E55      	MOVWF gbl_FCV_RET
+1112  6A5A      	CLRF FCD_04071__00062_arg_FCL_X
+1114  0E01      	MOVLW 0x01
+1116  6E5B      	MOVWF FCD_04071__00062_arg_FCL_Y
+1118  EC53F006  	CALL FCD_04071__00062
+111C  0E70      	MOVLW 0x70
+111E  6E5C      	MOVWF CompTempVar2774
+1120  0E72      	MOVLW 0x72
+1122  6E5D      	MOVWF CompTempVar2774+D'1'
+1124  0E65      	MOVLW 0x65
+1126  6E5E      	MOVWF CompTempVar2774+D'2'
+1128  0E73      	MOVLW 0x73
+112A  6E5F      	MOVWF CompTempVar2774+D'3'
+112C  6E60      	MOVWF CompTempVar2774+D'4'
+112E  0E20      	MOVLW 0x20
+1130  6E61      	MOVWF CompTempVar2774+D'5'
+1132  0E41      	MOVLW 0x41
+1134  6E62      	MOVWF CompTempVar2774+D'6'
+1136  0E30      	MOVLW 0x30
+1138  6E63      	MOVWF CompTempVar2774+D'7'
+113A  6A64      	CLRF CompTempVar2774+D'8'
+113C  0E00      	MOVLW HIGH(CompTempVar2774+D'0')
+113E  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+1140  0E5C      	MOVLW LOW(CompTempVar2774+D'0')
+1142  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+1144  0E09      	MOVLW 0x09
+1146  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+1148  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+114A  ECC7F004  	CALL FCD_04071__0005C
+114E            label154
+114E  0E0F      	MOVLW HIGH(gbl_porta+D'0')
+1150  6E5B      	MOVWF FC_CAL_Por_00037_arg_Port+D'1'
+1152  0E80      	MOVLW LOW(gbl_porta+D'0')
+1154  6E5A      	MOVWF FC_CAL_Por_00037_arg_Port
+1156  0E0F      	MOVLW HIGH(gbl_trisa+D'0')
+1158  6E5D      	MOVWF FC_CAL_Por_00037_arg_Tris+D'1'
+115A  0E92      	MOVLW LOW(gbl_trisa+D'0')
+115C  6E5C      	MOVWF FC_CAL_Por_00037_arg_Tris
+115E  685E      	SETF FC_CAL_Por_00037_arg_InMask
+1160  6A5F      	CLRF FC_CAL_Por_00037_arg_Shift
+1162  ECF5F004  	CALL FC_CAL_Por_00037
+1166  5060      	MOVF CompTempVarRet1822, W
+1168  6E52      	MOVWF gbl_FCV_IN
+116A  0452      	DECF gbl_FCV_IN, W
+116C  E1F0      	BNZ	label154
+116E  EC78F005  	CALL FCD_05181__00076
+1172  505E      	MOVF CompTempVarRet2748, W
+1174  6E55      	MOVWF gbl_FCV_RET
+1176  EC78F005  	CALL FCD_05181__00076
+117A  505E      	MOVF CompTempVarRet2748, W
+117C  6E55      	MOVWF gbl_FCV_RET
+117E  EC78F005  	CALL FCD_05181__00076
+1182  505E      	MOVF CompTempVarRet2748, W
+1184  6E55      	MOVWF gbl_FCV_RET
+1186  2854      	INCF gbl_FCV_ERR, W
+1188  6E54      	MOVWF gbl_FCV_ERR
+118A  ECC2F005  	CALL FCD_04071__00069
+118E  EC0DF005  	CALL FCM_ESCAPE_00000
+1192  5255      	MOVF gbl_FCV_RET, F
+1194  E177      	BNZ	label156
+1196  2854      	INCF gbl_FCV_ERR, W
+1198  6E54      	MOVWF gbl_FCV_ERR
+119A  0E41      	MOVLW 0x41
+119C  6E5C      	MOVWF CompTempVar2780
+119E  0E54      	MOVLW 0x54
+11A0  6E5D      	MOVWF CompTempVar2780+D'1'
+11A2  0E48      	MOVLW 0x48
+11A4  6E5E      	MOVWF CompTempVar2780+D'2'
+11A6  6A5F      	CLRF CompTempVar2780+D'3'
+11A8  0E00      	MOVLW HIGH(CompTempVar2780+D'0')
+11AA  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+11AC  0E5C      	MOVLW LOW(CompTempVar2780+D'0')
+11AE  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+11B0  0E04      	MOVLW 0x04
+11B2  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+11B4  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+11B6  EC99F004  	CALL FCD_05181__00053
+11BA  5074      	MOVF CompTempVarRet2639, W
+11BC  6E55      	MOVWF gbl_FCV_RET
+11BE  0E01      	MOVLW 0x01
+11C0  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+11C2  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+11C4  EC69F004  	CALL FCD_05181__00054
+11C8  0E2E      	MOVLW 0x2E
+11CA  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+11CC  EC81F006  	CALL FCD_04071__0005D
+11D0  0E04      	MOVLW 0x04
+11D2  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+11D4  0E0A      	MOVLW 0x0A
+11D6  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+11D8  EC7AF003  	CALL FCD_05181__00056
+11DC  5062      	MOVF CompTempVarRet2648, W
+11DE  6E55      	MOVWF gbl_FCV_RET
+11E0  5255      	MOVF gbl_FCV_RET, F
+11E2  E150      	BNZ	label156
+11E4  2854      	INCF gbl_FCV_ERR, W
+11E6  6E54      	MOVWF gbl_FCV_ERR
+11E8  0E41      	MOVLW 0x41
+11EA  6E5C      	MOVWF CompTempVar2782
+11EC  0E54      	MOVLW 0x54
+11EE  6E5D      	MOVWF CompTempVar2782+D'1'
+11F0  0E26      	MOVLW 0x26
+11F2  6E5E      	MOVWF CompTempVar2782+D'2'
+11F4  0E66      	MOVLW 0x66
+11F6  6E5F      	MOVWF CompTempVar2782+D'3'
+11F8  0E2A      	MOVLW 0x2A
+11FA  6E60      	MOVWF CompTempVar2782+D'4'
+11FC  6A61      	CLRF CompTempVar2782+D'5'
+11FE  0E00      	MOVLW HIGH(CompTempVar2782+D'0')
+1200  6E5B      	MOVWF FCD_05181__00053_arg_FCL_DATA+D'1'
+1202  0E5C      	MOVLW LOW(CompTempVar2782+D'0')
+1204  6E5A      	MOVWF FCD_05181__00053_arg_FCL_DATA
+1206  0E06      	MOVLW 0x06
+1208  6E6F      	MOVWF FCD_05181__00053_arg_FCLsz_DATA
+120A  6A70      	CLRF FCD_05181__00053_arg_FCLsz_DATA+D'1'
+120C  EC99F004  	CALL FCD_05181__00053
+1210  5074      	MOVF CompTempVarRet2639, W
+1212  6E55      	MOVWF gbl_FCV_RET
+1214  0E01      	MOVLW 0x01
+1216  6E5A      	MOVWF FCD_05181__00054_arg_FCL_E_00055
+1218  6E5B      	MOVWF FCD_05181__00054_arg_FCL_SENDCR
+121A  EC69F004  	CALL FCD_05181__00054
+121E  505F      	MOVF CompTempVarRet2644, W
+1220  6E55      	MOVWF gbl_FCV_RET
+1222  0E2E      	MOVLW 0x2E
+1224  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+1226  EC81F006  	CALL FCD_04071__0005D
+122A  0E64      	MOVLW 0x64
+122C  6E5C      	MOVWF delay_ms_00000_arg_del
+122E  EC0BF000  	CALL delay_ms_00000
+1232  0E01      	MOVLW 0x01
+1234  6E5A      	MOVWF FCD_05181__00056_arg_FCL_R_00057
+1236  0E64      	MOVLW 0x64
+1238  6E5B      	MOVWF FCD_05181__00056_arg_FCL_TIMEOUT
+123A  EC7AF003  	CALL FCD_05181__00056
+123E  5062      	MOVF CompTempVarRet2648, W
+1240  6E55      	MOVWF gbl_FCV_RET
+1242  5255      	MOVF gbl_FCV_RET, F
+1244  E11F      	BNZ	label156
+1246  ECE2F004  	CALL FCD_04071__0005A
+124A  0E20      	MOVLW 0x20
+124C  6E6B      	MOVWF CompTempVar2784+D'3'
+124E  6E70      	MOVWF CompTempVar2784+D'8'
+1250  0E2A      	MOVLW 0x2A
+1252  6E68      	MOVWF CompTempVar2784
+1254  6E69      	MOVWF CompTempVar2784+D'1'
+1256  6E6A      	MOVWF CompTempVar2784+D'2'
+1258  6E71      	MOVWF CompTempVar2784+D'9'
+125A  6E72      	MOVWF CompTempVar2784+D'10'
+125C  6E73      	MOVWF CompTempVar2784+D'11'
+125E  0E44      	MOVLW 0x44
+1260  6E6C      	MOVWF CompTempVar2784+D'4'
+1262  0E45      	MOVLW 0x45
+1264  6E6F      	MOVWF CompTempVar2784+D'7'
+1266  0E4E      	MOVLW 0x4E
+1268  6E6E      	MOVWF CompTempVar2784+D'6'
+126A  0E4F      	MOVLW 0x4F
+126C  6E6D      	MOVWF CompTempVar2784+D'5'
+126E  6A74      	CLRF CompTempVar2784+D'12'
+1270  0E00      	MOVLW HIGH(CompTempVar2784+D'0')
+1272  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+1274  0E68      	MOVLW LOW(CompTempVar2784+D'0')
+1276  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+1278  0E0D      	MOVLW 0x0D
+127A  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+127C  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+127E  ECC7F004  	CALL FCD_04071__0005C
+1282            label155
+1282  D7FF      	BRA	label155
+1284            label156
+1284  0E65      	MOVLW 0x65
+1286  6E5C      	MOVWF CompTempVar2786
+1288  0E6F      	MOVLW 0x6F
+128A  6E5F      	MOVWF CompTempVar2786+D'3'
+128C  0E72      	MOVLW 0x72
+128E  6E5D      	MOVWF CompTempVar2786+D'1'
+1290  6E5E      	MOVWF CompTempVar2786+D'2'
+1292  6E60      	MOVWF CompTempVar2786+D'4'
+1294  6A61      	CLRF CompTempVar2786+D'5'
+1296  0E00      	MOVLW HIGH(CompTempVar2786+D'0')
+1298  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+129A  0E5C      	MOVLW LOW(CompTempVar2786+D'0')
+129C  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+129E  0E06      	MOVLW 0x06
+12A0  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+12A2  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+12A4  ECC7F004  	CALL FCD_04071__0005C
+12A8  0E20      	MOVLW 0x20
+12AA  6E5C      	MOVWF CompTempVar2788
+12AC  6A5D      	CLRF CompTempVar2788+D'1'
+12AE  0E00      	MOVLW HIGH(CompTempVar2788+D'0')
+12B0  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+12B2  0E5C      	MOVLW LOW(CompTempVar2788+D'0')
+12B4  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+12B6  0E02      	MOVLW 0x02
+12B8  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+12BA  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+12BC  ECC7F004  	CALL FCD_04071__0005C
+12C0  5054      	MOVF gbl_FCV_ERR, W
+12C2  6E5A      	MOVWF FCD_04071__0005F_arg_FCL_NUMBER
+12C4  6A5B      	CLRF FCD_04071__0005F_arg_FCL_NUMBER+D'1'
+12C6  EC65F006  	CALL FCD_04071__0005F
+12CA  6A5A      	CLRF FCD_04071__00062_arg_FCL_X
+12CC  0E01      	MOVLW 0x01
+12CE  6E5B      	MOVWF FCD_04071__00062_arg_FCL_Y
+12D0  EC53F006  	CALL FCD_04071__00062
+12D4  2855      	INCF gbl_FCV_RET, W
+12D6  E111      	BNZ	label157
+12D8  0E74      	MOVLW 0x74
+12DA  6E5A      	MOVWF CompTempVar2790
+12DC  0E2F      	MOVLW 0x2F
+12DE  6E5B      	MOVWF CompTempVar2790+D'1'
+12E0  0E6F      	MOVLW 0x6F
+12E2  6E5C      	MOVWF CompTempVar2790+D'2'
+12E4  6A5D      	CLRF CompTempVar2790+D'3'
+12E6  0E00      	MOVLW HIGH(CompTempVar2790+D'0')
+12E8  6E67      	MOVWF FCD_04071__0005C_arg_FCL_TEXT+D'1'
+12EA  0E5A      	MOVLW LOW(CompTempVar2790+D'0')
+12EC  6E66      	MOVWF FCD_04071__0005C_arg_FCL_TEXT
+12EE  0E04      	MOVLW 0x04
+12F0  6E75      	MOVWF FCD_04071__0005C_arg_FCLsz_TEXT
+12F2  6A76      	CLRF FCD_04071__0005C_arg_FCLsz_TEXT+D'1'
+12F4  ECC7F004  	CALL FCD_04071__0005C
+12F8  D011      	BRA	label159
+12FA            label157
+12FA  6A56      	CLRF gbl_FCV_LOOP
+12FC            label158
+12FC  5055      	MOVF gbl_FCV_RET, W
+12FE  6056      	CPFSLT gbl_FCV_LOOP
+1300  D00D      	BRA	label159
+1302  5056      	MOVF gbl_FCV_LOOP, W
+1304  6E5A      	MOVWF FCD_05181__00071_arg_FCL_IDX
+1306  ECB3F005  	CALL FCD_05181__00071
+130A  505C      	MOVF CompTempVarRet2731, W
+130C  6E53      	MOVWF gbl_FCV_CHAR
+130E  5053      	MOVF gbl_FCV_CHAR, W
+1310  6E5A      	MOVWF FCD_04071__0005D_arg_FCL_C_0005E
+1312  EC81F006  	CALL FCD_04071__0005D
+1316  2856      	INCF gbl_FCV_LOOP, W
+1318  6E56      	MOVWF gbl_FCV_LOOP
+131A  D7F0      	BRA	label158
+131C            label159
+131C  D7FF      	BRA	label159
+131E            ; } main function end
+
+	ORG 0x0000131E
+131E            _startup
+131E  0ED5      	MOVLW 0xD5
+1320  6E33      	MOVWF gbl_14_LSR
+1322  0EC4      	MOVLW 0xC4
+1324  6E34      	MOVWF gbl_14_LSR+D'1'
+1326  0EBB      	MOVLW 0xBB
+1328  6E35      	MOVWF gbl_14_LSR+D'2'
+132A  0EDC      	MOVLW 0xDC
+132C  6E36      	MOVWF gbl_14_LSR+D'3'
+132E  6A37      	CLRF gbl_15_gbl_aSig
+1330  6A38      	CLRF gbl_15_gbl_aSig+D'1'
+1332  6A39      	CLRF gbl_15_gbl_aSig+D'2'
+1334  6A3A      	CLRF gbl_15_gbl_aSig+D'3'
+1336  6A3B      	CLRF gbl_15_gbl_bSig
+1338  6A3C      	CLRF gbl_15_gbl_bSig+D'1'
+133A  6A3D      	CLRF gbl_15_gbl_bSig+D'2'
+133C  6A3E      	CLRF gbl_15_gbl_bSig+D'3'
+133E  6A3F      	CLRF gbl_15_gbl_zSig
+1340  6A40      	CLRF gbl_15_gbl_zSig+D'1'
+1342  6A41      	CLRF gbl_15_gbl_zSig+D'2'
+1344  6A42      	CLRF gbl_15_gbl_zSig+D'3'
+1346  6A4C      	CLRF gbl_15_gbl_aExp
+1348  6A4D      	CLRF gbl_15_gbl_bExp
+134A  6A47      	CLRF gbl_15_gbl_zExp
+134C  6A48      	CLRF gbl_15_gbl_zExp+D'1'
+134E  6A4E      	CLRF gbl_15_gbl_aSign
+1350  6A4F      	CLRF gbl_15_gbl_bSign
+1352  6A50      	CLRF gbl_15_gbl_zSign
+1354  6A51      	CLRF gbl_15_gbl_zSigZero
+1356  6A43      	CLRF gbl_15_gbl_ret
+1358  6A44      	CLRF gbl_15_gbl_ret+D'1'
+135A  6A45      	CLRF gbl_15_gbl_ret+D'2'
+135C  6A46      	CLRF gbl_15_gbl_ret+D'3'
+135E  6A4A      	CLRF gbl_float_rounding_mode
+1360  6A4B      	CLRF gbl_float_exception_flags
+1362  6A49      	CLRF gbl_float_detect_tininess
+1364  EF87F006  	GOTO	main
+	ORG 0x00001368
+1368            interrupt
+1368            ; { interrupt ; function begin
+1368  CFEAF001  	MOVFF FSR0H,  Int1Context
+136C  CFE9F002  	MOVFF FSR0L,  Int1Context+D'1'
+1370  CFF4F003  	MOVFF PRODH,  Int1Context+D'2'
+1374  CFF3F004  	MOVFF PRODL,  Int1Context+D'3'
+1378  C004FFF3  	MOVFF Int1Context+D'3',  PRODL
+137C  C003FFF4  	MOVFF Int1Context+D'2',  PRODH
+1380  C002FFE9  	MOVFF Int1Context+D'1',  FSR0L
+1384  C001FFEA  	MOVFF Int1Context,  FSR0H
+1388  0011      	RETFIE 1
+138A            ; } interrupt function end
+
+	ORG 0x00300000
+300000  32FF      	DW 0x32FF
+300002  FEF9      	DW 0xFEF9
+300004  FBFF      	DW 0xFBFF
+300006  FFBA      	DW 0xFFBA
+300008  FFFF      	DW 0xFFFF
+30000A  FFFF      	DW 0xFFFF
+30000C  FFFF      	DW 0xFFFF
