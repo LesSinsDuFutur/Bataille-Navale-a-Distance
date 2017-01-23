@@ -1,0 +1,5 @@
+* Afficher "choix du bateau"  au centre de l'écran.
+* Récupération des cases appuyées pour placer le bateau
+* Afficher les cases choisies
+* Recommencer jusqu'à ce que tous les bateaux soient placés.
+* Envoyer à la carte adverse les positions des bateaux.
