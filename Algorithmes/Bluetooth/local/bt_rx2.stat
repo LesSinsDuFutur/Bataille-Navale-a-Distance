@@ -1,0 +1,29 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 81.0,rom = 0;
+__div_16_16(unsigned short,unsigned short):"E:\Prg\SourceBoost\compiler\picantc\libc\div.c",line = 116,ram = 9.0,rom = 33;
+FCM_ESCAPE(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 118,ram = 0.0,rom = 50;
+FCD_Bluetooth0_CreateCommand(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 823,ram = 2.0,rom = 19;
+FCD_Bluetooth0_SendCommand(unsigned char,unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 837,ram = 5.0,rom = 49;
+FCD_Bluetooth0_WaitForResponse(unsigned char,unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 882,ram = 8.0,rom = 513;
+FCD_LCDDisplay0_Start(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 273,ram = 0.0,rom = 61;
+LCD_3212964_RawSend(unsigned char,unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 213,ram = 5.0,rom = 76;
+FCD_LCDDisplay0_Clear(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 304,ram = 0.0,rom = 15;
+FCD_LCDDisplay0_PrintASCII(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 314,ram = 1.0,rom = 6;
+FCD_LCDDisplay0_Cursor(unsigned char,unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 339,ram = 2.0,rom = 17;
+FCD_LCDDisplay0_PrintNumber(signed short):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 366,ram = 7.0,rom = 251;
+FCD_Bluetooth0_Initialize(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 777,ram = 0.0,rom = 35;
+Blu_MaskFromBit(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 576,ram = 3.0,rom = 60;
+Blu_Send_BLU232_Byte(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 623,ram = 4.0,rom = 61;
+Blu_Read_BLU232_Byte(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 660,ram = 7.0,rom = 86;
+FCD_Bluetooth0_StringReceive(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 1033,ram = 4.0,rom = 61;
+FCD_Bluetooth0_StringRead(unsigned char):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 1082,ram = 2.0,rom = 16;
+main(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 1170,ram = 0.0,rom = 865;
+interrupt(void):"Z:\product information\PICmicro and E-blocks\EB024\EB024-00-2\Factory test routine\flowcode files\bt_rx2.c",line = 1994,ram = 0.0,rom = 11;
+delay_10us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 14;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 40;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 15;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 41;
+#HEAP_BLOCK: 0, 272, 96;
+#HEAP_BLOCK: 1, 400, 96;
+#HEAP_BLOCK: 2, 162, 78;

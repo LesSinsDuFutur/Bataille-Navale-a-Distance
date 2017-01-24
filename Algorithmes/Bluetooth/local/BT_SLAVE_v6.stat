@@ -1,0 +1,35 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 89.0,rom = 0;
+__div_32_32(unsigned long,unsigned long):"C:\Prg\trunk\picantc\libc\div.c",line = 44,ram = 18.0,rom = 100;
+__mul_32_32(unsigned long,unsigned long):"C:\Prg\trunk\picantc\libc\mul.c",line = 629,ram = 12.0,rom = 126;
+FC_CAL_Port_In_DDR__x(unsigned char*,unsigned char*,unsigned char,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_IO.c",line = 127,ram = 8.0,rom = 48;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCI_TOSTRING(signed long,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 391,ram = 23.0,rom = 384;
+FCM_ESCAPE(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1636,ram = 2.0,rom = 166;
+FCD_05181_Bluetooth1__CreateCommandString(unsigned char*,unsigned short):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1177,ram = 9.0,rom = 92;
+FCD_05181_Bluetooth1__SendCommand(unsigned char,unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1006,ram = 6.0,rom = 96;
+FCD_05181_Bluetooth1__WaitForResponse(unsigned char,unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1353,ram = 10.0,rom = 478;
+FCD_04071_LCD__Clear(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 304,ram = 0.0,rom = 38;
+FCD_04071_LCD__RawSend(unsigned char,bit):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 656,ram = 3.1,rom = 700;
+FCD_04071_LCD__PrintString(unsigned char*,unsigned short):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 323,ram = 6.0,rom = 54;
+FCD_04071_LCD__PrintAscii(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 352,ram = 1.0,rom = 12;
+FCD_04071_LCD__PrintNumber(signed short):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 371,ram = 12.0,rom = 56;
+FCD_04071_LCD__Cursor(unsigned char,unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 479,ram = 2.0,rom = 36;
+FCD_04071_LCD__Start(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 782,ram = 1.0,rom = 290;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 535,ram = 12.0,rom = 178;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 507,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 18;
+FCD_05181_Bluetooth1__StringRead(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 919,ram = 3.0,rom = 30;
+FCD_05181_Bluetooth1__Send_byte(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1333,ram = 1.0,rom = 12;
+FCD_05181_Bluetooth1__Read_byte(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1123,ram = 5.0,rom = 74;
+FCD_05181_Bluetooth1__StringReceive(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1219,ram = 5.0,rom = 118;
+FCD_05181_Bluetooth1__CreateCommand(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1308,ram = 3.0,rom = 38;
+FCD_05181_Bluetooth1__Initialise(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1592,ram = 0.0,rom = 10;
+main(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 1687,ram = 19.0,rom = 1552;
+interrupt(void):"U:\DOCUME~1\SIN\BOYER\PROJET\Tests\BLUETO~1\external\BT_SLAVE_v6.c",line = 2313,ram = 0.0,rom = 34;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 38;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 74;
+#HEAP_BLOCK: 0, 140, 1396;

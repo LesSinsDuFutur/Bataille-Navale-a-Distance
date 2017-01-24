@@ -1,0 +1,441 @@
+<root>
+<document schema='100' platform='pic8' license='Upgraded,v5 User,******' title='' description='' guid='' target='16F877A' >
+	<config data='' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<supplement use='0' head='' body='' />
+	<debug />
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='' vmin='0' vmaj='1' visiblename='' description='' category='' dynamic='0' standalone='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='IN' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='LINE' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='CHAR' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='ERR' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='RET' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='LOOP' type='ubyte' array='0' byref='0' description='' isconst='0' isinit='0' usrinit='0x0' setinit='' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='NEWLINE' description='' >
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='LINE MOD 2' swap='0' >
+							<flowline name='NEWLINE' description='' >
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Cursor' >
+									<argument exp='0' />
+									<argument exp='0' />
+								</command>
+							</flowline>
+							<flowline name='NEWLINE' description='' >
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Cursor' >
+									<argument exp='0' />
+									<argument exp='1' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintNumber' >
+							<argument exp='LINE' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot;:              &quot;' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='LINE MOD 2' swap='0' >
+							<flowline name='NEWLINE' description='' >
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Cursor' >
+									<argument exp='3' />
+									<argument exp='0' />
+								</command>
+							</flowline>
+							<flowline name='NEWLINE' description='' >
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Cursor' >
+									<argument exp='3' />
+									<argument exp='1' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='LINE = LINE + 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='INTERRUPT_TMR0' description='' />
+				</macro>
+				<macro >
+					<flowline name='INTERRUPT_PORTB' description='' />
+				</macro>
+				<macro >
+					<flowline name='INTERRUPT_RB0INT' description='' />
+				</macro>
+				<macro >
+					<flowline name='Main' description='' >
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Start' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot;init.&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='Initialize' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot;done.&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringReceive' >
+							<return exp='RET' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringReceive' >
+							<return exp='RET' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringReceive' >
+							<return exp='RET' />
+						</command>
+						<command class_type='delay' title='Delay' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='250' type='1' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = 0' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Clear' />
+						<command class_type='comment' title='' comment='Firmware reset
+AT&amp;F*
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;AT&amp;f*&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='delay' title='Delay' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='100' type='1' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='100' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Autoanswer on 1 ring
+ATS0=1
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;ATS0=1&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Allow remote !!! capture
+ATS536=1
+
+
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;ATS536=1&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Boot up as connectable and discoverable
+ATS512=4
+
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;ATS512=4&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Set the passkey
+AT+BTK=&quot;1234&quot;
+
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;AT+BTK=&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='34' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;1234&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='34' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Write S registers to NVM
+AT&amp;W
+
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;AT&amp;W&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='comment' title='' comment='Reset the device
+ATZ
+
+' ccode='' textshow='1' textmode='0' textarea='12,0,12,0' break='0' mark='0' disable='0' hide='0' customize='0' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='ERR = ERR + 1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='CreateCommand' >
+							<return exp='RET' />
+							<argument exp='&quot;ATZ&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='SendCommand' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&apos;.&apos;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='WaitForResponse' >
+							<return exp='RET' />
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &lt;&gt; 0' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='goto' title='Goto Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+							</flowline>
+							<flowline name='Main' description='' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot;setup&quot;' />
+						</command>
+						<command class_type='delay' title='Delay' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='2' type='2' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Clear' />
+						<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+							<exp exp='LINE = 1' />
+						</command>
+						<command class_type='loop' title='Loop' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='1' type='0' start='1' count='1' breakend='0' >
+							<flowline name='Main' description='' >
+								<command class_type='input' title='Input' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' mode='0' port='0' mask='0' exp='IN' />
+								<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='IN = 1' swap='0' >
+									<flowline name='Main' description='' >
+										<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Clear' />
+										<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+											<exp exp='LINE = 1' />
+										</command>
+									</flowline>
+									<flowline name='Main' description='' />
+								</command>
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringReceive' >
+									<return exp='RET' />
+								</command>
+								<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET &gt; 0' swap='0' >
+									<flowline name='Main' description='' >
+										<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' macro='NEWLINE' />
+										<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+											<exp exp='LOOP = 0' />
+										</command>
+										<command class_type='loop' title='Loop' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='LOOP &lt; RET' type='0' start='1' count='1' breakend='0' >
+											<flowline name='Main' description='' >
+												<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringRead' >
+													<return exp='CHAR' />
+													<argument exp='LOOP' />
+												</command>
+												<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+													<argument exp='CHAR' />
+												</command>
+												<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+													<exp exp='LOOP = LOOP + 1' />
+												</command>
+											</flowline>
+										</command>
+									</flowline>
+									<flowline name='Main' description='' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='label' title='Connection Point' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' labelid='0' labelname='A' />
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot;error&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='Cursor' >
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintNumber' >
+							<argument exp='ERR' />
+						</command>
+						<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+							<argument exp='&quot; &quot;' />
+						</command>
+						<command class_type='decision' title='Decision' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='RET = 255' swap='0' >
+							<flowline name='Main' description='' >
+								<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+									<argument exp='&quot;t/o&quot;' />
+								</command>
+							</flowline>
+							<flowline name='Main' description='' >
+								<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+									<exp exp='LOOP = 0' />
+								</command>
+								<command class_type='loop' title='Loop' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' exp='LOOP &lt; RET' type='0' start='1' count='1' breakend='0' >
+									<flowline name='Main' description='' >
+										<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__bluetooth0' macro='StringRead' >
+											<return exp='CHAR' />
+											<argument exp='LOOP' />
+										</command>
+										<command class_type='call' title='Call Macro' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' component='v5__lcddisplay0' macro='PrintASCII' >
+											<argument exp='CHAR' />
+										</command>
+										<command class_type='calculation' title='Calculation' comment='' ccode='' textshow='1' textmode='0' textarea='36,0,36,0' break='0' mark='0' disable='0' hide='0' customize='0' >
+											<exp exp='LOOP = LOOP + 1' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='c70330a4-616a-11d5-894e-0002e3044ba9' vmin='0' vmaj='0' codename='v5__lcddisplay0' x='0' y='0' z='0' xsz='6.15929e-316' ysz='1.88339e-234' zsz='1.88338e-234' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' >
+				<resources />
+				<properties />
+				<values />
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+			<component class_type='ref' guid='47b434b0-5b20-4b6b-b736-7d05cff4bdcf' vmin='0' vmaj='0' codename='v5__bluetooth0' x='0' y='0' z='0' xsz='6.15929e-316' ysz='1.88339e-234' zsz='1.88338e-234' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' >
+				<resources />
+				<properties />
+				<values />
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+</document>
+</root>
