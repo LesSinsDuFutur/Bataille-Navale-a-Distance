@@ -1,0 +1,270 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,f2!10,ff!18,ff!20,ff!28,ff!30,ff!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,1%f,1%10,1%11,3%13,3%18,1%19,f%28,1%29,1%2a,1%2f,1%30,1%32,1%36,1%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='0' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='0' />
+			<data name='usev9' value='0' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='0' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='1' />
+			<data name='ictrate' value='1000' />
+			<data name='ictmask' value='-1' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug />
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='RET_VAL' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='CHAR' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='INDEX' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='retour' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='20' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='FINISHED' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='STR_LEN' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='INTERRUPT_TMR0' description='' />
+				</macro>
+				<macro >
+					<flowline name='INTERRUPT_PORTB' description='' />
+				</macro>
+				<macro >
+					<flowline name='INTERRUPT_RB0INT' description='' />
+				</macro>
+				<macro >
+					<flowline name='Main' description='' >
+						<command class_type='comment' title='' comment='Initialize any components
+Set up varibles' textarea='12,0,487,300' />
+						<command class_type='call' title='Init LCD' textarea='36,0,511,300' component='LCD0' macro='Start' />
+						<command class_type='call' title='Init Bluetooth' textarea='36,0,511,300' component='Bluetooth0' macro='Initialise' />
+						<command class_type='calculation' title='Set Default values' textarea='36,0,511,300' >
+							<exp exp='RET_VAL = 0' />
+							<exp exp='STR_LEN = 0' />
+							<exp exp='CHAR = 0' />
+							<exp exp='INDEX = 0' />
+							<exp exp='FINISHED = 0' />
+						</command>
+						<command class_type='comment' title='' comment='initialise the communications with an AT command' textarea='12,0,12,0' />
+						<command class_type='call' title='AT command' component='Bluetooth0' macro='CreateCommandString' >
+							<return exp='RET_VAL' />
+							<argument exp='&quot;AT&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' component='Bluetooth0' macro='SendCommand' >
+							<return exp='RET_VAL' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Check for Response' component='Bluetooth0' macro='StringReceive' >
+							<return exp='STR_LEN' />
+						</command>
+						<command class_type='call' title='LCD &apos;Started&apos; Text' component='LCD0' macro='PrintString' >
+							<argument exp='&quot;Connect: &quot;' />
+						</command>
+						<command class_type='comment' title='' comment='Connect to the other device
+Address is 00809898****** (Set for device used)
+ATD008098******' textarea='12,0,12,0' />
+						<command class_type='call' title='Call Macro' component='Bluetooth0' macro='CreateCommandString' >
+							<return exp='RET_VAL' />
+							<argument exp='&quot;ATD0080980EB814&quot;' />
+						</command>
+						<command class_type='call' title='Call Macro' component='Bluetooth0' macro='SendCommand' >
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='LCD &apos;Started&apos; Text' component='LCD0' macro='PrintString' >
+							<argument exp='&quot;Done &quot;' />
+						</command>
+						<command class_type='delay' title='Pause for Connect to complete' textarea='36,0,511,300' exp='1' type='2' />
+						<command class_type='loop' title='Check for Responses' textarea='36,0,511,300' type='0' exp='FINISHED = 0' >
+							<flowline >
+								<command class_type='comment' title='' comment='Look for incoming messages.
+Disply incoming messages on the LCD.' textarea='12,0,12,0' />
+								<command class_type='call' title='Check for Response' component='Bluetooth0' macro='StringReceive' >
+									<return exp='STR_LEN' />
+								</command>
+								<command class_type='decision' title='Any response?' textarea='36,0,511,300' exp='STR_LEN &gt; 0' swap='0' >
+									<flowline >
+										<command class_type='call' title='Clear LCD' textarea='36,0,511,300' component='LCD0' macro='Clear' />
+										<command class_type='call' title='Appel de la Routine Composant' component='LCD0' macro='PrintString' >
+											<argument exp='&quot;reception:&quot;' />
+										</command>
+										<command class_type='calculation' title='Reset index' textarea='36,0,511,300' >
+											<exp exp='INDEX = 0' />
+										</command>
+										<command class_type='loop' title='Print message' textarea='36,0,511,300' type='0' exp='INDEX &lt; STR_LEN' >
+											<flowline >
+												<command class_type='call' title='Get next CHAR of message' component='Bluetooth0' macro='StringRead' >
+													<return exp='CHAR' />
+													<argument exp='INDEX' />
+												</command>
+												<command class_type='call' title='Print CHAR on LCD' component='LCD0' macro='PrintASCII' >
+													<argument exp='CHAR' />
+												</command>
+												<command class_type='calculation' title='Increment index' textarea='36,0,511,300' >
+													<exp exp='INDEX = INDEX + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Clear LCD' textarea='36,0,511,300' component='LCD0' macro='Cursor' >
+											<argument exp='0' />
+											<argument exp='1' />
+										</command>
+										<command class_type='call' title='Appel de la Routine Composant' disable='1' component='LCD0' macro='PrintString' >
+											<argument exp='&quot;envoi nbr car :&quot;' />
+										</command>
+										<command class_type='call' title='Appel de la Routine Composant' disable='1' component='LCD0' macro='PrintNumber' >
+											<argument exp='STR_LEN' />
+										</command>
+										<command class_type='call' title='Appel de la Routine Composant' component='LCD0' macro='Cursor' >
+											<argument exp='0' />
+											<argument exp='1' />
+										</command>
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='retour = ToString$ (STR_LEN)' />
+										</command>
+										<command class_type='call' title='Call Macro' component='Bluetooth0' macro='CreateCommandString' >
+											<return exp='RET_VAL' />
+											<argument exp='retour' />
+										</command>
+										<command class_type='call' title='Call Macro' component='Bluetooth0' macro='SendCommand' >
+											<argument exp='1' />
+											<argument exp='1' />
+										</command>
+									</flowline>
+									<flowline />
+								</command>
+								<command class_type='call' title='Add the character &apos;X&apos; to the outgoing data' disable='1' component='Bluetooth0' macro='CreateCommand' >
+									<argument exp='&apos;X&apos;' />
+								</command>
+								<command class_type='call' title='Send the outgoing data' disable='1' component='Bluetooth0' macro='SendCommand' >
+									<argument exp='0' />
+									<argument exp='0' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='cff93310-545b-4948-a8fa-12b119c5f7a7' vmin='2' vmaj='1' codename='Bluetooth0' x='0' y='-40' z='1.00378' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='CHANNEL' data='1' />
+					<value target='FLOWEN' data='1' />
+					<value target='BAUD_LIST' data='004' />
+					<value target='BAUD' data='' />
+					<value target='CommandBufferSize' data='32' />
+					<value target='ResponseBufferSize' data='14' />
+					<value target='SCRIPTS' data='4' />
+					<value target='SCRIPT1' data='ATS0=1
+ATS536=1	
+ATS512=4
+AT+BTK=&quot;1234&quot;
+AT&amp;w
+ATZ' />
+					<value target='SCRIPT2' data='' />
+					<value target='SCRIPT3' data='' />
+					<value target='SCRIPT4' data='' />
+					<value target='TX' data='$PORTC.6' />
+					<value target='RX' data='$PORTC.7' />
+					<value target='RTS' data='$PORTC0.5' />
+					<value target='CTS' data='$PORTC0.4' />
+					<value target='TXRemap' data='' />
+					<value target='RXRemap' data='' />
+					<value target='DataSource' data='000' />
+					<value target='COMport' data='001' />
+					<value target='Injector' data='' />
+					<value target='InjectorHandle' data='' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+			<component class_type='ref' guid='0953aac0-9c23-4c2f-9843-88954a4191ea' vmin='1' vmaj='2' codename='LCD0' x='0' y='16' z='1.05195' xsz='160' ysz='26' zsz='1.14286' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='LCD_Mode' data='000' />
+					<value target='Pin_Data_0' data='$PORTA.0' />
+					<value target='Pin_Data_1' data='$PORTA.1' />
+					<value target='Pin_Data_2' data='$PORTA.2' />
+					<value target='Pin_Data_3' data='$PORTA.3' />
+					<value target='Pin_Data_4' data='$PORTA.1' />
+					<value target='Pin_Data_5' data='$PORTA.1' />
+					<value target='Pin_Data_6' data='$PORTA.1' />
+					<value target='Pin_Data_7' data='$PORTA.1' />
+					<value target='LCD_Port' data='$PORTA' />
+					<value target='Pin_RS' data='$PORTA.4' />
+					<value target='Pin_E' data='$PORTA.5' />
+					<value target='LCD_Use_Write' data='0' />
+					<value target='Pin_RW' data='$PORTA.0' />
+					<value target='Rows' data='2' />
+					<value target='Columns' data='16' />
+					<value target='BackgroundColor' data='0x808080' />
+					<value target='LineColor' data='0' />
+					<value target='TextColor' data='0x000000' />
+					<value target='Font' data='Arial' />
+					<value target='CursorPosX' data='9' />
+					<value target='CursorPosY' data='0' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='1' lighting='2' brightness='0' perspective='0' >
+		<background rgb='32768' img='' style='0' />
+		<table rgb='8404224' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAI4CAAA' zoom='75' scrollx='0' scrolly='375' flags='0' />
+	</layout>
+</document>
+</root>

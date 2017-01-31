@@ -69,7 +69,7 @@
 						</command>
 						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommandString' >
 							<return exp='bluetooth_connect_return' />
-							<argument exp='&quot;AT&amp;F*&quot;' />
+							<argument exp='&quot;AT&amp;F+&quot;' />
 						</command>
 						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='SendCommand' >
 							<return exp='bluetooth_connect_return' />
@@ -109,51 +109,51 @@
 				</macro>
 				<macro >
 					<flowline name='SET_DEVICE_PASSKEY' description='Configuration du code pin' >
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='Clear' />
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='PrintString' >
 							<argument exp='&quot;Set device passwd&quot;' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='Cursor' >
 							<argument exp='0' />
 							<argument exp='1' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='PrintString' >
 							<argument exp='&quot;PIN: &quot;' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='PrintString' >
 							<argument exp='&quot;1234&quot;' />
 						</command>
-						<command class_type='delay' title='Pause' exp='1' type='2' />
-						<command class_type='calculation' title='Calcul' >
+						<command class_type='delay' title='Pause' disable='1' exp='1' type='2' />
+						<command class_type='calculation' title='Calcul' disable='1' >
 							<exp exp='error_count = error_count + 1' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommandString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommandString' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='&quot;AT+BTK=&quot;' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommand' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommand' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='34' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommandString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommandString' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='&quot;1234&quot;' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommand' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommand' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='34' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='SendCommand' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='SendCommand' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='1' />
 							<argument exp='1' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='WaitForResponse' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='WaitForResponse' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='1' />
 							<argument exp='10' />
 						</command>
-						<command class_type='decision' title='Décision' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
+						<command class_type='decision' title='Décision' disable='1' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
 							<flowline >
 								<command class_type='call' title='Appel d&apos;une Macro' macro='DISPLAY_ERROR' />
 							</flowline>
@@ -163,22 +163,22 @@
 				</macro>
 				<macro >
 					<flowline name='AUTO_ANSWER' description='Réponse automatique du module' >
-						<command class_type='calculation' title='Calcul' >
+						<command class_type='calculation' title='Calcul' disable='1' >
 							<exp exp='error_count = error_count + 1' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommandString' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommandString' >
 							<argument exp='&quot;ATS0=1&quot;' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='SendCommand' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='SendCommand' >
 							<argument exp='1' />
 							<argument exp='1' />
 						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='WaitForResponse' >
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='WaitForResponse' >
 							<return exp='bluetooth_connect_return' />
 							<argument exp='1' />
 							<argument exp='10' />
 						</command>
-						<command class_type='decision' title='Décision' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
+						<command class_type='decision' title='Décision' disable='1' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
 							<flowline >
 								<command class_type='call' title='Appel d&apos;une Macro' macro='DISPLAY_ERROR' />
 							</flowline>
@@ -220,34 +220,101 @@
 				</macro>
 				<macro >
 					<flowline name='DEBUG' description='' >
-						<command class_type='call' title='Appel d&apos;une Macro' macro='RESET_DEVICE' />
-						<command class_type='call' title='Appel d&apos;une Macro' macro='AUTO_ANSWER' />
-						<command class_type='call' title='Appel d&apos;une Macro' macro='ALLOW_REMOTE' />
-						<command class_type='call' title='Appel d&apos;une Macro' macro='SET_DEVICE_PASSKEY' />
-						<command class_type='call' title='Appel d&apos;une Macro' macro='BLUETTOOH_CONNECT' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='RESET_DEVICE' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='AUTO_ANSWER' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='ALLOW_REMOTE' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='SET_DEVICE_PASSKEY' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='BLUETOOTH_CONNECT' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='RESET_BLUETOOTH_FIRMWARE' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='RESET_BLUETOOTH_FIRMWARE' />
 					</flowline>
 				</macro>
 				<macro >
-					<flowline name='ALLOW_REMOTE' description='Accepter les connexion sortantes' >
-						<command class_type='calculation' title='Calcul' >
-							<exp exp='error_count = error_count + 1' />
+					<flowline name='CHECK_CARD_DETECTION' description='' >
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Card loaded and&quot;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;available ?&quot;' />
 						</command>
 						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='CreateCommandString' >
-							<argument exp='&quot;ATS536=1&quot;' />
+							<argument exp='&quot;AT&quot;' />
 						</command>
 						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='SendCommand' >
 							<argument exp='1' />
 							<argument exp='1' />
 						</command>
+						<command class_type='delay' title='Pause' exp='1' type='2' />
 						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth1' macro='WaitForResponse' >
+							<return exp='bluetooth_connect_return' />
 							<argument exp='1' />
-							<argument exp='10' />
+							<argument exp='100' />
 						</command>
 						<command class_type='decision' title='Décision' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
 							<flowline >
 								<command class_type='call' title='Appel d&apos;une Macro' macro='DISPLAY_ERROR' />
 							</flowline>
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+									<argument exp='&quot;BT Card ready !&quot;' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='ALLOW_REMOTE' description='Accepter les connexion sortantes' >
+						<command class_type='calculation' title='Calcul' disable='1' >
+							<exp exp='error_count = error_count + 1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='CreateCommandString' >
+							<argument exp='&quot;ATS536=1&quot;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='SendCommand' >
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth1' macro='WaitForResponse' >
+							<argument exp='1' />
+							<argument exp='10' />
+						</command>
+						<command class_type='decision' title='Décision' disable='1' exp='bluetooth_connect_return &lt;&gt; 0' swap='0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' macro='DISPLAY_ERROR' />
+							</flowline>
 							<flowline />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='BLUETOOTH_CONNECT' description='Connexion du bluetooth à l&apos;autre carte' >
+						<command class_type='calculation' title='Calcul' disable='1' >
+							<exp exp='bluetooth_connected = WAITING' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='Clear' />
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Waiting pairing&quot;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='Cursor' >
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Please wait...&quot;' />
+						</command>
+						<command class_type='loop' title='Boucle' disable='1' type='0' exp='bluetooth_connected == WAITING' >
+							<flowline >
+								<command class_type='calculation' title='Calcul' disable='1' >
+									<exp exp='bluetooth_connected = CONNECTED' />
+								</command>
+								<command class_type='delay' title='Pause' exp='3' type='2' />
+							</flowline>
 						</command>
 					</flowline>
 				</macro>
@@ -278,34 +345,10 @@
 					</flowline>
 				</macro>
 				<macro >
-					<flowline name='BLUETTOOH_CONNECT' description='Connexion du bluethooth à l&apos;autre carte' >
-						<command class_type='calculation' title='Calcul' >
-							<exp exp='bluetooth_connected = WAITING' />
-						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
-							<argument exp='&quot;Waiting pairing&quot;' />
-						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
-							<argument exp='0' />
-							<argument exp='1' />
-						</command>
-						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
-							<argument exp='&quot;Please wait...&quot;' />
-						</command>
-						<command class_type='loop' title='Boucle' type='0' exp='bluetooth_connected == WAITING' >
-							<flowline >
-								<command class_type='calculation' title='Calcul' disable='1' >
-									<exp exp='bluetooth_connected = CONNECTED' />
-								</command>
-								<command class_type='delay' title='Pause' exp='3' type='2' />
-							</flowline>
-						</command>
-					</flowline>
-				</macro>
-				<macro >
 					<flowline name='Main' description='Racine du programme' >
 						<command class_type='call' title='Appel d&apos;une Macro' macro='INITIALISATION' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='CHECK_CARD_DETECTION' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='RESET_DEVICE' />
 						<command class_type='call' title='Appel d&apos;une Macro' macro='RESET_BLUETOOTH_FIRMWARE' />
 					</flowline>
 				</macro>
@@ -373,16 +416,17 @@ AT+CSS
 		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
 	</panel3d>
 	<layout >
-		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='DEBUG' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='RESET_BLUETOOTH_FIRMWARE' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='INITIALISATION' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='DISPLAY_ERROR' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='SET_DEVICE_PASSKEY' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='RESET_DEVICE' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='BLUETTOOH_CONNECT' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
-		<view type='0' name='AUTO_ANSWER' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
 		<view type='0' name='ALLOW_REMOTE' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='AUTO_ANSWER' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='DEBUG' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='BLUETOOTH_CONNECT' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='INITIALISATION' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='SET_DEVICE_PASSKEY' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='CHECK_CARD_DETECTION' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='DISPLAY_ERROR' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='RESET_BLUETOOTH_FIRMWARE' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='RESET_DEVICE' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJcCAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
 	</layout>
 </document>
 </root>
