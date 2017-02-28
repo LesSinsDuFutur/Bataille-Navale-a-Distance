@@ -49,7 +49,7 @@ Diagrammes SysML
 
 ### Diagramme de définition de Blocs
 
-![](/Diagrams/Bloc_navale_OK.png)
+![](/Diagrams/Bloc_Navale_OK.png)
 
 Chaîne d'Information
 --------------------
