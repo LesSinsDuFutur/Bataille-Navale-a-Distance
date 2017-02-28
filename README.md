@@ -54,4 +54,4 @@ Diagrammes SysML
 Chaîne d'Information
 --------------------
 
-![](/Diagrams/CICE.PNG)
+![](/Diagrams/CICE.PNG.png)
