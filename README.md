@@ -45,7 +45,7 @@ Diagrammes SysML
 
 ### Diagramme de Séquence (Pendant une partie)
 
-![](Diagrams/seq_main_navale_OK.png)
+![](Diagrams/seq_main_ok.png)
 
 ### Diagramme de définition de Blocs
 
