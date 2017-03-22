@@ -1,0 +1,32 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 111.0,rom = 0;
+FCI_DELAYINT_US(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_Delay.c",line = 137,ram = 3.0,rom = 54;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCI_SHEAD(unsigned char*,unsigned char,unsigned char*,unsigned char,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 898,ram = 14.0,rom = 478;
+FCI_SCOPY(unsigned char*,unsigned char,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 960,ram = 9.0,rom = 88;
+FCM_INITIALISATION(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1448,ram = 18.0,rom = 246;
+FCD_0c851_Bluetooth2__Initialise(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1392,ram = 41.0,rom = 318;
+FCD_04071_LCD__Start(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 757,ram = 1.0,rom = 290;
+FCD_0c851_Bluetooth2__SendScript(unsigned char):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 977,ram = 86.0,rom = 486;
+FCD_04071_LCD__PrintString(unsigned char*,unsigned short):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 298,ram = 6.0,rom = 56;
+FCD_04071_LCD__Clear(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 279,ram = 0.0,rom = 38;
+FCD_0c851_Bluetooth2__ReceiveByte(unsigned char):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 916,ram = 4.0,rom = 72;
+FCD_0c851_Bluetooth2__ReadString(unsigned char*,unsigned short,unsigned char):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1193,ram = 8.0,rom = 84;
+FCD_0c851_Bluetooth2__SendCommand(unsigned char*,unsigned short,unsigned char):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1114,ram = 9.0,rom = 114;
+FCD_04071_LCD__RawSend(unsigned char,bit):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 631,ram = 3.1,rom = 702;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 537,ram = 11.0,rom = 158;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 507,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 22;
+FCD_0c851_Bluetooth2__SetPairKey(unsigned char*,unsigned short):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 893,ram = 34.0,rom = 152;
+FCD_0c851_Bluetooth2__StringReceive(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1313,ram = 4.0,rom = 80;
+FCD_0c851_Bluetooth2__SaveSettings(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1228,ram = 6.0,rom = 94;
+FCD_0c851_Bluetooth2__SetMode(unsigned char,unsigned char):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1272,ram = 12.0,rom = 268;
+FCD_0c851_Bluetooth2__RestoreFactorySettings(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1372,ram = 7.0,rom = 54;
+main(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1549,ram = 0.0,rom = 12;
+interrupt(void):"F:\Projet\BLUETO~1\CONNEC~1\connet_bords_v1.c",line = 1571,ram = 3.0,rom = 132;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 38;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+#HEAP_BLOCK: 0, 221, 1315;
