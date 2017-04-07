@@ -1,0 +1,36 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 176.0,rom = 0;
+FC_CAL_Port_In_DDR__x(unsigned char*,unsigned char*,unsigned char,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_IO.c",line = 127,ram = 8.0,rom = 48;
+FCI_DELAYINT_MS(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_Delay.c",line = 148,ram = 3.0,rom = 54;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCM_Hitbox_v2(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2847,ram = 2.0,rom = 184;
+FCM_affichage_bateau(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 3903,ram = 0.0,rom = 52;
+FCM_Lecture_Coordonnes(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2938,ram = 0.0,rom = 34;
+FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 1351,ram = 5.0,rom = 66;
+FCM_Initialisation(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 3253,ram = 3.0,rom = 94;
+FCD_0f051_gLCD_EB076_4D1__Initialise(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2611,ram = 6.0,rom = 374;
+FCD_0f051_gLCD_EB076_4D1__ClearDisplay(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2262,ram = 4.0,rom = 66;
+FCM_lignes(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 4596,ram = 2.0,rom = 138;
+FCM_Reinitialisation_tactile(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 3305,ram = 0.0,rom = 10;
+FCD_0f051_gLCD_EB076_4D1__G4D_DisableTouchscreenPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 1690,ram = 2.0,rom = 60;
+FCD_0f051_gLCD_EB076_4D1__G4D_EnableTouchscreenPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 1793,ram = 2.0,rom = 98;
+FCM_parametres_bateau(unsigned short,unsigned short,unsigned short,unsigned short):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 4067,ram = 8.0,rom = 56;
+FCD_0f051_gLCD_EB076_4D1__SetForegroundColour(unsigned char,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2374,ram = 5.0,rom = 92;
+FCD_0f051_gLCD_EB076_4D1__DrawRectangle(unsigned short,unsigned short,unsigned short,unsigned short,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2521,ram = 10.0,rom = 326;
+FCM_Recuperation_coordonees(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 4138,ram = 0.0,rom = 10;
+FCD_0f051_gLCD_EB076_4D1__G4D_GetTouchCoordinatesPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 1429,ram = 3.0,rom = 160;
+FCD_0f051_gLCD_EB076_4D1__DrawLine(unsigned short,unsigned short,unsigned short,unsigned short):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 1559,ram = 14.0,rom = 144;
+FC_CAL_UART_UpdateBaud_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 734,ram = 3.0,rom = 144;
+FC_CAL_UART_Uninit_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 460,ram = 0.0,rom = 6;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 537,ram = 11.0,rom = 158;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 507,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 18;
+FCD_0f051_gLCD_EB076_4D1__Print(unsigned char*,unsigned short,unsigned short,unsigned short,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 2083,ram = 12.0,rom = 230;
+main(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 4644,ram = 11.0,rom = 248;
+interrupt(void):"U:\DOCUME~1\SIN\BATAIL~1\affichage_bateau_v2_OK.c",line = 4742,ram = 0.0,rom = 34;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 38;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 166;
+#HEAP_BLOCK: 0, 211, 1325;

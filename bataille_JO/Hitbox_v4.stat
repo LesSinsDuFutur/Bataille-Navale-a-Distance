@@ -1,0 +1,33 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 71.0,rom = 0;
+FC_CAL_Port_In_DDR__x(unsigned char*,unsigned char*,unsigned char,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_IO.c",line = 127,ram = 8.0,rom = 48;
+FCM_Hitbox_v2(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2844,ram = 1.0,rom = 88;
+FCM_affichage_bateau(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 3876,ram = 0.0,rom = 44;
+FCD_0f051_gLCD_EB076_4D1__SetForegroundColour(unsigned char,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2371,ram = 5.0,rom = 92;
+FCM_Lecture_Coordonnes(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2931,ram = 0.0,rom = 32;
+FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 1348,ram = 5.0,rom = 66;
+FCM_Initialisation(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 3258,ram = 0.0,rom = 14;
+FCD_0f051_gLCD_EB076_4D1__Initialise(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2608,ram = 6.0,rom = 372;
+FCD_0f051_gLCD_EB076_4D1__ClearDisplay(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2259,ram = 4.0,rom = 64;
+FCM_lignes(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 4589,ram = 2.0,rom = 136;
+FCM_Reinitialisation_tactile(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 3278,ram = 0.0,rom = 10;
+FCD_0f051_gLCD_EB076_4D1__G4D_DisableTouchscreenPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 1687,ram = 2.0,rom = 58;
+FCD_0f051_gLCD_EB076_4D1__G4D_EnableTouchscreenPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 1790,ram = 2.0,rom = 96;
+FCM_parametres_bateau(unsigned short,unsigned short,unsigned short,unsigned short,unsigned char,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 4060,ram = 11.0,rom = 60;
+FCD_0f051_gLCD_EB076_4D1__DrawRectangle(unsigned short,unsigned short,unsigned short,unsigned short,unsigned char,unsigned char):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 2518,ram = 10.0,rom = 326;
+FCM_Recuperation_coordonees(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 4131,ram = 0.0,rom = 10;
+FCD_0f051_gLCD_EB076_4D1__G4D_GetTouchCoordinatesPicaso(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 1426,ram = 3.0,rom = 158;
+FCD_0f051_gLCD_EB076_4D1__DrawLine(unsigned short,unsigned short,unsigned short,unsigned short):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 1556,ram = 14.0,rom = 144;
+FC_CAL_UART_UpdateBaud_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 734,ram = 3.0,rom = 144;
+FC_CAL_UART_Uninit_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 460,ram = 0.0,rom = 6;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 537,ram = 11.0,rom = 158;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 507,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 18;
+main(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 4637,ram = 0.0,rom = 38;
+interrupt(void):"U:\DOCUME~1\SIN\BATAIL~1\Hitbox_v4.c",line = 4704,ram = 0.0,rom = 34;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 38;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 156;
+#HEAP_BLOCK: 0, 104, 1432;
