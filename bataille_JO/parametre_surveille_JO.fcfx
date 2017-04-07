@@ -1,0 +1,176 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,32!10,f9!18,fe!20,ff!28,79!30,ba!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,0%f,0%10,1%11,0%13,3%18,0%19,f%28,1%29,0%2a,0%2f,0%30,0%32,0%36,0%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='0' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='0' />
+			<data name='usev9' value='0' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='0' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='0' />
+			<data name='ictrate' value='20000' />
+			<data name='ictmask' value='0' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug >
+		<watch expr='X' />
+		<watch expr='Y' />
+	</debug>
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='6edf53fb-86f2-445f-9b27-432ae1a5890b' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='false' type='b1' description='' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='var' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Y' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='X' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='true' type='b1' description='' isconst='1' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='Main' description='' >
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Initialise' />
+						<command class_type='loop' title='Boucle' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='PrintNumber' >
+									<argument exp='var' />
+									<argument exp='10' />
+									<argument exp='20' />
+									<argument exp='1' />
+									<argument exp='1' />
+								</command>
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='var = var + 1' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='gLCD_EB076_4D1' macro='Initialise' />
+						<command class_type='call' title='Appel de la Routine Composant' disable='1' component='gLCD_EB076_4D1' macro='G4D_EnableTouchscreenPicaso' />
+						<command class_type='loop' title='Boucle' disable='1' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' disable='1' component='gLCD_EB076_4D1' macro='G4D_GetTouchCoordinatesPicaso' >
+									<return exp='X' />
+								</command>
+								<command class_type='loop' title='Boucle' disable='1' type='0' exp='X = 0' >
+									<flowline />
+								</command>
+								<command class_type='call' title='Appel de la Routine Composant' disable='1' component='gLCD_EB076_4D1' macro='G4D_ReadTouchCoordinatesPicaso' >
+									<return exp='Y' />
+									<argument exp='Y' />
+								</command>
+								<command class_type='output' title='Sortie' disable='1' mode='0' port='1048579' mask='0' exp='Y' />
+								<command class_type='call' title='Appel de la Routine Composant' disable='1' component='gLCD_EB076_4D1' macro='ClearDisplay' />
+								<command class_type='calculation' title='Calcul' disable='1' >
+									<exp exp='X = 0' />
+									<exp exp='Y = 0' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='c6586b24-9a1c-4e19-8051-8ae5923c418a' vmin='5' vmaj='1' codename='gLCD_EB076_4D1' x='8' y='0' z='5.735' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='pixel_height' data='320' />
+					<value target='pixel_width' data='240' />
+					<value target='monochrome' data='0' />
+					<value target='foreground_colour' data='0' />
+					<value target='background_colour' data='16777215' />
+					<value target='colour_bit_depth' data='16' />
+					<value target='red_bit_depth' data='5' />
+					<value target='green_bit_depth' data='6' />
+					<value target='blue_bit_depth' data='5' />
+					<value target='channel' data='001' />
+					<value target='reset_pin' data='$PORTC.5' />
+					<value target='tx_pin' data='$PORTC.6' />
+					<value target='rx_pin' data='$PORTC.7' />
+					<value target='HighSpeed' data='1' />
+					<value target='TXRemap' data='' />
+					<value target='RXRemap' data='000' />
+					<value target='DisplayMethod' data='000' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+			<component class_type='ref' guid='63177601-e8e2-4330-89d3-a4c5a7e228f5' vmin='1' vmaj='1' codename='led_array_pcb1' x='-64' y='0' z='2.3' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='1' >
+				<resources />
+				<properties />
+				<values >
+					<value target='count' data='8' />
+					<value target='polarity' data='001' />
+					<value target='port' data='000' />
+					<value target='pin0' data='$PORTA.0' />
+					<value target='pin1' data='$PORTA.1' />
+					<value target='pin2' data='$PORTA.2' />
+					<value target='pin3' data='$PORTA.3' />
+					<value target='pin4' data='$PORTA.4' />
+					<value target='pin5' data='$PORTA.5' />
+					<value target='pin6' data='$PORTA.6' />
+					<value target='pin7' data='$PORTA.7' />
+					<value target='full_port' data='$PORTA' />
+					<value target='align' data='000' />
+					<value target='spacing' data='7.000000' />
+					<value target='reverse' data='0' />
+					<value target='show_labels' data='003' />
+					<value target='color_led0' data='65280' />
+					<value target='label_color' data='16777215' />
+					<value target='bitmask' data='255' />
+					<value target='inv_bitmask' data='-256' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='8409120' img='' style='0' />
+		<table rgb='7360576' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAIwUAAJEDAAA' zoom='75' scrollx='0' scrolly='47' flags='0' />
+	</layout>
+</document>
+</root>

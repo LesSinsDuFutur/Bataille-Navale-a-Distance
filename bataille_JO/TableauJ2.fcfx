@@ -1,0 +1,1195 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,32!10,f9!18,fe!20,ff!28,79!30,ba!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,0%f,0%10,1%11,0%13,3%18,0%19,f%28,1%29,0%2a,0%2f,0%30,0%32,0%36,0%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='0' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='0' />
+			<data name='usev9' value='0' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='0' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='0' />
+			<data name='ictrate' value='20000' />
+			<data name='ictmask' value='0' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug >
+		<watch expr='X' />
+		<watch expr='Y' />
+		<watch expr='Appui_Ecran' />
+		<watch expr='hitbox' />
+		<watch expr='X' />
+		<watch expr='Y' />
+		<watch expr='X_touch' />
+		<watch expr='Y_touch' />
+		<watch expr='tableau' />
+		<watch expr='num_case' />
+		<watch expr='bateau' />
+		<watch expr='Porte_avion' />
+		<watch expr='Sous_marin' />
+		<watch expr='Croiseur' />
+		<watch expr='Torpilleur' />
+		<watch expr='Contre_torpilleur' />
+		<watch expr='X_SORTIE' />
+	</debug>
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='0eafe563-509c-4700-a997-af68aa88c4a0' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='Sous_marin_J2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='hitbox_Joueur_2' type='u8' description='' isconst='0' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Y_ligne' type='u16' description='' isconst='0' isinit='1' usrinit='24' setinit='24' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Porte_avion_J2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='false' type='b1' description='' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='num_case' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='X_SORTIE' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Y_Touch' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Torpilleur_J2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='X_ligne' type='u16' description='' isconst='0' isinit='1' usrinit='24' setinit='24' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Y' type='u16' description='' isconst='0' isinit='1' usrinit='24' setinit='24' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='X' type='u16' description='' isconst='0' isinit='1' usrinit='24' setinit='24' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='X_Touch' type='u16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Tour' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Appui_Ecran' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Contre_torpilleur_J2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='hitbox_2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='bateau' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Joueur1' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='true' type='b1' description='' isconst='1' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='tableau' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='101' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='Croiseur_J2' type='u8' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='Touche_Coule_TORP' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='255' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Touche   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = tableau[hitbox_Joueur_2] || 0b00000011' />
+							<exp exp='Torpilleur_J2 = Torpilleur_J2 - 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Hitbox_v2' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='loop' title='Boucle' type='1' exp='Appui_Ecran = 0' start='0' >
+							<flowline >
+								<command class_type='loop' title='Boucle' type='1' exp='Porte_avion_J2 = 5' >
+									<flowline >
+										<command class_type='decision' title='Décision' exp='Porte_avion_J2 &lt; 5' swap='0' >
+											<flowline >
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Choix_Bateaux' />
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Porte_avion' />
+											</flowline>
+											<flowline />
+										</command>
+									</flowline>
+								</command>
+								<command class_type='loop' title='Boucle' type='1' exp='Croiseur_J2 = 4' >
+									<flowline >
+										<command class_type='decision' title='Décision' exp='Porte_avion_J2 = 5' swap='0' >
+											<flowline >
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Choix_Bateaux' />
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Croiseur' />
+											</flowline>
+											<flowline />
+										</command>
+									</flowline>
+								</command>
+								<command class_type='loop' title='Boucle' type='1' exp='Contre_torpilleur_J2 = 3' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Choix_Bateaux' />
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Contre_torpilleur' />
+									</flowline>
+								</command>
+								<command class_type='loop' title='Boucle' type='1' exp='Sous_marin_J2 = 3' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Choix_Bateaux' />
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Sous_marin' />
+									</flowline>
+								</command>
+								<command class_type='loop' title='Boucle' type='1' exp='Torpilleur_J2 = 2' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Choix_Bateaux' />
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Torpilleur' />
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Touche_coule_PA' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='255' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Touche   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = tableau[hitbox_Joueur_2] || 0b00000011' />
+							<exp exp='Porte_avion_J2 = Porte_avion_J2 - 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Lecture_Coordonnes' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_ReadTouchCoordinatesPicaso' >
+							<return exp='X_Touch' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_ReadTouchCoordinatesPicaso' >
+							<return exp='Y_Touch' />
+							<argument exp='1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Croiseur' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Appel d&apos;une Macro' macro='affichage_bateau' />
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = 0b00000010' />
+							<exp exp='bateau = bateau + 1' />
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Croiseur_J2 = Croiseur_J2 + 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Torpilleur' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Appel d&apos;une Macro' macro='affichage_bateau' />
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = 0b00000101' />
+							<exp exp='bateau = bateau + 1' />
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Torpilleur_J2 = Torpilleur_J2 + 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Touche_Coule_SM' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='255' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Touche   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = tableau[hitbox_Joueur_2] || 0b00000011' />
+							<exp exp='Sous_marin_J2 = Sous_marin_J2 - 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Initialisation' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' />
+						<command class_type='loop' title='Boucle' type='1' exp='hitbox_Joueur_2 = 101' start='0' >
+							<flowline >
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='tableau[hitbox_Joueur_2] = 0b00000000' />
+									<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='tableau[Joueur1] = tableau[hitbox_Joueur_2]' />
+						</command>
+						<command class_type='calculation' title='Calcul' disable='1' >
+							<exp exp='tableau[23] = 0b00000001' />
+							<exp exp='tableau[24] = 0b00000001' />
+							<exp exp='tableau[25] = 0b00000001' />
+							<exp exp='' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Initialise' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='ClearDisplay' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='lignes' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_SetTouchRegionPicaso' >
+							<argument exp='0' />
+							<argument exp='0' />
+							<argument exp='240' />
+							<argument exp='240' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Message_bateau' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='decision' title='Décision' exp='bateau &gt;= 5' swap='0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+								<command class_type='decision' title='Décision' exp='bateau &gt;= 9' swap='0' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+										<command class_type='decision' title='Décision' exp='bateau &gt;= 12' swap='0' >
+											<flowline >
+												<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+												<command class_type='decision' title='Décision' exp='bateau &gt;= 15' swap='0' >
+													<flowline >
+														<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+														<command class_type='decision' title='Décision' exp='bateau &gt;= 17' swap='0' >
+															<flowline />
+															<flowline >
+																<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+																	<argument exp='&quot;Veuillez placer le torpilleur (2 cases)&quot;' />
+																	<argument exp='0' />
+																	<argument exp='241' />
+																	<argument exp='2' />
+																	<argument exp='1' />
+																</command>
+															</flowline>
+														</command>
+													</flowline>
+													<flowline >
+														<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+															<argument exp='&quot;Veuillez placer le sous-marin (3 cases)&quot;' />
+															<argument exp='0' />
+															<argument exp='241' />
+															<argument exp='2' />
+															<argument exp='1' />
+														</command>
+													</flowline>
+												</command>
+											</flowline>
+											<flowline >
+												<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+													<argument exp='&quot;Veuillez placer le contre        torpilleur(3 cases)&quot;' />
+													<argument exp='0' />
+													<argument exp='241' />
+													<argument exp='2' />
+													<argument exp='1' />
+												</command>
+											</flowline>
+										</command>
+									</flowline>
+									<flowline >
+										<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+											<argument exp='&quot;Veuillez placer le croiseur(4 cases)&quot;' />
+											<argument exp='0' />
+											<argument exp='241' />
+											<argument exp='2' />
+											<argument exp='1' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+									<argument exp='&quot;Veuillez placer le porte avion(5 cases)&quot;' />
+									<argument exp='0' />
+									<argument exp='241' />
+									<argument exp='2' />
+									<argument exp='1' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Toucher_Couler' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='decision' title='Porte-avion' exp='tableau[hitbox_Joueur_2] = 0b00000001' swap='0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Touche_coule_PA' />
+								<command class_type='decision' title='Décision' exp='Porte_avion_J2 = 0' swap='0' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+										<command class_type='delay' title='Pause' exp='100' type='1' />
+										<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+											<argument exp='&quot;            Coule   &quot;' />
+											<argument exp='0' />
+											<argument exp='241' />
+											<argument exp='2' />
+											<argument exp='1' />
+										</command>
+									</flowline>
+									<flowline />
+								</command>
+							</flowline>
+							<flowline >
+								<command class_type='decision' title='Croiseur' exp='tableau[hitbox_Joueur_2] = 0b00000010' swap='0' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Touche_coule_CR' />
+										<command class_type='decision' title='Décision' exp='Croiseur_J2 = 0' swap='0' >
+											<flowline >
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+												<command class_type='delay' title='Pause' exp='100' type='1' />
+												<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+													<argument exp='&quot;            Coule   &quot;' />
+													<argument exp='0' />
+													<argument exp='241' />
+													<argument exp='2' />
+													<argument exp='1' />
+												</command>
+											</flowline>
+											<flowline />
+										</command>
+									</flowline>
+									<flowline >
+										<command class_type='decision' title='Décision' exp='tableau[hitbox_Joueur_2] = 0b00000011' swap='0' >
+											<flowline >
+												<command class_type='call' title='Appel d&apos;une Macro' macro='Touche_Coule_CT' />
+												<command class_type='decision' title='Décision' exp='Contre_torpilleur_J2 = 0' swap='0' >
+													<flowline >
+														<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+														<command class_type='delay' title='Pause' exp='100' type='1' />
+														<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+															<argument exp='&quot;            Coule   &quot;' />
+															<argument exp='0' />
+															<argument exp='241' />
+															<argument exp='2' />
+															<argument exp='1' />
+														</command>
+													</flowline>
+													<flowline />
+												</command>
+											</flowline>
+											<flowline >
+												<command class_type='decision' title='Décision' exp='tableau[hitbox_Joueur_2] = 0b00000100' swap='0' >
+													<flowline >
+														<command class_type='call' title='Appel d&apos;une Macro' macro='Touche_Coule_SM' />
+														<command class_type='decision' title='Décision' exp='Sous_marin_J2 = 0' swap='0' >
+															<flowline >
+																<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+																<command class_type='delay' title='Pause' exp='100' type='1' />
+																<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+																	<argument exp='&quot;            Coule   &quot;' />
+																	<argument exp='0' />
+																	<argument exp='241' />
+																	<argument exp='2' />
+																	<argument exp='1' />
+																</command>
+															</flowline>
+															<flowline />
+														</command>
+													</flowline>
+													<flowline >
+														<command class_type='decision' title='Décision' exp='tableau[hitbox_Joueur_2] = 0b00000101' swap='0' >
+															<flowline >
+																<command class_type='call' title='Appel d&apos;une Macro' macro='Touche_Coule_TORP' />
+																<command class_type='decision' title='Décision' exp='Torpilleur_J2 = 0' swap='0' >
+																	<flowline >
+																		<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+																		<command class_type='delay' title='Pause' exp='100' type='1' />
+																		<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+																			<argument exp='&quot;Coule&quot;' />
+																			<argument exp='0' />
+																			<argument exp='241' />
+																			<argument exp='2' />
+																			<argument exp='1' />
+																		</command>
+																	</flowline>
+																	<flowline />
+																</command>
+															</flowline>
+															<flowline >
+																<command class_type='call' title='Manque' macro='Manque' />
+															</flowline>
+														</command>
+													</flowline>
+												</command>
+											</flowline>
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Appui_Ecran = 0' />
+						</command>
+						<command class_type='delay' title='Pause' exp='100' type='1' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Reinitialisation_tactile' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_DisableTouchscreenPicaso' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_EnableTouchscreenPicaso' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_SetTouchRegionPicaso' >
+							<argument exp='0' />
+							<argument exp='0' />
+							<argument exp='240' />
+							<argument exp='240' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Choix_Bateau_Toucher' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_tactile' />
+						<command class_type='loop' title='Boucle' type='0' exp='Appui_Ecran = 0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Recuperation_coordonees' />
+							</flowline>
+						</command>
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Lecture_Coordonnes' />
+						<command class_type='delay' title='Pause' exp='100' type='1' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='phase_Fin' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='decision' title='' exp='Torpilleur_J2 = 0 &amp; Croiseur_J2 = 0 &amp; Porte_avion_J2 = 0 &amp; Contre_torpilleur_J2 = 0 &amp; Sous_marin_J2 = 0' swap='0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Fin_Jeu' />
+							</flowline>
+							<flowline />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Choix_Bateaux' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_tactile' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Message_bateau' />
+						<command class_type='loop' title='Boucle' type='0' exp='Appui_Ecran = 0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Recuperation_coordonees' />
+							</flowline>
+						</command>
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Lecture_Coordonnes' />
+						<command class_type='call' title='Appel d&apos;une Macro' disable='1' macro='Hitbox_v2' />
+						<command class_type='delay' title='Pause' exp='100' type='1' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='affichage_bateau' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='70' />
+							<argument exp='70' />
+							<argument exp='70' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Sous_marin' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Appel d&apos;une Macro' macro='affichage_bateau' />
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = 0b00000100' />
+							<exp exp='bateau = bateau + 1' />
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Sous_marin_J2 = Sous_marin_J2 + 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='parametres_bateau' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<param name='pos_x1' type='u16' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='pos_x2' type='u16' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='pos_y1' type='u16' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='pos_y2' type='u16' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='Rouge' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='Vert' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='Bleu' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='SetForegroundColour' >
+							<argument exp='.Rouge' />
+							<argument exp='.Vert' />
+							<argument exp='.Bleu' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='DrawRectangle' >
+							<argument exp='.pos_x1' />
+							<argument exp='.pos_y1' />
+							<argument exp='.pos_x2' />
+							<argument exp='.pos_y2' />
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Reinitialisation_texte' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='SetForegroundColour' >
+							<argument exp='255' />
+							<argument exp='255' />
+							<argument exp='255' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='DrawRectangle' >
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='240' />
+							<argument exp='320' />
+							<argument exp='1' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='SetForegroundColour' >
+							<argument exp='0' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Appui_tactile' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='ClearDisplay' />
+						<command class_type='comment' title='' comment='Coordonnée pour X' textarea='12,0,12,0' disable='1' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_ReadTouchCoordinatesPicaso' >
+							<return exp='X' />
+							<argument exp='0' />
+						</command>
+						<command class_type='comment' title='' comment='Coordonée pour Y' textarea='59,19,59,19' disable='1' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_ReadTouchCoordinatesPicaso' >
+							<return exp='Y' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='PrintNumber' >
+							<argument exp='X' />
+							<argument exp='80' />
+							<argument exp='150' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' textarea='36,-4,36,-4' component='gLCD_EB076_4D1' macro='PrintNumber' >
+							<argument exp='Y' />
+							<argument exp='120' />
+							<argument exp='150' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='delay' title='Pause' exp='2' type='2' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='ClearDisplay' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Manque' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='56' />
+							<argument exp='153' />
+							<argument exp='243' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Manque   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Recuperation_coordonees' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='G4D_GetTouchCoordinatesPicaso' >
+							<return exp='Appui_Ecran' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='phase_debut' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='loop' title='Boucle' type='1' exp='bateau &gt;= 17' start='0' >
+							<flowline >
+								<command class_type='call' title='Appel d&apos;une Macro' textarea='51,15,51,15' macro='Reinitialisation_texte' />
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_tactile' />
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Message_bateau' />
+								<command class_type='loop' title='Boucle' type='0' exp='Appui_Ecran = 0' >
+									<flowline >
+										<command class_type='call' title='Appel d&apos;une Macro' macro='Recuperation_coordonees' />
+									</flowline>
+								</command>
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Lecture_Coordonnes' />
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Hitbox_v2' />
+								<command class_type='delay' title='Pause' exp='100' type='1' />
+							</flowline>
+						</command>
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Reinitialisation_texte' />
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;    En attente du joueur 2 &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Fin_Jeu' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='decision' title='Décision' exp='Tour = 0' swap='0' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+									<argument exp='&quot;Vous avez gagné ! &quot;' />
+									<argument exp='100' />
+									<argument exp='241' />
+									<argument exp='2' />
+									<argument exp='1' />
+								</command>
+							</flowline>
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+									<argument exp='&quot;Vous avez perdu ! &quot;' />
+									<argument exp='100' />
+									<argument exp='241' />
+									<argument exp='2' />
+									<argument exp='1' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Touche_Coule_CT' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='255' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Touche   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Contre_torpilleur_J2 = Contre_torpilleur_J2 - 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='affichage_bateau_touche' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Porte_avion' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Appel d&apos;une Macro' macro='affichage_bateau' />
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = 0b00000001' />
+							<exp exp='bateau = bateau + 1' />
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Porte_avion_J2 = Porte_avion_J2 + 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Touche_coule_CR' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel de la Routine Composant' macro='parametres_bateau' >
+							<argument exp='X' />
+							<argument exp='X-24' />
+							<argument exp='Y' />
+							<argument exp='Y-24' />
+							<argument exp='255' />
+							<argument exp='0' />
+							<argument exp='0' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='Print' >
+							<argument exp='&quot;            Touche   &quot;' />
+							<argument exp='0' />
+							<argument exp='241' />
+							<argument exp='2' />
+							<argument exp='1' />
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = tableau[hitbox_Joueur_2] || 0b00000011' />
+							<exp exp='Croiseur_J2 = Croiseur_J2 - 1' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Phase_jeu' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='loop' title='Boucle' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='' macro='Choix_Bateau_Toucher' />
+								<command class_type='call' title='Appel d&apos;une Macro' macro='Toucher_Couler' />
+								<command class_type='delay' title='Pause' exp='500' type='1' />
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Main' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Initialisation' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='phase_debut' />
+						<command class_type='delay' title='mettre attente donnes joueur 2' textmode='2' exp='2' type='2' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='Phase_jeu' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='phase_Fin' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='lignes' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='X_ligne = 24' />
+							<exp exp='Y_ligne = 24' />
+						</command>
+						<command class_type='loop' title='tracé des verticales' type='1' exp='X_ligne = 240' start='0' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='DrawLine' >
+									<argument exp='X_ligne' />
+									<argument exp='0' />
+									<argument exp='X_ligne' />
+									<argument exp='240' />
+								</command>
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='X_ligne = X_ligne + 24' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='loop' title='tracé des horizontales' type='0' exp='Y_ligne &lt;= 240' start='0' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='gLCD_EB076_4D1' macro='DrawLine' >
+									<argument exp='0' />
+									<argument exp='Y_ligne' />
+									<argument exp='240' />
+									<argument exp='Y_ligne' />
+								</command>
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='Y_ligne = Y_ligne + 24' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Contre_torpilleur' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='hitbox_Joueur_2 = 1' />
+							<exp exp='Y = 24' />
+							<exp exp='X = 24' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='X_SORTIE &lt; 1' >
+							<flowline >
+								<command class_type='decision' title='Décision' exp='Y_Touch &lt; Y' swap='0' >
+									<flowline >
+										<command class_type='loop' title='Boucle' type='1' exp='X &gt; X_touch' start='0' >
+											<flowline >
+												<command class_type='decision' title='Décision' exp='X_Touch &lt; X' swap='0' >
+													<flowline />
+													<flowline >
+														<command class_type='calculation' title='Calcul' >
+															<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 1' />
+															<exp exp='X = X + 24' />
+															<exp exp='' />
+														</command>
+													</flowline>
+												</command>
+												<command class_type='calculation' title='Calcul' >
+													<exp exp='X_SORTIE = X_SORTIE + 1' />
+												</command>
+											</flowline>
+										</command>
+										<command class_type='call' title='Appel d&apos;une Macro' macro='affichage_bateau' />
+									</flowline>
+									<flowline >
+										<command class_type='calculation' title='Calcul' >
+											<exp exp='hitbox_Joueur_2 = hitbox_Joueur_2 + 10' />
+											<exp exp='Y = Y + 24' />
+										</command>
+									</flowline>
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='Tableau[hitbox_Joueur_2] = 0b00000011' />
+							<exp exp='bateau = bateau + 1' />
+							<exp exp='X_SORTIE = 0' />
+							<exp exp='Appui_Ecran = 0' />
+							<exp exp='X = 0' />
+							<exp exp='Y = 0' />
+							<exp exp='Contre_torpilleur_J2 = Contre_torpilleur_J2 + 1' />
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='c6586b24-9a1c-4e19-8051-8ae5923c418a' vmin='6' vmaj='1' codename='gLCD_EB076_4D1' x='0' y='-8' z='5.735' xsz='0.972644' ysz='0.929032' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='pixel_height' data='320' />
+					<value target='pixel_width' data='240' />
+					<value target='monochrome' data='0' />
+					<value target='foreground_colour' data='0' />
+					<value target='background_colour' data='16777215' />
+					<value target='colour_bit_depth' data='16' />
+					<value target='red_bit_depth' data='5' />
+					<value target='green_bit_depth' data='6' />
+					<value target='blue_bit_depth' data='5' />
+					<value target='channel' data='001' />
+					<value target='reset_pin' data='$PORTC.5' />
+					<value target='tx_pin' data='$PORTC.6' />
+					<value target='rx_pin' data='$PORTC.7' />
+					<value target='HighSpeed' data='1' />
+					<value target='TXRemap' data='' />
+					<value target='RXRemap' data='000' />
+					<value target='DisplayMethod' data='000' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='115.785' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='8409120' img='' style='0' />
+		<table rgb='7360576' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='Hitbox_v2' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='32' scrollx='0' scrolly='393' flags='0' />
+		<view type='0' name='phase_debut' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='192' flags='0' />
+		<view type='0' name='Phase_jeu' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='phase_Fin' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Fin_Jeu' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='50' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Recuperation_coordonees' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='parametres_bateau' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='affichage_bateau' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Toucher_Couler' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Lecture_Coordonnes' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Choix_Bateau_Toucher' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Reinitialisation_texte' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='70' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Touche_Coule_CT' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Touche_coule_PA' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Touche_coule_CR' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Croiseur' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='420' flags='0' />
+		<view type='0' name='Reinitialisation_tactile' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Porte_avion' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='454' flags='0' />
+		<view type='0' name='Choix_Bateaux' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='112' flags='0' />
+		<view type='0' name='Message_bateau' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='584' flags='0' />
+		<view type='0' name='Sous_marin' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='450' flags='0' />
+		<view type='0' name='Touche_Coule_TORP' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Touche_Coule_SM' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Contre_torpilleur' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Torpilleur' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAVwUAAI0CAAA' zoom='75' scrollx='0' scrolly='454' flags='0' />
+	</layout>
+</document>
+</root>
