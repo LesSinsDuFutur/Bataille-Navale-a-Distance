@@ -1,0 +1,7242 @@
+;/////////////////////////////////////////////////////////////////////////////////
+;// Code Generator: BoostC Compiler - http://www.sourceboost.com
+;// Version       : 7.20
+;// License Type  : Pro License
+;// Limitations   : PIC18 max code size:Unlimited, max RAM banks:Unlimited
+;/////////////////////////////////////////////////////////////////////////////////
+
+/*********************************************************************
+ *                  Flowcode CAL IO File
+ *
+ * File: PIC_CAL_IO.c
+ *
+ * (c) 2011 Matrix Multimedia Ltd.
+ * http://www.matrixmultimedia.com
+ *
+ * Software License Agreement
+ *
+ * The software supplied herewith by Matrix Multimedia Ltd (the
+ * “Company”) for its Flowcode graphical programming language is
+ * intended and supplied to you, the Company’s customer, for use
+ * solely and exclusively on the Company's products. The software
+ * is owned by the Company, and is protected under applicable
+ * copyright laws. All rights are reserved. Any use in violation
+ * of the foregoing restrictions may subject the user to criminal
+ * sanctions under applicable laws, as well as to civil liability
+ * for the breach of the terms and conditions of this licence.
+ *
+ * THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+ * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+ * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ *
+ * Changelog:
+ *
+ *  date  | by | description
+ * -------+----+-----------------------------------------------------
+ * 010911 | SK | Created
+ * 050911 | BR | Added 10F and 12F compatible I/O functions
+ *
+ *
+ */
+
+#include "PIC_CAL_IO.h"
+
+#ifdef FC_USEGPIO
+
+	void FC_CAL_Port_Out__x (MX_UINT8* Port, MX_UINT8 OutValue, MX_UINT8 OutMask)
+	{
+		gpio = (gpio & ~OutMask) | (OutValue & OutMask);
+	}
+
+
+	void FC_CAL_Port_Out_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 OutValue, MX_UINT8 OutMask)
+	{
+		trisio = trisio & (~OutMask);
+		gpio = (gpio & ~OutMask) | (OutValue & OutMask);
+	}
+
+
+	MX_UINT8 FC_CAL_Port_In__x (MX_UINT8* Port, MX_UINT8 InMask)
+	{
+		return (gpio & InMask);
+	}
+
+
+	MX_UINT8 FC_CAL_Port_In_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 InMask)
+	{
+		trisio = trisio | InMask;
+		return (gpio & InMask);
+	}
+
+#else
+
+	#ifdef FC_USE10F
+
+		MX_UINT8 tvar = 255;
+
+		void FC_CAL_Port_Out__x (MX_UINT8* Port, MX_UINT8 OutMask, MX_UINT8 OutValue)
+		{
+			gpio = (gpio & ~OutMask) | (OutValue & OutMask);
+		}
+
+
+		void FC_CAL_Port_Out_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 OutMask, MX_UINT8 OutValue)
+		{
+			tvar = tvar & (~OutMask);
+			asm("movf(_tvar),w");
+			asm("tris 6");
+
+			gpio = (gpio & ~OutMask) | (OutValue & OutMask);
+		}
+
+
+		MX_UINT8 FC_CAL_Port_In__x (MX_UINT8* Port, MX_UINT8 InMask, MX_UINT8 Shift)
+		{
+			return (gpio & InMask) >> Shift;
+		}
+
+
+		MX_UINT8 FC_CAL_Port_In_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 InMask, MX_UINT8 Shift)
+		{
+			tvar = tvar | InMask;
+			asm("movf(_tvar),w");
+			asm("tris 6");
+
+			return (gpio & InMask) >> Shift;
+		}
+
+	#else
+
+		void FC_CAL_Port_Out__x (MX_UINT8* Port, MX_UINT8 OutMask, MX_UINT8 OutValue)
+		{
+			*Port = (*Port & ~OutMask) | (OutValue & OutMask);
+		}
+
+
+		void FC_CAL_Port_Out_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 OutMask, MX_UINT8 OutValue)
+		{
+			*Tris = *Tris & (~OutMask);
+			*Port = (*Port & ~OutMask) | (OutValue & OutMask);
+		}
+
+
+		MX_UINT8 FC_CAL_Port_In__x (MX_UINT8* Port, MX_UINT8 InMask, MX_UINT8 Shift)
+		{
+			return (*Port & InMask) >> Shift;
+		}
+
+
+		MX_UINT8 FC_CAL_Port_In_DDR__x (MX_UINT8* Port, MX_UINT8* Tris, MX_UINT8 InMask, MX_UINT8 Shift)
+
+		{
+			*Tris = *Tris | InMask;
+01E2  5045      	MOVF FC_CAL_Por_00042_arg_Tris+D'1', W
+01E4  6EEA      	MOVWF FSR0H
+01E6  5044      	MOVF FC_CAL_Por_00042_arg_Tris, W
+01E8  6EE9      	MOVWF FSR0L
+01EA  5046      	MOVF FC_CAL_Por_00042_arg_InMask, W
+01EC  10EF      	IORWF INDF0, W
+01EE  6E48      	MOVWF CompTempVar1825
+01F0  5048      	MOVF CompTempVar1825, W
+01F2  6EEF      	MOVWF INDF0
+
+			return (*Port & InMask) >> Shift;
+01F4  5043      	MOVF FC_CAL_Por_00042_arg_Port+D'1', W
+01F6  6EEA      	MOVWF FSR0H
+01F8  5042      	MOVF FC_CAL_Por_00042_arg_Port, W
+01FA  6EE9      	MOVWF FSR0L
+01FC  5046      	MOVF FC_CAL_Por_00042_arg_InMask, W
+01FE  14EF      	ANDWF INDF0, W
+0200  6E48      	MOVWF CompTempVarRet1822
+0202  5047      	MOVF FC_CAL_Por_00042_arg_Shift, W
+0204  6E49      	MOVWF CompTempVar1827
+0206            label26
+0206  B4D8      	BTFSC STATUS,Z
+020A  90D8      	BCF STATUS,C
+020C  3248      	RRCF CompTempVarRet1822, F
+020E  0649      	DECF CompTempVar1827, F
+0210  D7FA      	BRA	label26
+
+		}
+0208  0012      	RETURN
+
+
+	#endif
+
+#endif
+
+#ifdef MX_10F_TRIS
+  #ifndef porta
+ 	#define porta	gpio
+  	#define trisa	tvar
+  #endif
+#endif
+
+#ifdef FC_USEGPIO
+  #ifndef porta
+ 	 #define porta gpio
+	 #define trisa trisio
+  #endif
+#endif
+
+
+/*
+MX_UINT8 FC_CAL_Bit_I(MX_UINT8 prt, MX_UINT8 bt, MX_UINT8 ddr)
+{
+	if (ddr)
+    	char *p_tris = (char *)(&trisa) + (prt - 'a'); 	// NOTE: Assumes an array of ports and tris!
+
+    char *p_port = (char *)(&porta) + (prt - 'a');		// NOTE: Assumes an array of ports and tris!
+
+    if (ddr)
+    	*p_tris |= (1<<bt);								// If DDR flag is set then adjust the DDR
+
+    return ((*p_port & (1<<bt)) != 0);					// Return port pin input state
+}
+
+
+void FC_CAL_Bit_O(MX_UINT8 prt, MX_UINT8 bt, MX_UINT8 ddr, MX_UINT8 data)
+{
+	if (ddr)
+    	char *p_tris = (char *)(&trisa) + (prt - 'a'); 	// NOTE: Assumes an array of ports and tris!
+
+    char *p_port = (char *)(&porta) + (prt - 'a');		// NOTE: Assumes an array of ports and tris!
+
+    if (ddr)
+    	*p_tris &= ~(1<<bt);							// If DDR flag is set then adjust the DDR
+
+    if (data)
+    	*p_port |= (1<<bt);								// Set the output data pin
+    else
+    	*p_port &= ~(1<<bt);							// Clear the output data pin
+}
+*/
+
+
+//************************************************************************************
+//**  
+//**  Source name:   U:\Documents\SIN\BatailleNavale\Hitbox_v1.fcfx
+//**  Title:         
+//**  Description:   
+//**  Device:        PIC.18F.18F4520
+//**  
+//**  Generated by:  Flowcode v6.1.1.0
+//**  Date:          Monday, January 23, 2017 15:36:31
+//**  Users:         50
+//**  Registered to: LYC-FERRY06-V6
+//**  Licence key:   HY62PA
+//**  
+//**  
+//**     POUR UN USAGE NON COMMERCIAL
+//**  
+//**  http://www.matrixtsl.com
+//**  
+//************************************************************************************
+
+
+#define MX_PIC
+#define MX_CAL_PIC
+#define MX_CLK_SPEED 19660800
+#define FCP_NULL Unconnected_Port
+
+
+#ifdef _BOOSTC
+#pragma DATA 0x300000, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300001, 0x32
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0x32);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300002, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300003, 0xFE
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFE);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300004, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300005, 0xFB
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFB);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300006, 0xBA
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xBA);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300007, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300008, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x300009, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000a, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000b, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000c, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+#ifdef _BOOSTC
+#pragma DATA 0x30000d, 0xFF
+#endif
+#ifdef HI_TECH_C
+__CONFIG(0xFF);
+#endif
+
+/*========================================================================*\
+   Use :Inclure les définitions de type
+\*========================================================================*/
+#include "C:\Program Files (x86)\Flowcode 6\CAL\internals.c"
+
+
+
+/*========================================================================*\
+   Use :panel
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCV_FALSE (0)
+#define FCV_TRUE (1)
+MX_GLOBAL MX_UINT8 FCV_HITBOX;
+MX_GLOBAL MX_UINT16 FCV_Y;
+MX_GLOBAL MX_UINT16 FCV_X;
+MX_GLOBAL MX_UINT8 FCV_APPUI_ECRAN;
+
+void FCM_X_144();
+void FCM_X_72();
+void FCM_X_168();
+void FCM_Initialisation();
+void FCM_Reinitialisation_tactile();
+void FCM_X_96();
+void FCM_Hitbox();
+void FCM_lignesV();
+void FCM_X_24();
+void FCM_X_240();
+void FCM_X_48();
+void FCM_Appui_tactile();
+void FCM_Recuperation_coordonees();
+void FCM_lignesH();
+void FCM_X_192();
+void FCM_X_120();
+void FCM_X_216();
+
+/*========================================================================*\
+   Use :fcdhelper
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :cal_uart
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define MX_UART_TX_TRIS_1 trisc
+#define MX_UART_REF1 
+#define MX_UART_RTS_PIN_1 (3)
+#define MX_UART_DBITS_1 (8)
+#define MX_UART_RETURN_1 (0)
+#define MX_UART_RX_PORT_1 portc
+#define MX_UART_RTS_PORT_1 porta
+#define MX_UART_ECHO_1 (0)
+#define MX_UART_FLOWEN_1 (0)
+#define MX_UART_CTS_PORT_1 porta
+#define MX_UART_TX_PIN_1 (6)
+#define MX_UART_RX_TRIS_1 trisc
+#define MX_UART_RTS_TRIS_1 trisa
+#define MX_UART_BAUD_1 (9600)
+#define MX_UART_TX_PORT_1 portc
+#define MX_UART_RX_PIN_1 (7)
+#define MX_UART_CTS_TRIS_1 trisa
+#define MX_UART_CHANNEL_1 (1)
+#define MX_UART_CTS_PIN_1 (2)
+#define MX_UART_INT_1 (0)
+
+MX_GLOBAL MX_UINT32 FCV_05481_cal_uart__CONSOLE;
+
+void FCD_05481_cal_uart__Prv_TextConsole(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR);
+void FC_CAL_UART_UpdateBaud_1(MX_UINT8 FCL_NEW_BAUD);
+MX_SINT16 FC_CAL_UART_Receive_1(MX_UINT8 FCL_TIMEOUT);
+void FC_CAL_UART_Send_1(MX_UINT16 FCL_CHAR);
+void FC_CAL_UART_Init_1();
+void FC_CAL_UART_Delay_1();
+void FC_CAL_UART_Uninit_1();
+
+/*========================================================================*\
+   Use :ASCII6
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb8_ASCII6__FLOATFIXEDLIST 1
+#define FCVsz_00fb8_ASCII6__INTLIST 60
+#define FCVsz_00fb8_ASCII6__FLOATLIST 1
+#define FCVsz_00fb8_ASCII6__INTFIXEDLIST 1
+#define FCD_00fb8_ASCII6__INTLIST(ix) FCD_00fb8_ASCII6__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb8_ASCII6__INTLIST_LUT ROMARRAY_E =
+{
+09FA  0E00      	MOVLW 0x00
+09FC  6E35      	MOVWF gbl_FCD_00fb8_ASCII6__INTL_00000
+
+// Property added elements
+  127, 4, 4, 120, 0, 0, 0, 125, 0, 0, 64, 128, 132, 125, 0, 127, 16,
+ 40, 68, 0, 0, 0, 127, 64, 0, 124, 4, 24, 4, 120, 124, 4, 4,
+ 120, 0, 56, 68, 68, 68, 56, 252, 68, 68, 68, 56, 56, 68, 68, 68,
+ 252, 68, 120, 68, 4, 8, 8, 84, 84, 84, 32
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII7
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb7_ASCII7__FLOATFIXEDLIST 1
+#define FCVsz_00fb7_ASCII7__INTLIST 55
+#define FCVsz_00fb7_ASCII7__FLOATLIST 1
+#define FCVsz_00fb7_ASCII7__INTFIXEDLIST 1
+#define FCD_00fb7_ASCII7__INTLIST(ix) FCD_00fb7_ASCII7__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb7_ASCII7__INTLIST_LUT ROMARRAY_E =
+{
+09FE  0E01      	MOVLW 0x01
+0A00  6E36      	MOVWF gbl_FCD_00fb7_ASCII7__INTL_00001
+
+// Property added elements
+  4, 62, 68, 36, 0, 60, 64, 32, 124, 0, 28, 32, 64, 32, 28, 60, 96,
+ 48, 96, 60, 108, 16, 16, 108, 0, 156, 160, 96, 60, 0, 100, 84, 84,
+ 76, 0, 8, 62, 65, 65, 0, 0, 0, 127, 0, 0, 0, 65, 65, 62,
+ 8, 2, 1, 2, 1, 0
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII5
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb6_ASCII5__FLOATFIXEDLIST 1
+#define FCVsz_00fb6_ASCII5__INTLIST 60
+#define FCVsz_00fb6_ASCII5__FLOATLIST 1
+#define FCVsz_00fb6_ASCII5__INTFIXEDLIST 1
+#define FCD_00fb6_ASCII5__INTLIST(ix) FCD_00fb6_ASCII5__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb6_ASCII5__INTLIST_LUT ROMARRAY_E =
+{
+0A02  0E02      	MOVLW 0x02
+0A04  6E37      	MOVWF gbl_FCD_00fb6_ASCII5__INTL_00002
+
+// Property added elements
+  2, 4, 8, 16, 32, 0, 65, 65, 127, 0, 4, 2, 1, 2, 4, 128, 128,
+ 128, 128, 128, 0, 3, 7, 0, 0, 32, 84, 84, 84, 120, 127, 68, 68,
+ 68, 56, 56, 68, 68, 68, 40, 56, 68, 68, 68, 127, 56, 84, 84, 84,
+ 24, 8, 126, 9, 9, 0, 24, 164, 164, 164, 124
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII4
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb5_ASCII4__FLOATFIXEDLIST 1
+#define FCVsz_00fb5_ASCII4__INTLIST 60
+#define FCVsz_00fb5_ASCII4__FLOATLIST 1
+#define FCVsz_00fb5_ASCII4__INTFIXEDLIST 1
+#define FCD_00fb5_ASCII4__INTLIST(ix) FCD_00fb5_ASCII4__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb5_ASCII4__INTLIST_LUT ROMARRAY_E =
+{
+0A06  0E03      	MOVLW 0x03
+0A08  6E38      	MOVWF gbl_FCD_00fb5_ASCII4__INTL_00003
+
+// Property added elements
+  127, 9, 9, 9, 6, 62, 65, 81, 33, 94, 127, 9, 9, 25, 102, 38, 73,
+ 73, 73, 50, 1, 1, 127, 1, 1, 63, 64, 64, 64, 63, 31, 32, 64,
+ 32, 31, 63, 64, 60, 64, 63, 99, 20, 8, 20, 99, 7, 8, 112, 8,
+ 7, 113, 73, 69, 67, 0, 0, 127, 65, 65, 0
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII3
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb4_ASCII3__FLOATFIXEDLIST 1
+#define FCVsz_00fb4_ASCII3__INTLIST 60
+#define FCVsz_00fb4_ASCII3__FLOATLIST 1
+#define FCVsz_00fb4_ASCII3__INTFIXEDLIST 1
+#define FCD_00fb4_ASCII3__INTLIST(ix) FCD_00fb4_ASCII3__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb4_ASCII3__INTLIST_LUT ROMARRAY_E =
+{
+0A0A  0E04      	MOVLW 0x04
+0A0C  6E39      	MOVWF gbl_FCD_00fb4_ASCII3__INTL_00004
+
+// Property added elements
+  127, 65, 65, 65, 62, 127, 73, 73, 73, 65, 127, 9, 9, 9, 1, 62, 65,
+ 73, 73, 122, 127, 8, 8, 8, 127, 0, 65, 127, 65, 0, 48, 64, 64,
+ 64, 63, 127, 8, 20, 34, 65, 127, 64, 64, 64, 64, 127, 2, 4, 2,
+ 127, 127, 2, 4, 8, 127, 62, 65, 65, 65, 62
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII2
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb3_ASCII2__FLOATFIXEDLIST 1
+#define FCVsz_00fb3_ASCII2__INTLIST 60
+#define FCVsz_00fb3_ASCII2__FLOATLIST 1
+#define FCVsz_00fb3_ASCII2__INTFIXEDLIST 1
+#define FCD_00fb3_ASCII2__INTLIST(ix) FCD_00fb3_ASCII2__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb3_ASCII2__INTLIST_LUT ROMARRAY_E =
+{
+0A0E  0E05      	MOVLW 0x05
+0A10  6E3A      	MOVWF gbl_FCD_00fb3_ASCII2__INTL_00005
+
+// Property added elements
+  54, 73, 73, 73, 54, 6, 73, 73, 41, 30, 0, 108, 108, 0, 0, 0, 236,
+ 108, 0, 0, 8, 20, 34, 65, 0, 36, 36, 36, 36, 36, 0, 65, 34,
+ 20, 8, 2, 1, 89, 9, 6, 62, 65, 93, 85, 30, 126, 9, 9, 9,
+ 126, 127, 73, 73, 73, 54, 62, 65, 65, 65, 34
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII1
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb2_ASCII1__FLOATFIXEDLIST 1
+#define FCVsz_00fb2_ASCII1__INTLIST 60
+#define FCVsz_00fb2_ASCII1__FLOATLIST 1
+#define FCVsz_00fb2_ASCII1__INTFIXEDLIST 1
+#define FCD_00fb2_ASCII1__INTLIST(ix) FCD_00fb2_ASCII1__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb2_ASCII1__INTLIST_LUT ROMARRAY_E =
+{
+0A12  0E06      	MOVLW 0x06
+0A14  6E3B      	MOVWF gbl_FCD_00fb2_ASCII1__INTL_00006
+
+// Property added elements
+  0, 224, 96, 0, 0, 8, 8, 8, 8, 8, 0, 96, 96, 0, 0, 32, 16,
+ 8, 4, 2, 62, 81, 73, 69, 62, 0, 66, 127, 64, 0, 98, 81, 73,
+ 73, 70, 34, 73, 73, 73, 54, 24, 20, 18, 127, 16, 47, 73, 73, 73,
+ 49, 60, 74, 73, 73, 48, 1, 113, 9, 5, 3
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :ASCII0
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+#define FCVsz_00fb1_ASCII0__FLOATFIXEDLIST 1
+#define FCVsz_00fb1_ASCII0__INTLIST 60
+#define FCVsz_00fb1_ASCII0__FLOATLIST 1
+#define FCVsz_00fb1_ASCII0__INTFIXEDLIST 1
+#define FCD_00fb1_ASCII0__INTLIST(ix) FCD_00fb1_ASCII0__INTLIST_LUT[ix]
+ROMARRAY_(MX_UINT8) FCD_00fb1_ASCII0__INTLIST_LUT ROMARRAY_E =
+{
+0A16  0E07      	MOVLW 0x07
+0A18  6E3C      	MOVWF gbl_FCD_00fb1_ASCII0__INTL_00007
+
+// Property added elements
+  0, 0, 0, 0, 0, 0, 6, 95, 6, 0, 7, 3, 0, 7, 3, 36, 126,
+ 36, 126, 36, 36, 43, 106, 18, 0, 99, 19, 8, 100, 99, 54, 73, 86,
+ 32, 80, 0, 7, 3, 0, 0, 0, 62, 65, 0, 0, 0, 65, 62, 0,
+ 0, 8, 62, 28, 62, 8, 8, 8, 62, 8, 8
+// Dynamically added elements
+ 
+};
+
+
+/*========================================================================*\
+   Use :Base_GLCD
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+MX_GLOBAL MX_UINT32 FCV_0ba71_Base_GLCD__BACKGROUND_COL_VAR;
+MX_GLOBAL MX_UINT32 FCV_0ba71_Base_GLCD__POINTCLOUDHANDLE = (0x0);
+0A1A  6A19      	CLRF gbl_FCV_0ba71_Base_GLCD__P_00009
+0A1C  6A1A      	CLRF gbl_FCV_0ba71_Base_GLCD__P_00009+D'1'
+0A1E  6A1B      	CLRF gbl_FCV_0ba71_Base_GLCD__P_00009+D'2'
+0A20  6A1C      	CLRF gbl_FCV_0ba71_Base_GLCD__P_00009+D'3'
+
+MX_GLOBAL MX_UINT32 FCV_0ba71_Base_GLCD__FOREGROUND_COL_VAR;
+MX_GLOBAL MX_UINT8 FCV_0ba71_Base_GLCD__ORIENTATION = (0x0);
+0A22  6A3D      	CLRF gbl_FCV_0ba71_Base_GLCD__O_0000B
+
+
+void FCD_0ba71_Base_GLCD__PrintNumber(MX_SINT16 FCL_NUMBER, MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT);
+void FCD_0ba71_Base_GLCD__DrawLine(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2);
+void FCD_0ba71_Base_GLCD__Plot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1);
+void FCD_0ba71_Base_GLCD__SetDisplayOrientation(MX_UINT8 FCL_ORIENTATION);
+void FCD_0ba71_Base_GLCD__BPlot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1);
+void FCD_0ba71_Base_GLCD__Print(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR, MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT);
+void FCD_0ba71_Base_GLCD__ClearDisplay();
+void FCD_0ba71_Base_GLCD__SetBackgroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE);
+MX_UINT8 FCD_0ba71_Base_GLCD__ReadASCIILUT(MX_UINT8 FCL_POS_STR, MX_UINT8 FCL_COUNT);
+void FCD_0ba71_Base_GLCD__SetForegroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE);
+void FCD_0ba71_Base_GLCD__DrawRectangle(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2, MX_UINT8 FCL_TRANSPARENT, MX_UINT8 FCL_SOLID);
+void FCD_0ba71_Base_GLCD__Initialise();
+
+/*========================================================================*\
+   Use :gLCD_EB076_4D1
+       :Déclarations des variables
+       :Déclarations de la fonction macro
+\*========================================================================*/
+MX_GLOBAL MX_UINT16 FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR;
+MX_GLOBAL MX_UINT16 FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR;
+MX_GLOBAL MX_UINT16 FCV_0f051_gLCD_EB076_4D1__TOUCHY;
+MX_GLOBAL MX_UINT16 FCV_0f051_gLCD_EB076_4D1__TOUCHX;
+
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_InitialiseCard();
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DumpScreenToFilePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_CHAR *FCL_FILENAME, MX_UINT16 FCLsz_FILENAME);
+MX_UINT16 FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(MX_UINT8 FCL_AXIS);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_GetTouchCoordinatesPicaso();
+void FCD_0f051_gLCD_EB076_4D1__G4D_DrawCircle(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_RADIUS, MX_UINT8 FCL_SOLID);
+void FCD_0f051_gLCD_EB076_4D1__PrintNumber(MX_SINT16 FCL_NUMBER, MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT);
+void FCD_0f051_gLCD_EB076_4D1__DrawLine(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayImageFromFilePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_CHAR *PFCL_FILENAME, MX_UINT16 FCL_POSH, MX_UINT16 FCL_POSL);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisableTouchscreenPicaso();
+void FCD_0f051_gLCD_EB076_4D1__Plot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1);
+void FCD_0f051_gLCD_EB076_4D1__DisplayControl(MX_UINT8 FCL_BACKLIGHT, MX_UINT8 FCL_DISPLAY, MX_UINT8 FCL_CONTRAST);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_EnableTouchscreenPicaso();
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayVideoFromCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_COLOURMODE, MX_UINT8 FCL_DELAY, MX_UINT16 FCL_FRAMES, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetVolumePicaso(MX_UINT8 FCL_VOLUME);
+void FCD_0f051_gLCD_EB076_4D1__SetDisplayOrientation(MX_UINT8 FCL_ORIENTATION);
+void FCD_0f051_gLCD_EB076_4D1__BPlot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1);
+void FCD_0f051_gLCD_EB076_4D1__G4D_DrawElipsePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_RX, MX_UINT16 FCL_RY, MX_UINT8 FCL_SOLID);
+void FCD_0f051_gLCD_EB076_4D1__Print(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR, MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DumpScreenToCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetVGADisplaySizePicaso(MX_UINT8 FCL_SIZE);
+void FCD_0f051_gLCD_EB076_4D1__ClearDisplay();
+void FCD_0f051_gLCD_EB076_4D1__SetBackgroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayImageFromCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_COLOURMODE, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL);
+void FCD_0f051_gLCD_EB076_4D1__SetForegroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetTouchRegionPicaso(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2);
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_PlayAudioFromFilePicaso(MX_UINT8 FCL_PLAY_OPTION, MX_CHAR *PFCL_FILENAME);
+void FCD_0f051_gLCD_EB076_4D1__DrawRectangle(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2, MX_UINT8 FCL_TRANSPARENT, MX_UINT8 FCL_SOLID);
+void FCD_0f051_gLCD_EB076_4D1__Initialise();
+
+/*========================================================================*\
+   Use :Inclure la couche d'adaptation de puce
+\*========================================================================*/
+#include "C:\Program Files (x86)\Flowcode 6\CAL\includes.c"
+
+
+/*========================================================================*\
+   Use :fcdhelper
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :cal_uart
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :Param??tres pour la macro Prv_TextConsole :
+       :  Str[20] : MX_CHAR (by-ref)
+\*=----------------------------------------------------------------------=*/
+void FCD_05481_cal_uart__Prv_TextConsole(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR)
+{
+
+
+}
+
+
+/*========================================================================*\
+   Use :ASCII6
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII7
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII5
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII4
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII3
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII2
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII1
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :ASCII0
+       :Implémentations de la macro
+\*========================================================================*/
+
+/*========================================================================*\
+   Use :Base_GLCD
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :This macro prints a decimal number to the Graphical LCD.
+       :
+       :Param??tres pour la macro PrintNumber :
+       :  Number : Byte or Integer number to send to the display.
+       :  X : X pixel coordinate to set the output string position.
+       :  Y : Y pixel coordinate to set the output string position.
+       :  Font : Size of the font - 0 = Normal, 1 = Double Width, 2 = Double Width and Height, 3 = Double Height
+       :  Transparent : Specifies if the background of the text is drawn - 0 = Background colour is drawn, 1 = Background colour not drawn.
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__PrintNumber(MX_SINT16 FCL_NUMBER, MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT)
+{
+	//Définitions des variables locales
+	#define FCLsz_TEMP 6
+	MX_CHAR FCL_TEMP[FCLsz_TEMP];
+
+
+	FCI_TOSTRING(FCL_NUMBER, FCL_TEMP,6);
+
+	FCD_0ba71_Base_GLCD__Print(FCL_TEMP, FCLsz_TEMP, FCL_X, FCL_Y, FCL_FONT, FCL_TRANSPARENT);
+
+	//Définitions des variables locales
+	#undef FCLsz_TEMP
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws a line with the current foreground colour from pixel location X1, Y1 to pixel location X2, Y2.
+       :
+       :Param??tres pour la macro DrawLine :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+       :  X2 : MX_UINT16
+       :  Y2 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__DrawLine(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2)
+{
+	//Définitions des variables locales
+	MX_SINT16 FCL_C1;
+	MX_SINT16 FCL_M1;
+	MX_SINT16 FCL_D1 = (0);
+	MX_SINT16 FCL_PIXELX;
+	MX_SINT16 FCL_PIXELY;
+	MX_SINT16 FCL_YINC = (1);
+	MX_SINT16 FCL_XINC = (1);
+
+
+	FCL_PIXELX = FCL_X2 - FCL_X1;
+	FCL_PIXELY = FCL_Y2 - FCL_Y1;
+
+	if (FCL_PIXELX < 0)
+	{
+
+		FCL_XINC = -1;
+		FCL_PIXELX = FCL_PIXELX * -1;
+
+	// } else {
+
+	}
+
+	if (FCL_PIXELY < 0)
+	{
+
+		FCL_YINC = -1;
+		FCL_PIXELY = FCL_PIXELY * -1;
+
+	// } else {
+
+	}
+
+	if (FCL_PIXELY <= FCL_PIXELX)
+	{
+
+		FCL_C1 = 2 * FCL_PIXELX;
+		FCL_M1 = 2 * FCL_PIXELY;
+
+		while (FCL_X1 != FCL_X2)
+		{
+
+			FCD_0ba71_Base_GLCD__Plot(FCL_X1, FCL_Y1);
+
+			FCL_X1 = FCL_X1 + FCL_XINC;
+
+			FCL_D1 = FCL_D1 + FCL_M1;
+
+			if (FCL_D1 > FCL_PIXELX)
+			{
+
+				FCL_Y1 = FCL_Y1 + FCL_YINC;
+
+				FCL_D1 = FCL_D1 - FCL_C1;
+
+			// } else {
+
+			}
+
+
+		}
+
+	} else {
+
+		FCL_C1 = 2 * FCL_PIXELY;
+		FCL_M1 = 2 * FCL_PIXELX;
+
+		while (FCL_Y1 != FCL_Y2)
+		{
+
+			FCD_0ba71_Base_GLCD__Plot(FCL_X1, FCL_Y1);
+
+			FCL_Y1 = FCL_Y1 + FCL_YINC;
+
+			FCL_D1 = FCL_D1 + FCL_M1;
+
+			if (FCL_D1 > FCL_PIXELY)
+			{
+
+				FCL_X1 = FCL_X1 + FCL_XINC;
+
+				FCL_D1 = FCL_D1 - FCL_C1;
+
+			// } else {
+
+			}
+
+
+		}
+
+	}
+
+	FCD_0ba71_Base_GLCD__Plot(FCL_X1, FCL_Y1);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sets a pixel with the current foreground colour at pixel location X, Y.
+       :
+       :Param??tres pour la macro Plot :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__Plot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1)
+{
+	//Définitions des variables locales
+	MX_UINT32 FCL_IDX;
+
+
+	#if (0) // 0 == 1
+
+	//Le code a été optimisé par le préprocesseur
+	#else
+
+
+
+		switch (FCV_0ba71_Base_GLCD__ORIENTATION)
+		{
+			case 1:
+			{
+
+				break;
+			}
+			case 2:
+			{
+
+				break;
+			}
+			case 3:
+			{
+
+				break;
+			}
+			default:
+			{
+
+			}
+		}
+
+
+	#endif
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Controls the way data is printed out on the display allowing multiple different viewing orientations. Default is 0.
+       :
+       :Param??tres pour la macro SetDisplayOrientation :
+       :  Orientation : 0=Default, 1=90??CW, 2=180??CW, 3=270??CW
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__SetDisplayOrientation(MX_UINT8 FCL_ORIENTATION)
+{
+
+	FCV_0ba71_Base_GLCD__ORIENTATION = FCL_ORIENTATION;
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sets a pixel with the current background colour at pixel location X, Y.
+       :
+       :Param??tres pour la macro BPlot :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__BPlot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1)
+{
+
+	#if (0) // 0 == 1
+
+	//Le code a été optimisé par le préprocesseur
+	#else
+
+
+
+		switch (FCV_0ba71_Base_GLCD__ORIENTATION)
+		{
+			case 1:
+			{
+
+				break;
+			}
+			case 2:
+			{
+
+				break;
+			}
+			case 3:
+			{
+
+				break;
+			}
+			default:
+			{
+
+			}
+		}
+
+
+	#endif
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :This macro prints a string of characters to the Graphical LCD.
+       :
+       :Param??tres pour la macro Print :
+       :  Str[20] : String of characters to send to the display.
+       :  X1 : X pixel coordinate to set the output string position.
+       :  Y1 : Y pixel coordinate to set the output string position.
+       :  Font : Size of the font - 0 = Normal, 1 = Double Width, 2 = Double Width and Height, 3 = Double Height
+       :  Transparent : Specifies if the background of the text is drawn - 0 = Background colour is drawn, 1 = Background colour not drawn.
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__Print(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR, MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_XPIX;
+	MX_UINT8 FCL_YPIX;
+	MX_UINT8 FCL_POS_STR;
+	MX_UINT8 FCL_LEN_STR;
+	MX_UINT8 FCL_COUNT;
+	MX_UINT8 FCL_XCOUNT;
+	MX_UINT8 FCL_YCOUNT;
+	MX_UINT8 FCL_HEIGHT;
+	MX_UINT8 FCL_WIDTH;
+	MX_UINT8 FCL_IDX;
+	MX_UINT8 FCL_FONT_WIDTH = (0x1);
+	MX_UINT8 FCL_FONT_HEIGHT = (0x1);
+	#define FCLsz_TEMP 6
+	MX_UINT8 FCL_TEMP[FCLsz_TEMP];
+
+
+	switch (FCL_FONT)
+	{
+		case 1:
+		{
+			FCL_FONT_WIDTH = 2;
+
+			break;
+		}
+		case 2:
+		{
+			FCL_FONT_WIDTH = 2;
+			FCL_FONT_HEIGHT = 2;
+
+			break;
+		}
+		case 3:
+		{
+			FCL_FONT_HEIGHT = 2;
+
+			break;
+		}
+		default:
+		{
+		}
+	}
+
+	FCL_XCOUNT = 0;
+	FCL_IDX = 0;
+
+	FCL_LEN_STR = FCI_GETLENGTH(FCL_STR, FCLsz_STR);
+
+	while (FCL_IDX < FCL_LEN_STR)
+	{
+
+		FCL_POS_STR = FCL_STR[FCL_IDX] - 32;
+
+		FCL_COUNT = 0;
+
+		while (FCL_COUNT < 5)
+		{
+
+			FCL_TEMP[FCL_COUNT] = FCD_0ba71_Base_GLCD__ReadASCIILUT(FCL_POS_STR, FCL_COUNT);
+
+			FCL_COUNT = FCL_COUNT + 1;
+
+
+		}
+
+		FCL_TEMP[FCL_COUNT] = 0;
+
+		FCL_XPIX = 0;
+
+		while (FCL_XPIX < 6)
+		{
+
+			FCL_WIDTH = 0;
+
+			while (FCL_WIDTH < FCL_FONT_WIDTH)
+			{
+
+				FCL_YCOUNT = 0;
+
+				FCL_YPIX = 0;
+
+				while (FCL_YPIX < 8)
+				{
+
+					FCL_HEIGHT = 0;
+
+					while (FCL_HEIGHT < FCL_FONT_HEIGHT)
+					{
+
+						if (FCL_TEMP[FCL_XPIX] & (0x01 << FCL_YPIX))
+						{
+
+							FCD_0ba71_Base_GLCD__Plot(FCL_X1 + FCL_XCOUNT, FCL_Y1 + FCL_YCOUNT);
+
+						} else {
+
+							if (FCL_TRANSPARENT == 0)
+							{
+
+								FCD_0ba71_Base_GLCD__BPlot(FCL_X1 + FCL_XCOUNT, FCL_Y1 + FCL_YCOUNT);
+
+							// } else {
+
+							}
+
+						}
+
+						FCL_HEIGHT = FCL_HEIGHT + 1;
+						FCL_YCOUNT = FCL_YCOUNT + 1;
+
+
+					}
+
+					FCL_YPIX = FCL_YPIX + 1;
+
+
+				}
+
+				FCL_WIDTH = FCL_WIDTH + 1;
+				FCL_XCOUNT = FCL_XCOUNT + 1;
+
+
+			}
+
+			FCL_XPIX = FCL_XPIX + 1;
+
+
+		}
+
+		FCL_IDX = FCL_IDX + 1;
+
+
+	}
+
+	//Définitions des variables locales
+	#undef FCLsz_TEMP
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :This macro clears the display of any previous output by overwriting the entire display with the background colour.
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__ClearDisplay()
+{
+	//Définitions des variables locales
+	MX_UINT16 FCL_Y = (0x0);
+	MX_UINT16 FCL_X = (0x0);
+
+
+	if (FCV_0ba71_Base_GLCD__ORIENTATION & 0x01)
+	{
+
+		while (FCL_Y < 320)
+		{
+
+			FCL_X = 0;
+
+			while (FCL_X < 240)
+			{
+
+				FCD_0ba71_Base_GLCD__BPlot(FCL_Y, FCL_X);
+
+				FCL_X = FCL_X + 1;
+
+
+			}
+
+			FCL_Y = FCL_Y + 1;
+
+
+		}
+
+	} else {
+
+		while (FCL_Y < 320)
+		{
+
+			FCL_X = 0;
+
+			while (FCL_X < 240)
+			{
+
+				FCD_0ba71_Base_GLCD__BPlot(FCL_X, FCL_Y);
+
+				FCL_X = FCL_X + 1;
+
+
+			}
+
+			FCL_Y = FCL_Y + 1;
+
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the colour of the background by creating a mixture of red, green and blue.
+       :
+       :Param??tres pour la macro SetBackgroundColour :
+       :  Red : 0 - 255 where 0 = no red and 255 = maximum red
+       :  Green : 0 - 255 where 0 = no green and 255 = maximum green
+       :  Blue : 0 - 255 where 0 = no blue and 255 = maximum blue
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__SetBackgroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE)
+{
+	//Définitions des variables locales
+	MX_UINT32 FCL_COLOUR;
+
+
+	FCL_COLOUR = FCL_BLUE;
+	FCL_COLOUR = FCL_COLOUR * 256;
+	FCL_COLOUR = FCL_COLOUR | FCL_GREEN;
+	FCL_COLOUR = FCL_COLOUR * 256;
+	FCL_COLOUR = FCL_COLOUR | FCL_RED;
+	FCV_0ba71_Base_GLCD__BACKGROUND_COL_VAR = FCL_COLOUR;
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Gets a byte of the embedded ASCII font data.
+       :
+       :Param??tres pour la macro ReadASCIILUT :
+       :  pos_str : ASCII position -32 so A = 'A' - 32 = 33
+       :  count : Font column Ranging 0-4
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0ba71_Base_GLCD__ReadASCIILUT(MX_UINT8 FCL_POS_STR, MX_UINT8 FCL_COUNT)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_POSITION;
+	MX_UINT8 FCR_RETVAL;
+
+
+	#if (1) // 1 == 1
+
+		FCL_POSITION = FCL_POS_STR / 12;
+
+		switch (FCL_POSITION)
+		{
+			case 0:
+			{
+				FCL_POSITION = (FCL_POS_STR * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb1_ASCII0__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 1:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 12) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb2_ASCII1__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 2:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 24) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb3_ASCII2__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 3:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 36) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb4_ASCII3__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 4:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 48) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb5_ASCII4__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 5:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 60) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb6_ASCII5__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 6:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 72) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb8_ASCII6__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			case 7:
+			{
+				FCL_POSITION = ((FCL_POS_STR - 84) * 5) + FCL_COUNT;
+
+				FCR_RETVAL = FCD_00fb7_ASCII7__INTLIST(FCL_POSITION);
+
+				break;
+			}
+			default:
+			{
+				FCR_RETVAL = 0;
+
+				FCR_RETVAL = 0xaa;
+
+			}
+		}
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the colour of the foreground by creating a mixture of red, green and blue.
+       :
+       :Param??tres pour la macro SetForegroundColour :
+       :  Red : 0 - 255 where 0 = no red and 255 = maximum red
+       :  Green : 0 - 255 where 0 = no green and 255 = maximum green
+       :  Blue : 0 - 255 where 0 = no blue and 255 = maximum blue
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__SetForegroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE)
+{
+	//Définitions des variables locales
+	MX_UINT32 FCL_COLOUR;
+
+
+	FCL_COLOUR = FCL_BLUE;
+	FCL_COLOUR = FCL_COLOUR * 256;
+	FCL_COLOUR = FCL_COLOUR | FCL_GREEN;
+	FCL_COLOUR = FCL_COLOUR * 256;
+	FCL_COLOUR = FCL_COLOUR | FCL_RED;
+	FCV_0ba71_Base_GLCD__FOREGROUND_COL_VAR = FCL_COLOUR;
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws a rectangle with the current foreground colour from pixel loaction X1, Y1 to pixel location X2, Y2.
+       :
+       :Param??tres pour la macro DrawRectangle :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+       :  X2 : MX_UINT16
+       :  Y2 : MX_UINT16
+       :  Transparent : Chooses the transparency of the box - 0 = Box contains background colour, 1 = Box contains previous pixel data.
+       :  Solid : Chooses to fill the box with colour - 0 = Box contains transparency data, 1 = Box contains foreground colour.
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__DrawRectangle(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2, MX_UINT8 FCL_TRANSPARENT, MX_UINT8 FCL_SOLID)
+{
+	//Définitions des variables locales
+	MX_UINT16 FCL_XMIN;
+	MX_UINT16 FCL_XMAX;
+	MX_UINT16 FCL_YMIN;
+	MX_UINT16 FCL_YMAX;
+
+
+	FCD_0ba71_Base_GLCD__DrawLine(FCL_X1, FCL_Y1, FCL_X2, FCL_Y1);
+
+	FCD_0ba71_Base_GLCD__DrawLine(FCL_X2, FCL_Y1, FCL_X2, FCL_Y2);
+
+	FCD_0ba71_Base_GLCD__DrawLine(FCL_X1, FCL_Y2, FCL_X2, FCL_Y2);
+
+	FCD_0ba71_Base_GLCD__DrawLine(FCL_X1, FCL_Y1, FCL_X1, FCL_Y2);
+
+	if (FCL_TRANSPARENT == 0)
+	{
+
+		if (FCL_X1 > FCL_X2)
+		{
+
+			FCL_XMAX = FCL_X1;
+			FCL_XMIN = FCL_X2 + 1;
+
+		} else {
+
+			FCL_XMAX = FCL_X2;
+			FCL_XMIN = FCL_X1 + 1;
+
+		}
+
+		if (FCL_Y1 > FCL_Y2)
+		{
+
+			FCL_YMAX = FCL_Y1;
+			FCL_YMIN = FCL_Y2 + 1;
+
+		} else {
+
+			FCL_YMAX = FCL_Y2;
+			FCL_YMIN = FCL_Y1 + 1;
+
+		}
+
+		FCL_Y1 = FCL_YMIN;
+
+		while (FCL_Y1 < FCL_YMAX)
+		{
+
+			FCL_X1 = FCL_XMIN;
+
+			while (FCL_X1 < FCL_XMAX)
+			{
+
+				if (FCL_SOLID)
+				{
+
+					FCD_0ba71_Base_GLCD__Plot(FCL_X1, FCL_Y1);
+
+				} else {
+
+					FCD_0ba71_Base_GLCD__BPlot(FCL_X1, FCL_Y1);
+
+				}
+
+				FCL_X1 = FCL_X1 + 1;
+
+
+			}
+
+			FCL_Y1 = FCL_Y1 + 1;
+
+
+		}
+
+	// } else {
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :The Init macro must be called once to initialise the Graphical LCD display before any other Graphical LCD component macros are called.
+\*=----------------------------------------------------------------------=*/
+void FCD_0ba71_Base_GLCD__Initialise()
+{
+
+	FCV_0ba71_Base_GLCD__FOREGROUND_COL_VAR = 0;
+	FCV_0ba71_Base_GLCD__BACKGROUND_COL_VAR = 16777215;
+
+	FCD_0ba71_Base_GLCD__ClearDisplay();
+
+}
+
+
+/*========================================================================*\
+   Use :gLCD_EB076_4D1
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :Initialises the micro SD card inserted into the module is available.
+       :Returns 0 for succesful initialisation or 255 for a detected failure.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_InitialiseCard()
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x69);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Copies a section of the display to the micro SD card starting from X, Y and ranging to Width, Height.
+       :
+       :Param??tres pour la macro G4D_DumpScreenToFilePicaso :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Width : MX_UINT16
+       :  Height : MX_UINT16
+       :  Filename[20] : Assigns the name of the file on the card to store the data.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DumpScreenToFilePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_CHAR *FCL_FILENAME, MX_UINT16 FCLsz_FILENAME)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_IDX = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x63);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH >> 8);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT >> 8);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT);
+
+	while (FCL_FILENAME[FCL_IDX])
+	{
+
+		if (FCL_FILENAME[FCL_IDX] == 0)
+		{
+
+			goto FCC_G4D_DumpScreenToFilePicaso_A;
+
+		// } else {
+
+		}
+
+		FC_CAL_UART_Send_1(FCL_FILENAME[FCL_IDX]);
+
+		FCL_IDX = FCL_IDX + 1;
+
+
+	}
+
+FCC_G4D_DumpScreenToFilePicaso_A:
+;
+
+	FC_CAL_UART_Send_1(0);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Returns the coordinates of the last touch event.
+       :Axis = 0 or 'x' or 'X' - Returns the X coordinate.
+       :Axis = 1 or 'y' or 'Y' - Returns the Y coordinate.
+       :
+       :Param??tres pour la macro G4D_ReadTouchCoordinatesPicaso :
+       :  Axis : MX_UINT8
+       :
+       :Renvoie : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+MX_UINT16 FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(MX_UINT8 FCL_AXIS)
+
+{
+	//Définitions des variables locales
+	MX_UINT16 FCR_RETVAL;
+
+
+	FCR_RETVAL = 0;
+0906  6A3F      	CLRF FCD_0f051__00065_1_FCR_RETVAL
+0908  6A40      	CLRF FCD_0f051__00065_1_FCR_RETVAL+D'1'
+
+
+	if (FCL_AXIS == 0)
+090A  523E      	MOVF FCD_0f051__00065_arg_FCL_AXIS, F
+090C  E007      	BZ	label38
+
+	{
+
+	} else {
+
+		if (FCL_AXIS == 'x')
+090E  0E78      	MOVLW 0x78
+0910  623E      	CPFSEQ FCD_0f051__00065_arg_FCL_AXIS
+0912  D001      	BRA	label37
+0916            label37
+
+		{
+
+		} else {
+0914  D003      	BRA	label38
+
+
+			if (FCL_AXIS == 'X')
+0916  0E58      	MOVLW 0x58
+0918  623E      	CPFSEQ FCD_0f051__00065_arg_FCL_AXIS
+091A  D004      	BRA	label39
+091C            label38
+
+			{
+
+			} else {
+
+				goto FCC_G4D_ReadTouchCoordinatesPicaso_A;
+
+
+			}
+
+		}
+
+	}
+
+	FCR_RETVAL = FCV_0f051_gLCD_EB076_4D1__TOUCHX;
+091C  5029      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000F, W
+091E  6E3F      	MOVWF FCD_0f051__00065_1_FCR_RETVAL
+0920  502A      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000F+D'1', W
+0922  6E40      	MOVWF FCD_0f051__00065_1_FCR_RETVAL+D'1'
+
+
+FCC_G4D_ReadTouchCoordinatesPicaso_A:
+0924            label39
+
+;
+
+	if (FCL_AXIS == 1)
+0924  043E      	DECF FCD_0f051__00065_arg_FCL_AXIS, W
+0926  E007      	BZ	label41
+
+	{
+
+	} else {
+
+		if (FCL_AXIS == 'y')
+0928  0E79      	MOVLW 0x79
+092A  623E      	CPFSEQ FCD_0f051__00065_arg_FCL_AXIS
+092C  D001      	BRA	label40
+0930            label40
+
+		{
+
+		} else {
+092E  D003      	BRA	label41
+
+
+			if (FCL_AXIS == 'Y')
+0930  0E59      	MOVLW 0x59
+0932  623E      	CPFSEQ FCD_0f051__00065_arg_FCL_AXIS
+0934  D004      	BRA	label42
+0936            label41
+
+			{
+
+			} else {
+
+				goto FCC_G4D_ReadTouchCoordinatesPicaso_B;
+
+
+			}
+
+		}
+
+	}
+
+	FCR_RETVAL = FCV_0f051_gLCD_EB076_4D1__TOUCHY;
+0936  5027      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000E, W
+0938  6E3F      	MOVWF FCD_0f051__00065_1_FCR_RETVAL
+093A  5028      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000E+D'1', W
+093C  6E40      	MOVWF FCD_0f051__00065_1_FCR_RETVAL+D'1'
+
+
+FCC_G4D_ReadTouchCoordinatesPicaso_B:
+093E            label42
+
+;
+
+	return (FCR_RETVAL);
+093E  503F      	MOVF FCD_0f051__00065_1_FCR_RETVAL, W
+0940  6E41      	MOVWF CompTempVarRet2673
+0942  5040      	MOVF FCD_0f051__00065_1_FCR_RETVAL+D'1', W
+0944  6E42      	MOVWF CompTempVarRet2673+D'1'
+
+
+}
+0946  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Reads the value of the last touchscreen input from the display.
+       :Returns a 0 if no new touch is detected.
+       :Returns a 1 if a press is detected.
+       :Returns a 2 if a release is detected.
+       :Returns a 3 if a moving drag is detected.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_GetTouchCoordinatesPicaso()
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_TEMP;
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x6F);
+04EE  0E6F      	MOVLW 0x6F
+04F0  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+04F2  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+04F4  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(4);
+04F8  0E04      	MOVLW 0x04
+04FA  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+04FC  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+04FE  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+0502  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0504  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+0508  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+050A  EC4EF000  	CALL FC_CAL_UAR_0006D
+050E  5055      	MOVF CompTempVarRet2686, W
+0510  6E3F      	MOVWF FCD_0f051__00069_1_FCR_RETVAL
+
+
+	FC_CAL_UART_Receive_1(255);
+0512  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0514  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Receive_1(255);
+0518  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+051A  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	if (FCR_RETVAL)
+051E  523F      	MOVF FCD_0f051__00069_1_FCR_RETVAL, F
+0520  E032      	BZ	label27
+0586            label27
+
+	{
+
+		FC_CAL_UART_Send_1(0x6F);
+0522  0E6F      	MOVLW 0x6F
+0524  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0526  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0528  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(5);
+052C  0E05      	MOVLW 0x05
+052E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0530  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0532  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHX = FC_CAL_UART_Receive_1(255);
+0536  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0538  EC4EF000  	CALL FC_CAL_UAR_0006D
+053C  5055      	MOVF CompTempVarRet2686, W
+053E  6E29      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000F
+0540  5056      	MOVF CompTempVarRet2686+D'1', W
+0542  6E2A      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000F+D'1'
+
+
+		FCL_TEMP = FC_CAL_UART_Receive_1(255);
+0544  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0546  EC4EF000  	CALL FC_CAL_UAR_0006D
+054A  5055      	MOVF CompTempVarRet2686, W
+054C  6E3E      	MOVWF FCD_0f051__00069_1_FCL_TEMP
+
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHX = FCV_0f051_gLCD_EB076_4D1__TOUCHX << 8;
+054E  6A40      	CLRF CompTempVar2678
+0550  5029      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000F, W
+0552  6E2A      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000F+D'1'
+0554  5040      	MOVF CompTempVar2678, W
+0556  6E29      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000F
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHX = FCV_0f051_gLCD_EB076_4D1__TOUCHX | FCL_TEMP;
+0558  503E      	MOVF FCD_0f051__00069_1_FCL_TEMP, W
+055A  1229      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000F, F
+055C  522A      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000F+D'1', F
+
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHY = FC_CAL_UART_Receive_1(255);
+055E  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0560  EC4EF000  	CALL FC_CAL_UAR_0006D
+0564  5055      	MOVF CompTempVarRet2686, W
+0566  6E27      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000E
+0568  5056      	MOVF CompTempVarRet2686+D'1', W
+056A  6E28      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000E+D'1'
+
+
+		FCL_TEMP = FC_CAL_UART_Receive_1(255);
+056C  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+056E  EC4EF000  	CALL FC_CAL_UAR_0006D
+0572  5055      	MOVF CompTempVarRet2686, W
+0574  6E3E      	MOVWF FCD_0f051__00069_1_FCL_TEMP
+
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHY = FCV_0f051_gLCD_EB076_4D1__TOUCHY << 8;
+0576  6A40      	CLRF CompTempVar2682
+0578  5027      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000E, W
+057A  6E28      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000E+D'1'
+057C  5040      	MOVF CompTempVar2682, W
+057E  6E27      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000E
+
+		FCV_0f051_gLCD_EB076_4D1__TOUCHY = FCV_0f051_gLCD_EB076_4D1__TOUCHY | FCL_TEMP;
+0580  503E      	MOVF FCD_0f051__00069_1_FCL_TEMP, W
+0582  1227      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000E, F
+0584  5228      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000E+D'1', F
+
+
+	// } else {
+
+	}
+
+	return (FCR_RETVAL);
+0586  503F      	MOVF FCD_0f051__00069_1_FCR_RETVAL, W
+0588  6E40      	MOVWF CompTempVarRet2677
+
+
+}
+058A  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws a circle on the screen centered at location X, Y.
+       :Does not currently simulate.
+       :
+       :Param??tres pour la macro G4D_DrawCircle :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Radius : Configures the size of the circle.
+       :  Solid : Chooses to fill the circle with colour - 0 = Circle contains transparency data, 1 = Circle contains foreground colour
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__G4D_DrawCircle(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_RADIUS, MX_UINT8 FCL_SOLID)
+{
+
+	FC_CAL_UART_Send_1(0x70);
+
+	if (FCL_SOLID)
+	{
+
+		FC_CAL_UART_Send_1(0x00);
+
+	} else {
+
+		FC_CAL_UART_Send_1(0x01);
+
+	}
+
+	FC_CAL_UART_Receive_1(255);
+
+	FC_CAL_UART_Send_1(0x43);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_RADIUS >> 8);
+
+	FC_CAL_UART_Send_1(FCL_RADIUS);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :This macro prints a decimal number to the Graphical LCD.
+       :
+       :Param??tres pour la macro PrintNumber :
+       :  Number : Byte or Integer number to send to the display.
+       :  X : X pixel coordinate to set the output string position.
+       :  Y : Y pixel coordinate to set the output string position.
+       :  Font : Size of the font - 0 = Normal, 1 = Double Width, 2 = Double Width and Height, 3 = Double Height
+       :  Transparent : Specifies if the background of the text is drawn - 0 = Background colour is drawn, 1 = Background colour not drawn.
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__PrintNumber(MX_SINT16 FCL_NUMBER, MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT)
+{
+	//Définitions des variables locales
+	#define FCLsz_TEMP 6
+	MX_CHAR FCL_TEMP[FCLsz_TEMP];
+
+
+	FCI_TOSTRING(FCL_NUMBER, FCL_TEMP,6);
+
+	FCD_0f051_gLCD_EB076_4D1__Print(FCL_TEMP, FCLsz_TEMP, FCL_X, FCL_Y, FCL_FONT, FCL_TRANSPARENT);
+
+	//Définitions des variables locales
+	#undef FCLsz_TEMP
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws a line with the current foreground colour from pixel location X1, Y1 to pixel location X2, Y2.
+       :
+       :Param??tres pour la macro DrawLine :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+       :  X2 : MX_UINT16
+       :  Y2 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__DrawLine(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2)
+
+{
+	//Définitions des variables locales
+	MX_SINT16 FCL_C1;
+	MX_SINT16 FCL_M1;
+	MX_SINT16 FCL_D1 = (0);
+0212  6A46      	CLRF FCD_0f051__00063_1_FCL_D1
+0214  6A47      	CLRF FCD_0f051__00063_1_FCL_D1+D'1'
+
+	MX_SINT16 FCL_PIXELX;
+	MX_SINT16 FCL_PIXELY;
+	MX_SINT16 FCL_YINC = (1);
+0216  0E01      	MOVLW 0x01
+0218  6E48      	MOVWF FCD_0f051__00063_1_FCL_YINC
+021A  6A49      	CLRF FCD_0f051__00063_1_FCL_YINC+D'1'
+
+	MX_SINT16 FCL_XINC = (1);
+021C  0E01      	MOVLW 0x01
+021E  6E4A      	MOVWF FCD_0f051__00063_1_FCL_XINC
+0220  6A4B      	CLRF FCD_0f051__00063_1_FCL_XINC+D'1'
+
+
+
+	FC_CAL_UART_Send_1(0x4C);
+0222  0E4C      	MOVLW 0x4C
+0224  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0226  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0228  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+022C  503F      	MOVF FCD_0f051__00063_arg_FCL_X1+D'1', W
+022E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0230  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0232  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X1);
+0236  503E      	MOVF FCD_0f051__00063_arg_FCL_X1, W
+0238  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+023A  503F      	MOVF FCD_0f051__00063_arg_FCL_X1+D'1', W
+023C  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+023E  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+0242  5041      	MOVF FCD_0f051__00063_arg_FCL_Y1+D'1', W
+0244  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0246  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0248  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+024C  5040      	MOVF FCD_0f051__00063_arg_FCL_Y1, W
+024E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0250  5041      	MOVF FCD_0f051__00063_arg_FCL_Y1+D'1', W
+0252  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0254  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X2 >> 8);
+0258  5043      	MOVF FCD_0f051__00063_arg_FCL_X2+D'1', W
+025A  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+025C  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+025E  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X2);
+0262  5042      	MOVF FCD_0f051__00063_arg_FCL_X2, W
+0264  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0266  5043      	MOVF FCD_0f051__00063_arg_FCL_X2+D'1', W
+0268  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+026A  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y2 >> 8);
+026E  5045      	MOVF FCD_0f051__00063_arg_FCL_Y2+D'1', W
+0270  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0272  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0274  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y2);
+0278  5044      	MOVF FCD_0f051__00063_arg_FCL_Y2, W
+027A  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+027C  5045      	MOVF FCD_0f051__00063_arg_FCL_Y2+D'1', W
+027E  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0280  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+0284  5026      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', W
+0286  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0288  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+028A  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+028E  5025      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D, W
+0290  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0292  5026      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', W
+0294  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0296  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+029A  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+029C  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+}
+02A0  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Attempts to print an image from the micro SD card using the specified filename on the card.
+       :The image is printed at location starting from X, Y.
+       :PosH and PosL specify the sector address of the previously stored image icon.
+       :
+       :Param??tres pour la macro G4D_DisplayImageFromFilePicaso :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Filename[20] : MX_CHAR
+       :  PosH : MX_UINT16
+       :  PosL : MX_UINT16
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayImageFromFilePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_CHAR *PFCL_FILENAME, MX_UINT16 FCL_POSH, MX_UINT16 FCL_POSL)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_IDX = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	#define FCLsz_FILENAME 20
+	MX_CHAR FCL_FILENAME[FCLsz_FILENAME];
+	FCI_CONCATENATE(PFCL_FILENAME,FCLsz_FILENAME,"",0,FCL_FILENAME,FCLsz_FILENAME);
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x6D);
+
+	while (FCL_FILENAME[FCL_IDX])
+	{
+
+		if (FCL_FILENAME[FCL_IDX] == 0)
+		{
+
+			goto FCC_G4D_DisplayImageFromFilePicaso_A;
+
+		// } else {
+
+		}
+
+		FC_CAL_UART_Send_1(FCL_FILENAME[FCL_IDX]);
+
+		FCL_IDX = FCL_IDX + 1;
+
+
+	}
+
+FCC_G4D_DisplayImageFromFilePicaso_A:
+;
+
+	FC_CAL_UART_Send_1(0);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_POSH >> 8);
+
+	FC_CAL_UART_Send_1(FCL_POSH);
+
+	FC_CAL_UART_Send_1(FCL_POSL >> 8);
+
+	FC_CAL_UART_Send_1(FCL_POSL);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+	//Définitions des variables locales
+	#undef FCLsz_FILENAME
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Disables the touchscreen interface if available.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisableTouchscreenPicaso()
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x59);
+05EC  0E59      	MOVLW 0x59
+05EE  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+05F0  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05F2  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x05);
+05F6  0E05      	MOVLW 0x05
+05F8  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+05FA  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05FC  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x01);
+0600  0E01      	MOVLW 0x01
+0602  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0604  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0606  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+060A  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+060C  EC4EF000  	CALL FC_CAL_UAR_0006D
+0610  5055      	MOVF CompTempVarRet2686, W
+0612  6E3E      	MOVWF FCD_0f051__00061_1_FCR_RETVAL
+
+
+	if (FCR_RETVAL == 6)
+0614  0E06      	MOVLW 0x06
+0616  623E      	CPFSEQ FCD_0f051__00061_1_FCR_RETVAL
+0618  D002      	BRA	label30
+061E            label30
+
+	{
+
+		FCR_RETVAL = 0;
+061A  6A3E      	CLRF FCD_0f051__00061_1_FCR_RETVAL
+
+
+	} else {
+061C  D001      	BRA	label31
+0620            label31
+
+
+		FCR_RETVAL = 255;
+061E  683E      	SETF FCD_0f051__00061_1_FCR_RETVAL
+
+
+	}
+
+	return (FCR_RETVAL);
+0620  503E      	MOVF FCD_0f051__00061_1_FCR_RETVAL, W
+0622  6E3F      	MOVWF CompTempVarRet2661
+
+
+}
+0624  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sets a pixel with the current foreground colour at pixel location X, Y.
+       :
+       :Param??tres pour la macro Plot :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__Plot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1)
+{
+
+	FC_CAL_UART_Send_1(0x50);
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X1);
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Controls the operation, contrast and backlight on the display
+       :
+       :Param??tres pour la macro DisplayControl :
+       :  Backlight : 0=Backlight Off, 1=Backlight On (default)
+       :  Display : 0=Display off, 1=Display on (default)
+       :  Contrast : Contrast Range 0 - 15
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__DisplayControl(MX_UINT8 FCL_BACKLIGHT, MX_UINT8 FCL_DISPLAY, MX_UINT8 FCL_CONTRAST)
+{
+
+	FC_CAL_UART_Send_1(0x59);
+
+	FC_CAL_UART_Send_1(0x00);
+
+	FC_CAL_UART_Send_1(FCL_BACKLIGHT);
+
+	FC_CAL_UART_Receive_1(255);
+
+	FCI_DELAYBYTE_MS(1);
+
+	FC_CAL_UART_Send_1(0x59);
+
+	FC_CAL_UART_Send_1(0x01);
+
+	FC_CAL_UART_Send_1(FCL_DISPLAY);
+
+	FC_CAL_UART_Receive_1(255);
+
+	FCI_DELAYBYTE_MS(1);
+
+	FC_CAL_UART_Send_1(0x59);
+
+	FC_CAL_UART_Send_1(0x02);
+
+	FC_CAL_UART_Send_1(FCL_CONTRAST);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Enables the touchscreen interface if available.
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_EnableTouchscreenPicaso()
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x59);
+058C  0E59      	MOVLW 0x59
+058E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0590  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0592  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x05);
+0596  0E05      	MOVLW 0x05
+0598  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+059A  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+059C  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x00);
+05A0  6A4C      	CLRF FC_CAL_UAR_0006E_arg_nChar
+05A2  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05A4  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+05A8  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+05AA  EC4EF000  	CALL FC_CAL_UAR_0006D
+05AE  5055      	MOVF CompTempVarRet2686, W
+05B0  6E3E      	MOVWF FCD_0f051__00062_1_FCR_RETVAL
+
+
+	FC_CAL_UART_Send_1(0x59);
+05B2  0E59      	MOVLW 0x59
+05B4  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+05B6  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05B8  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x05);
+05BC  0E05      	MOVLW 0x05
+05BE  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+05C0  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05C2  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(0x02);
+05C6  0E02      	MOVLW 0x02
+05C8  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+05CA  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+05CC  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+05D0  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+05D2  EC4EF000  	CALL FC_CAL_UAR_0006D
+05D6  5055      	MOVF CompTempVarRet2686, W
+05D8  6E3E      	MOVWF FCD_0f051__00062_1_FCR_RETVAL
+
+
+	if (FCR_RETVAL == 6)
+05DA  0E06      	MOVLW 0x06
+05DC  623E      	CPFSEQ FCD_0f051__00062_1_FCR_RETVAL
+05DE  D002      	BRA	label28
+05E4            label28
+
+	{
+
+		FCR_RETVAL = 0;
+05E0  6A3E      	CLRF FCD_0f051__00062_1_FCR_RETVAL
+
+
+	} else {
+05E2  D001      	BRA	label29
+05E6            label29
+
+
+		FCR_RETVAL = 255;
+05E4  683E      	SETF FCD_0f051__00062_1_FCR_RETVAL
+
+
+	}
+
+	return (FCR_RETVAL);
+05E6  503E      	MOVF FCD_0f051__00062_1_FCR_RETVAL, W
+05E8  6E3F      	MOVWF CompTempVarRet2662
+
+
+}
+05EA  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Attempts to display a sequence of images from the micro SD card at the specified address location on the card.
+       :The images are printed at location starting from X, Y and ranging to Width, Height.
+       :
+       :Param??tres pour la macro G4D_DisplayVideoFromCard :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Width : MX_UINT16
+       :  Height : MX_UINT16
+       :  ColourMode : Specifes the colour depth setting - 0 = 8-bit colour, 1 = 16-bit colour.
+       :  Delay : Specifies the number of milliseconds to wait in between displaying each image.
+       :  Frames : Specifies the number of frames to display.
+       :  AddH : MX_UINT8
+       :  AddM : MX_UINT8
+       :  AddL : MX_UINT8
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayVideoFromCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_COLOURMODE, MX_UINT8 FCL_DELAY, MX_UINT16 FCL_FRAMES, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x56);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH >> 8);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT >> 8);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT);
+
+	if (FCL_COLOURMODE)
+	{
+
+		FC_CAL_UART_Send_1(0x10);
+
+	} else {
+
+		FC_CAL_UART_Send_1(0x08);
+
+	}
+
+	FC_CAL_UART_Send_1(FCL_DELAY);
+
+	FC_CAL_UART_Send_1(FCL_FRAMES >> 8);
+
+	FC_CAL_UART_Send_1(FCL_FRAMES);
+
+	FC_CAL_UART_Send_1(FCL_ADDH);
+
+	FC_CAL_UART_Send_1(FCL_ADDM);
+
+	FC_CAL_UART_Send_1(FCL_ADDL);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sets the playback volume.
+       :
+       :Param??tres pour la macro G4D_SetVolumePicaso :
+       :  Volume : Volume = 0 - Mute Enabled / 1 - Volume Down 8 / 3 - Volume Down 1 / 253 - Volume Up 1 / 254 - Volume Up 8 / 255 - Mute Disabled / 8 - Minimum Volume Level / 127 - Maximum Volume Level
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetVolumePicaso(MX_UINT8 FCL_VOLUME)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x76);
+
+	FC_CAL_UART_Send_1(FCL_VOLUME);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Controls the way data is printed out on the display allowing multiple different viewing orientations. Default is 0.
+       :
+       :Param??tres pour la macro SetDisplayOrientation :
+       :  Orientation : 0=Default, 1=90??CW, 2=180??CW, 3=270??CW
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__SetDisplayOrientation(MX_UINT8 FCL_ORIENTATION)
+{
+
+	FC_CAL_UART_Send_1(0x59);
+
+	FC_CAL_UART_Send_1(0x04);
+
+	switch (FCL_ORIENTATION)
+	{
+		case 1:
+		{
+			FC_CAL_UART_Send_1(0x01);
+
+			break;
+		}
+		case 2:
+		{
+			FC_CAL_UART_Send_1(0x04);
+
+			break;
+		}
+		case 3:
+		{
+			FC_CAL_UART_Send_1(0x02);
+
+			break;
+		}
+		default:
+		{
+			FC_CAL_UART_Send_1(0x03);
+
+		}
+	}
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Sets a pixel with the current background colour at pixel location X, Y.
+       :
+       :Param??tres pour la macro BPlot :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__BPlot(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1)
+{
+
+	FC_CAL_UART_Send_1(0x50);
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X1);
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR >> 8);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws an ellipse on the screen centered at location X, Y with width RX and height RY.
+       :
+       :Param??tres pour la macro G4D_DrawElipsePicaso :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  RX : MX_UINT16
+       :  RY : MX_UINT16
+       :  Solid : Chooses to fill the circle with colour - 0 = Circle contains transparency data, 1 = Circle contains foreground colour
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__G4D_DrawElipsePicaso(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_RX, MX_UINT16 FCL_RY, MX_UINT8 FCL_SOLID)
+{
+
+	FC_CAL_UART_Send_1(0x70);
+
+	if (FCL_SOLID)
+	{
+
+		FC_CAL_UART_Send_1(0x00);
+
+	} else {
+
+		FC_CAL_UART_Send_1(0x01);
+
+	}
+
+	FC_CAL_UART_Receive_1(255);
+
+	FC_CAL_UART_Send_1(0x65);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_RX >> 8);
+
+	FC_CAL_UART_Send_1(FCL_RX);
+
+	FC_CAL_UART_Send_1(FCL_RY >> 8);
+
+	FC_CAL_UART_Send_1(FCL_RY);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :This macro prints a string of characters to the Graphical LCD.
+       :
+       :Param??tres pour la macro Print :
+       :  Str[20] : String of characters to send to the display.
+       :  X1 : X pixel coordinate to set the output string position.
+       :  Y1 : Y pixel coordinate to set the output string position.
+       :  Font : Size of the font - 0 = Normal, 1 = Double Width, 2 = Double Width and Height, 3 = Double Height
+       :  Transparent : Specifies if the background of the text is drawn - 0 = Background colour is drawn, 1 = Background colour not drawn.
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__Print(MX_CHAR *FCL_STR, MX_UINT16 FCLsz_STR, MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT8 FCL_FONT, MX_UINT8 FCL_TRANSPARENT)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_LEN_STR;
+	MX_UINT8 FCL_IDX = (0x0);
+
+
+	FC_CAL_UART_Send_1(0x4F);
+
+	if (FCL_TRANSPARENT)
+	{
+
+		FC_CAL_UART_Send_1(0x00);
+
+	} else {
+
+		FC_CAL_UART_Send_1(0x01);
+
+	}
+
+	FC_CAL_UART_Receive_1(255);
+
+	FC_CAL_UART_Send_1(0x53);
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X1);
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+
+	FC_CAL_UART_Send_1(FCL_FONT);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+
+	FC_CAL_UART_Send_1(1);
+
+	FC_CAL_UART_Send_1(1);
+
+	FCL_LEN_STR = FCI_GETLENGTH(FCL_STR, FCLsz_STR);
+
+	while (FCL_IDX < FCL_LEN_STR)
+	{
+
+		if (FCL_STR[FCL_IDX] == 0)
+		{
+
+			goto FCC_Print_A;
+
+		// } else {
+
+		}
+
+		FC_CAL_UART_Send_1(FCL_STR[FCL_IDX]);
+
+		FCL_IDX = FCL_IDX + 1;
+
+
+	}
+
+FCC_Print_A:
+;
+
+	FC_CAL_UART_Send_1(0);
+
+	FC_CAL_UART_Receive_1(255);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Copies a section of the display to the micro SD card starting from X, Y and ranging to Width, Height.
+       :The address parameters assign where on the card to store the data.
+       :
+       :Param??tres pour la macro G4D_DumpScreenToCard :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Width : MX_UINT16
+       :  Height : MX_UINT16
+       :  AddH : MX_UINT8
+       :  AddM : MX_UINT8
+       :  AddL : MX_UINT8
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DumpScreenToCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x43);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH >> 8);
+
+	FC_CAL_UART_Send_1(FCL_WIDTH);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT >> 8);
+
+	FC_CAL_UART_Send_1(FCL_HEIGHT);
+
+	FC_CAL_UART_Send_1(FCL_ADDH);
+
+	FC_CAL_UART_Send_1(FCL_ADDM);
+
+	FC_CAL_UART_Send_1(FCL_ADDL);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the VGA display size in pixels.
+       :Size = 0 - 320 x 240 Resolution.
+       :Size = 1 - 640 x 480 Resolution.
+       :Size = 2 - 800 x 480 Resolution.
+       :Size = 3 - Custom Resolution
+       :
+       :Param??tres pour la macro G4D_SetVGADisplaySizePicaso :
+       :  Size : MX_UINT8
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetVGADisplaySizePicaso(MX_UINT8 FCL_SIZE)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x59);
+
+	FC_CAL_UART_Send_1(0x0c);
+
+	FC_CAL_UART_Send_1(FCL_SIZE);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :This macro clears the display of any previous output by overwriting the entire display with the background colour.
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__ClearDisplay()
+
+{
+	//Définitions des variables locales
+	MX_UINT16 FCL_Y = (0x0);
+02A2  6A42      	CLRF FCD_0f051__0005D_1_FCL_Y
+02A4  6A43      	CLRF FCD_0f051__0005D_1_FCL_Y+D'1'
+
+	MX_UINT16 FCL_X = (0x0);
+02A6  6A44      	CLRF FCD_0f051__0005D_1_FCL_X
+02A8  6A45      	CLRF FCD_0f051__0005D_1_FCL_X+D'1'
+
+
+
+	FC_CAL_UART_Send_1(0x42);
+02AA  0E42      	MOVLW 0x42
+02AC  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+02AE  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+02B0  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR >> 8);
+02B4  5024      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', W
+02B6  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+02B8  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+02BA  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR);
+02BE  5023      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C, W
+02C0  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+02C2  5024      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', W
+02C4  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+02C6  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+02CA  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+02CC  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Send_1(0x45);
+02D0  0E45      	MOVLW 0x45
+02D2  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+02D4  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+02D6  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+02DA  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+02DC  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+}
+02E0  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the colour of the background by creating a mixture of red, green and blue.
+       :
+       :Param??tres pour la macro SetBackgroundColour :
+       :  Red : 0 - 255 where 0 = no red and 255 = maximum red
+       :  Green : 0 - 255 where 0 = no green and 255 = maximum green
+       :  Blue : 0 - 255 where 0 = no blue and 255 = maximum blue
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__SetBackgroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE)
+{
+	//Définitions des variables locales
+	MX_UINT32 FCL_COLOUR;
+
+
+	FCL_RED = FCL_RED >> (8 - 5);
+	FCL_GREEN = FCL_GREEN >> (8 - 6);
+	FCL_BLUE = FCL_BLUE >> (8 - 5);
+
+	FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR = FCL_BLUE | (FCL_GREEN << 5);
+	FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR = FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR | (FCL_RED << (6 + 5));
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Attempts to print an image from the micro SD card at the specified address location on the card.
+       :The image is printed at location starting from X, Y and ranging to Width, Height.
+       :
+       :Param??tres pour la macro G4D_DisplayImageFromCard :
+       :  X : MX_UINT16
+       :  Y : MX_UINT16
+       :  Width : MX_UINT16
+       :  Height : MX_UINT16
+       :  ColourMode : Specifies the colour depth setting - 0 = 8-bit colour, 1 = 16-bit colour.
+       :  AddH : MX_UINT8
+       :  AddM : MX_UINT8
+       :  AddL : MX_UINT8
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_DisplayImageFromCard(MX_UINT16 FCL_X, MX_UINT16 FCL_Y, MX_UINT16 FCL_WIDTH, MX_UINT16 FCL_HEIGHT, MX_UINT8 FCL_COLOURMODE, MX_UINT8 FCL_ADDH, MX_UINT8 FCL_ADDM, MX_UINT8 FCL_ADDL)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x49);
+
+	FC_CAL_UART_Send_1(FCL_X >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X);
+
+	FC_CAL_UART_Send_1(FCL_Y >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y);
+
+	FC_CAL_UART_Send_1(FCL_ADDH);
+
+	FC_CAL_UART_Send_1(FCL_ADDM);
+
+	FC_CAL_UART_Send_1(FCL_ADDL);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the colour of the foreground by creating a mixture of red, green and blue.
+       :
+       :Param??tres pour la macro SetForegroundColour :
+       :  Red : 0 - 255 where 0 = no red and 255 = maximum red
+       :  Green : 0 - 255 where 0 = no green and 255 = maximum green
+       :  Blue : 0 - 255 where 0 = no blue and 255 = maximum blue
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__SetForegroundColour(MX_UINT8 FCL_RED, MX_UINT8 FCL_GREEN, MX_UINT8 FCL_BLUE)
+{
+	//Définitions des variables locales
+	MX_UINT32 FCL_COLOUR;
+
+
+	FCL_RED = FCL_RED >> (8 - 5);
+	FCL_GREEN = FCL_GREEN >> (8 - 6);
+	FCL_BLUE = FCL_BLUE >> (8 - 5);
+
+	FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR = FCL_BLUE | (FCL_GREEN << 5);
+	FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR = FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR | (FCL_RED << (6 + 5));
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Specifies the area of the screen which will respond to touchscreen inputs.
+       :
+       :Param??tres pour la macro G4D_SetTouchRegionPicaso :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+       :  X2 : MX_UINT16
+       :  Y2 : MX_UINT16
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_SetTouchRegionPicaso(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCR_RETVAL;
+
+
+	FC_CAL_UART_Send_1(0x75);
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X1);
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+
+	FC_CAL_UART_Send_1(FCL_X2 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_X2);
+
+	FC_CAL_UART_Send_1(FCL_Y2 >> 8);
+
+	FC_CAL_UART_Send_1(FCL_Y2);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Attempts to stream an audio wav file from the micro SD card using the specified filename.
+       :
+       :Param??tres pour la macro G4D_PlayAudioFromFilePicaso :
+       :  Play_Option : Play_Option = 0 - Return when playing complete / 1 - Return immediatley / 2 - Stop Playback / 3 - Pause Playback / 4 - Resume Playback / 5 - Loop Playing until stopped
+       :  Filename[20] : MX_CHAR
+       :
+       :Renvoie : MX_UINT8
+\*=----------------------------------------------------------------------=*/
+MX_UINT8 FCD_0f051_gLCD_EB076_4D1__G4D_PlayAudioFromFilePicaso(MX_UINT8 FCL_PLAY_OPTION, MX_CHAR *PFCL_FILENAME)
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_IDX = (0x0);
+	MX_UINT8 FCR_RETVAL;
+
+
+	#define FCLsz_FILENAME 20
+	MX_CHAR FCL_FILENAME[FCLsz_FILENAME];
+	FCI_CONCATENATE(PFCL_FILENAME,FCLsz_FILENAME,"",0,FCL_FILENAME,FCLsz_FILENAME);
+	FC_CAL_UART_Send_1(0x40);
+
+	FC_CAL_UART_Send_1(0x6C);
+
+	FC_CAL_UART_Send_1(FCL_PLAY_OPTION);
+
+	while (FCL_FILENAME[FCL_IDX])
+	{
+
+		if (FCL_FILENAME[FCL_IDX] == 0)
+		{
+
+			goto FCC_G4D_PlayAudioFromFilePicaso_A;
+
+		// } else {
+
+		}
+
+		FC_CAL_UART_Send_1(FCL_FILENAME[FCL_IDX]);
+
+
+	}
+
+FCC_G4D_PlayAudioFromFilePicaso_A:
+;
+
+	FC_CAL_UART_Send_1(0);
+
+	FCR_RETVAL = FC_CAL_UART_Receive_1(255);
+
+	if (FCR_RETVAL == 6)
+	{
+
+		FCR_RETVAL = 0;
+
+	} else {
+
+		FCR_RETVAL = 255;
+
+	}
+
+	return (FCR_RETVAL);
+
+	//Définitions des variables locales
+	#undef FCLsz_FILENAME
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :Draws a rectangle with the current foreground colour from pixel loaction X1, Y1 to pixel location X2, Y2
+       :
+       :Param??tres pour la macro DrawRectangle :
+       :  X1 : MX_UINT16
+       :  Y1 : MX_UINT16
+       :  X2 : MX_UINT16
+       :  Y2 : MX_UINT16
+       :  Transparent : Chooses the transparency of the box - 0 = Box contains background colour, 1 = Box contains previous pixel data.
+       :  Solid : Chooses to fill the box with colour - 0 = Box contains transparency data, 1 = Box contains foreground colour.
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__DrawRectangle(MX_UINT16 FCL_X1, MX_UINT16 FCL_Y1, MX_UINT16 FCL_X2, MX_UINT16 FCL_Y2, MX_UINT8 FCL_TRANSPARENT, MX_UINT8 FCL_SOLID)
+
+{
+	//Définitions des variables locales
+	MX_UINT16 FCL_XMIN;
+	MX_UINT16 FCL_XMAX;
+	MX_UINT16 FCL_YMIN;
+	MX_UINT16 FCL_YMAX;
+
+
+	if ((FCL_TRANSPARENT == 0) && (FCL_SOLID == 0))
+07C0  5246      	MOVF FCD_0f051__000A1_arg_FCL_T_000A2, F
+07C2  E14D      	BNZ	label34
+07C4  5247      	MOVF FCD_0f051__000A1_arg_FCL_SOLID, F
+07C6  E14B      	BNZ	label34
+085E            label34
+
+	{
+
+		FC_CAL_UART_Send_1(0x70);
+07C8  0E70      	MOVLW 0x70
+07CA  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+07CC  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+07CE  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(0x00);
+07D2  6A4C      	CLRF FC_CAL_UAR_0006E_arg_nChar
+07D4  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+07D6  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Receive_1(255);
+07DA  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+07DC  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+		FC_CAL_UART_Send_1(0x72);
+07E0  0E72      	MOVLW 0x72
+07E2  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+07E4  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+07E6  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_X1 >> 8);
+07EA  503F      	MOVF FCD_0f051__000A1_arg_FCL_X1+D'1', W
+07EC  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+07EE  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+07F0  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_X1);
+07F4  503E      	MOVF FCD_0f051__000A1_arg_FCL_X1, W
+07F6  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+07F8  503F      	MOVF FCD_0f051__000A1_arg_FCL_X1+D'1', W
+07FA  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+07FC  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+0800  5041      	MOVF FCD_0f051__000A1_arg_FCL_Y1+D'1', W
+0802  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0804  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0806  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_Y1);
+080A  5040      	MOVF FCD_0f051__000A1_arg_FCL_Y1, W
+080C  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+080E  5041      	MOVF FCD_0f051__000A1_arg_FCL_Y1+D'1', W
+0810  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0812  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_X2 >> 8);
+0816  5043      	MOVF FCD_0f051__000A1_arg_FCL_X2+D'1', W
+0818  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+081A  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+081C  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_X2);
+0820  5042      	MOVF FCD_0f051__000A1_arg_FCL_X2, W
+0822  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0824  5043      	MOVF FCD_0f051__000A1_arg_FCL_X2+D'1', W
+0826  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0828  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_Y2 >> 8);
+082C  5045      	MOVF FCD_0f051__000A1_arg_FCL_Y2+D'1', W
+082E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0830  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0832  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCL_Y2);
+0836  5044      	MOVF FCD_0f051__000A1_arg_FCL_Y2, W
+0838  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+083A  5045      	MOVF FCD_0f051__000A1_arg_FCL_Y2+D'1', W
+083C  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+083E  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR >> 8);
+0842  5024      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', W
+0844  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0846  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0848  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR);
+084C  5023      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C, W
+084E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0850  5024      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', W
+0852  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0854  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+		FC_CAL_UART_Receive_1(255);
+0858  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+085A  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	// } else {
+
+	}
+
+	FC_CAL_UART_Send_1(0x70);
+085E  0E70      	MOVLW 0x70
+0860  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0862  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0864  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	if (FCL_SOLID)
+0868  5247      	MOVF FCD_0f051__000A1_arg_FCL_SOLID, F
+086A  E005      	BZ	label35
+0876            label35
+
+	{
+
+		FC_CAL_UART_Send_1(0x00);
+086C  6A4C      	CLRF FC_CAL_UAR_0006E_arg_nChar
+086E  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0870  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	} else {
+0874  D005      	BRA	label36
+0880            label36
+
+
+		FC_CAL_UART_Send_1(0x01);
+0876  0E01      	MOVLW 0x01
+0878  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+087A  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+087C  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	}
+
+	FC_CAL_UART_Receive_1(255);
+0880  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0882  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Send_1(0x72);
+0886  0E72      	MOVLW 0x72
+0888  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+088A  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+088C  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X1 >> 8);
+0890  503F      	MOVF FCD_0f051__000A1_arg_FCL_X1+D'1', W
+0892  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0894  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0896  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X1);
+089A  503E      	MOVF FCD_0f051__000A1_arg_FCL_X1, W
+089C  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+089E  503F      	MOVF FCD_0f051__000A1_arg_FCL_X1+D'1', W
+08A0  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08A2  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y1 >> 8);
+08A6  5041      	MOVF FCD_0f051__000A1_arg_FCL_Y1+D'1', W
+08A8  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08AA  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08AC  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y1);
+08B0  5040      	MOVF FCD_0f051__000A1_arg_FCL_Y1, W
+08B2  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08B4  5041      	MOVF FCD_0f051__000A1_arg_FCL_Y1+D'1', W
+08B6  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08B8  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X2 >> 8);
+08BC  5043      	MOVF FCD_0f051__000A1_arg_FCL_X2+D'1', W
+08BE  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08C0  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08C2  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_X2);
+08C6  5042      	MOVF FCD_0f051__000A1_arg_FCL_X2, W
+08C8  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08CA  5043      	MOVF FCD_0f051__000A1_arg_FCL_X2+D'1', W
+08CC  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08CE  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y2 >> 8);
+08D2  5045      	MOVF FCD_0f051__000A1_arg_FCL_Y2+D'1', W
+08D4  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08D6  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08D8  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCL_Y2);
+08DC  5044      	MOVF FCD_0f051__000A1_arg_FCL_Y2, W
+08DE  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08E0  5045      	MOVF FCD_0f051__000A1_arg_FCL_Y2+D'1', W
+08E2  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08E4  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR >> 8);
+08E8  5026      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', W
+08EA  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08EC  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08EE  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Send_1(FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR);
+08F2  5025      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D, W
+08F4  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+08F6  5026      	MOVF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', W
+08F8  6E4D      	MOVWF FC_CAL_UAR_0006E_arg_nChar+D'1'
+08FA  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+08FE  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+0900  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+}
+0904  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :The Init macro must be called once to initialise the Graphical LCD display before any other Graphical LCD component macros are called.
+\*=----------------------------------------------------------------------=*/
+void FCD_0f051_gLCD_EB076_4D1__Initialise()
+
+{
+	//Définitions des variables locales
+	MX_UINT8 FCL_RED;
+	MX_UINT8 FCL_GREEN;
+	MX_UINT8 FCL_BLUE;
+	MX_UINT8 FCL_DUMMY;
+
+
+	FCP_SET(B, C, 0x20, 0x5, 0);
+0626  6A42      	CLRF FCD_0f051__0005C_2_ptmp
+0628  9A94      	BCF gbl_trisc,5
+062A  5242      	MOVF FCD_0f051__0005C_2_ptmp, F
+062C  E004      	BZ	label32
+062E  0E20      	MOVLW 0x20
+0630  108B      	IORWF gbl_latc, W
+0632  6E82      	MOVWF gbl_portc
+0634  D003      	BRA	label33
+0636            label32
+0636  0EDF      	MOVLW 0xDF
+0638  148B      	ANDWF gbl_latc, W
+063A  6E82      	MOVWF gbl_portc
+063C            label33
+
+
+	FC_CAL_UART_Init_1();
+063C  ECA0F000  	CALL FC_CAL_UAR_0006F
+
+
+	FCI_DELAYBYTE_US(100);
+0640  0E64      	MOVLW 0x64
+0642  6E42      	MOVWF delay_us_00000_arg_del
+0644  EC2EF000  	CALL delay_us_00000
+
+
+	FCL_DUMMY = FCP_GET(B, C, 0x20, 0x5);
+0648  0E0F      	MOVLW HIGH(gbl_portc+D'0')
+064A  6E43      	MOVWF FC_CAL_Por_00042_arg_Port+D'1'
+064C  0E82      	MOVLW LOW(gbl_portc+D'0')
+064E  6E42      	MOVWF FC_CAL_Por_00042_arg_Port
+0650  0E0F      	MOVLW HIGH(gbl_trisc+D'0')
+0652  6E45      	MOVWF FC_CAL_Por_00042_arg_Tris+D'1'
+0654  0E94      	MOVLW LOW(gbl_trisc+D'0')
+0656  6E44      	MOVWF FC_CAL_Por_00042_arg_Tris
+0658  0E20      	MOVLW 0x20
+065A  6E46      	MOVWF FC_CAL_Por_00042_arg_InMask
+065C  0E05      	MOVLW 0x05
+065E  6E47      	MOVWF FC_CAL_Por_00042_arg_Shift
+0660  ECF1F000  	CALL FC_CAL_Por_00042
+0664  5048      	MOVF CompTempVarRet1822, W
+0666  6E41      	MOVWF FCD_0f051__0005C_1_FCL_DUMMY
+
+
+	FCI_DELAYBYTE_S(3);
+0668  0E03      	MOVLW 0x03
+066A  6E42      	MOVWF delay_s_00000_arg_del
+066C  EC33F000  	CALL delay_s_00000
+
+
+	FC_CAL_UART_Receive_1(0);
+0670  6A4C      	CLRF FC_CAL_UAR_0006D_arg_nTimeout
+0672  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Receive_1(0);
+0676  6A4C      	CLRF FC_CAL_UAR_0006D_arg_nTimeout
+0678  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Receive_1(0);
+067C  6A4C      	CLRF FC_CAL_UAR_0006D_arg_nTimeout
+067E  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Send_1(0x55);
+0682  0E55      	MOVLW 0x55
+0684  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0686  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0688  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+	FC_CAL_UART_Receive_1(255);
+068C  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+068E  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	#if (1) // 1 == 1
+
+		#if (1) // 1 != 0
+
+			FC_CAL_UART_Send_1(0x51);
+0692  0E51      	MOVLW 0x51
+0694  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+0696  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+0698  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+			FC_CAL_UART_Send_1(0x0C);
+069C  0E0C      	MOVLW 0x0C
+069E  6E4C      	MOVWF FC_CAL_UAR_0006E_arg_nChar
+06A0  6A4D      	CLRF FC_CAL_UAR_0006E_arg_nChar+D'1'
+06A2  EC46F000  	CALL FC_CAL_UAR_0006E
+
+
+			FC_CAL_UART_Receive_1(255);
+06A6  684C      	SETF FC_CAL_UAR_0006D_arg_nTimeout
+06A8  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+			FC_CAL_UART_UpdateBaud_1(6);
+06AC  0E06      	MOVLW 0x06
+06AE  6E42      	MOVWF FC_CAL_UAR_0006B_arg_new_baud
+06B0  ECA9F000  	CALL FC_CAL_UAR_0006B
+
+
+
+		// #else
+
+		//Le code a été optimisé par le préprocesseur
+		#endif
+
+	// #else
+
+	//Le code a été optimisé par le préprocesseur
+	#endif
+
+	FC_CAL_UART_Receive_1(10);
+06B4  0E0A      	MOVLW 0x0A
+06B6  6E4C      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+06B8  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Receive_1(10);
+06BC  0E0A      	MOVLW 0x0A
+06BE  6E4C      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+06C0  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FCL_RED = 0 & 0xFF;
+06C4  6A3E      	CLRF FCD_0f051__0005C_1_FCL_RED
+
+	FCL_RED = FCL_RED >> (8 - 5);
+06C6  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+06C8  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+06CA  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+06CC  0E1F      	MOVLW 0x1F
+06CE  163E      	ANDWF FCD_0f051__0005C_1_FCL_RED, F
+
+	FCL_GREEN = (0 >> 8) & 0xFF;
+06D0  6A3F      	CLRF FCD_0f051__0005C_1_FCL_GREEN
+
+	FCL_GREEN = FCL_GREEN >> (8 - 6);
+06D2  323F      	RRCF FCD_0f051__0005C_1_FCL_GREEN, F
+06D4  323F      	RRCF FCD_0f051__0005C_1_FCL_GREEN, F
+06D6  0E3F      	MOVLW 0x3F
+06D8  163F      	ANDWF FCD_0f051__0005C_1_FCL_GREEN, F
+
+	FCL_BLUE = (0 >> 16) & 0xFF;
+06DA  6A40      	CLRF FCD_0f051__0005C_1_FCL_BLUE
+
+	FCL_BLUE = FCL_BLUE >> (8 - 5);
+06DC  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+06DE  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+06E0  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+06E2  0E1F      	MOVLW 0x1F
+06E4  1640      	ANDWF FCD_0f051__0005C_1_FCL_BLUE, F
+
+	FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR = FCL_BLUE | (FCL_GREEN << 5);
+06E6  503F      	MOVF FCD_0f051__0005C_1_FCL_GREEN, W
+06E8  6E42      	MOVWF CompTempVar2640
+06EA  6A26      	CLRF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1'
+06EC  3642      	RLCF CompTempVar2640, F
+06EE  3626      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+06F0  3642      	RLCF CompTempVar2640, F
+06F2  3626      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+06F4  3642      	RLCF CompTempVar2640, F
+06F6  3626      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+06F8  3642      	RLCF CompTempVar2640, F
+06FA  3626      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+06FC  3642      	RLCF CompTempVar2640, F
+06FE  3626      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+0700  0EE0      	MOVLW 0xE0
+0702  1642      	ANDWF CompTempVar2640, F
+0704  5042      	MOVF CompTempVar2640, W
+0706  1040      	IORWF FCD_0f051__0005C_1_FCL_BLUE, W
+0708  6E25      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000D
+
+	FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR = FCV_0f051_gLCD_EB076_4D1__FOREGROUND_COL_VAR | (FCL_RED << (6 + 5));
+070A  6A42      	CLRF CompTempVar2644
+070C  503E      	MOVF FCD_0f051__0005C_1_FCL_RED, W
+070E  6E43      	MOVWF CompTempVar2645
+0710  90D8      	BCF STATUS,C
+0712  3643      	RLCF CompTempVar2645, F
+0714  90D8      	BCF STATUS,C
+0716  3643      	RLCF CompTempVar2645, F
+0718  90D8      	BCF STATUS,C
+071A  3643      	RLCF CompTempVar2645, F
+071C  5042      	MOVF CompTempVar2644, W
+071E  1225      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000D, F
+0720  5043      	MOVF CompTempVar2645, W
+0722  1226      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000D+D'1', F
+
+	FCL_RED = 16777215 & 0xFF;
+0724  683E      	SETF FCD_0f051__0005C_1_FCL_RED
+
+	FCL_RED = FCL_RED >> (8 - 5);
+0726  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+0728  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+072A  323E      	RRCF FCD_0f051__0005C_1_FCL_RED, F
+072C  0E1F      	MOVLW 0x1F
+072E  163E      	ANDWF FCD_0f051__0005C_1_FCL_RED, F
+
+	FCL_GREEN = (16777215 >> 8) & 0xFF;
+0730  683F      	SETF FCD_0f051__0005C_1_FCL_GREEN
+
+	FCL_GREEN = FCL_GREEN >> (8 - 6);
+0732  323F      	RRCF FCD_0f051__0005C_1_FCL_GREEN, F
+0734  323F      	RRCF FCD_0f051__0005C_1_FCL_GREEN, F
+0736  0E3F      	MOVLW 0x3F
+0738  163F      	ANDWF FCD_0f051__0005C_1_FCL_GREEN, F
+
+	FCL_BLUE = (16777215 >> 16) & 0xFF;
+073A  6840      	SETF FCD_0f051__0005C_1_FCL_BLUE
+
+	FCL_BLUE = FCL_BLUE >> (8 - 5);
+073C  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+073E  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+0740  3240      	RRCF FCD_0f051__0005C_1_FCL_BLUE, F
+0742  0E1F      	MOVLW 0x1F
+0744  1640      	ANDWF FCD_0f051__0005C_1_FCL_BLUE, F
+
+	FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR = FCL_BLUE | (FCL_GREEN << 5);
+0746  503F      	MOVF FCD_0f051__0005C_1_FCL_GREEN, W
+0748  6E42      	MOVWF CompTempVar2651
+074A  6A24      	CLRF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1'
+074C  3642      	RLCF CompTempVar2651, F
+074E  3624      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+0750  3642      	RLCF CompTempVar2651, F
+0752  3624      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+0754  3642      	RLCF CompTempVar2651, F
+0756  3624      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+0758  3642      	RLCF CompTempVar2651, F
+075A  3624      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+075C  3642      	RLCF CompTempVar2651, F
+075E  3624      	RLCF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+0760  0EE0      	MOVLW 0xE0
+0762  1642      	ANDWF CompTempVar2651, F
+0764  5042      	MOVF CompTempVar2651, W
+0766  1040      	IORWF FCD_0f051__0005C_1_FCL_BLUE, W
+0768  6E23      	MOVWF gbl_FCV_0f051_gLCD_EB076_4_0000C
+
+	FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR = FCV_0f051_gLCD_EB076_4D1__BACKGROUND_COL_VAR | (FCL_RED << (6 + 5));
+076A  6A42      	CLRF CompTempVar2655
+076C  503E      	MOVF FCD_0f051__0005C_1_FCL_RED, W
+076E  6E43      	MOVWF CompTempVar2656
+0770  90D8      	BCF STATUS,C
+0772  3643      	RLCF CompTempVar2656, F
+0774  90D8      	BCF STATUS,C
+0776  3643      	RLCF CompTempVar2656, F
+0778  90D8      	BCF STATUS,C
+077A  3643      	RLCF CompTempVar2656, F
+077C  5042      	MOVF CompTempVar2655, W
+077E  1223      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000C, F
+0780  5043      	MOVF CompTempVar2656, W
+0782  1224      	IORWF gbl_FCV_0f051_gLCD_EB076_4_0000C+D'1', F
+
+
+	FCD_0f051_gLCD_EB076_4D1__ClearDisplay();
+0784  EC51F001  	CALL FCD_0f051__0005D
+
+
+	FC_CAL_UART_Receive_1(10);
+0788  0E0A      	MOVLW 0x0A
+078A  6E4C      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+078C  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+	FC_CAL_UART_Receive_1(10);
+0790  0E0A      	MOVLW 0x0A
+0792  6E4C      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+0794  EC4EF000  	CALL FC_CAL_UAR_0006D
+
+
+}
+0798  0012      	RETURN
+
+
+
+/*========================================================================*\
+   Use :panel
+       :Implémentations de la macro
+\*========================================================================*/
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_144()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 6
+		FCV_HITBOX = 6;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 16
+			FCV_HITBOX = 16;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 26
+				FCV_HITBOX = 26;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 36
+					FCV_HITBOX = 36;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 46
+						FCV_HITBOX = 46;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 56
+							FCV_HITBOX = 56;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 66
+								FCV_HITBOX = 66;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 76
+									FCV_HITBOX = 76;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 86
+										FCV_HITBOX = 86;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 96
+											FCV_HITBOX = 96;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_72()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 3
+		FCV_HITBOX = 3;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 13
+			FCV_HITBOX = 13;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 23
+				FCV_HITBOX = 23;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 33
+					FCV_HITBOX = 33;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// Calcul
+						// Calcul:
+						//  hitbox = 43
+						FCV_HITBOX = 43;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 53
+							FCV_HITBOX = 53;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 63
+								FCV_HITBOX = 63;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 73
+									FCV_HITBOX = 73;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 83
+										FCV_HITBOX = 83;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 93
+											FCV_HITBOX = 93;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_168()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 7
+		FCV_HITBOX = 7;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 17
+			FCV_HITBOX = 17;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 27
+				FCV_HITBOX = 27;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 37
+					FCV_HITBOX = 37;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 47
+						FCV_HITBOX = 47;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 57
+							FCV_HITBOX = 57;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 67
+								FCV_HITBOX = 67;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 77
+									FCV_HITBOX = 77;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 87
+										FCV_HITBOX = 87;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 97
+											FCV_HITBOX = 97;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_Initialisation()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::Initialise()
+	FCD_0f051_gLCD_EB076_4D1__Initialise();
+07AE  EC13F003  	CALL FCD_0f051__0005C
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::ClearDisplay()
+	FCD_0f051_gLCD_EB076_4D1__ClearDisplay();
+07B2  EC51F001  	CALL FCD_0f051__0005D
+
+
+	// lignes horizontales
+	// Appel d'une Macro: lignesH()
+	FCM_lignesH();
+07B6  ECF4F001  	CALL FCM_lignes_0005E
+
+
+	// Appel d'une Macro
+	// Appel d'une Macro: lignesV()
+	FCM_lignesV();
+07BA  EC71F001  	CALL FCM_lignes_0005F
+
+
+}
+07BE  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_Reinitialisation_tactile()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::G4D_DisableTouchscreenPicaso()
+	FCD_0f051_gLCD_EB076_4D1__G4D_DisableTouchscreenPicaso();
+079A  ECF6F002  	CALL FCD_0f051__00061
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::G4D_EnableTouchscreenPicaso()
+	FCD_0f051_gLCD_EB076_4D1__G4D_EnableTouchscreenPicaso();
+079E  ECC6F002  	CALL FCD_0f051__00062
+
+
+}
+07A2  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_96()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 4
+		FCV_HITBOX = 4;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 14
+			FCV_HITBOX = 14;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 24
+				FCV_HITBOX = 24;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 34
+					FCV_HITBOX = 34;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 44
+						FCV_HITBOX = 44;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 54
+							FCV_HITBOX = 54;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 64
+								FCV_HITBOX = 64;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 74
+									FCV_HITBOX = 74;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 84
+										FCV_HITBOX = 84;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 94
+											FCV_HITBOX = 94;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_Hitbox()
+{
+
+	// Décision
+	// Décision: X < 24?
+	if (FCV_X < 24)
+	{
+
+		// Appel d'une Macro
+		// Appel d'une Macro: X_24()
+		FCM_X_24();
+
+	} else {
+
+		// Décision
+		// Décision: X < 48?
+		if (FCV_X < 48)
+		{
+
+			// Appel d'une Macro
+			// Appel d'une Macro: X_48()
+			FCM_X_48();
+
+		} else {
+
+			// Décision
+			// Décision: X < 72?
+			if (FCV_X < 72)
+			{
+
+				// Appel d'une Macro
+				// Appel d'une Macro: X_72()
+				FCM_X_72();
+
+			} else {
+
+				// Décision
+				// Décision: X < 96?
+				if (FCV_X < 96)
+				{
+
+					// Appel d'une Macro
+					// Appel d'une Macro: X_96()
+					FCM_X_96();
+
+				} else {
+
+					// Décision
+					// Décision: X < 120?
+					if (FCV_X < 120)
+					{
+
+						// Appel d'une Macro
+						// Appel d'une Macro: X_120()
+						FCM_X_120();
+
+					} else {
+
+						// Décision
+						// Décision: X < 144?
+						if (FCV_X < 144)
+						{
+
+							// Appel d'une Macro
+							// Appel d'une Macro: X_144()
+							FCM_X_144();
+
+						} else {
+
+							// Décision
+							// Décision: X < 168?
+							if (FCV_X < 168)
+							{
+
+								// Appel d'une Macro
+								// Appel d'une Macro: X_168()
+								FCM_X_168();
+
+							} else {
+
+								// Décision
+								// Décision: X < 192?
+								if (FCV_X < 192)
+								{
+
+									// Appel d'une Macro
+									// Appel d'une Macro: X_192()
+									FCM_X_192();
+
+								} else {
+
+									// Décision
+									// Décision: X < 216?
+									if (FCV_X < 216)
+									{
+
+										// Appel d'une Macro
+										// Appel d'une Macro: X_216()
+										FCM_X_216();
+
+									} else {
+
+										// Décision
+										// Décision: X < 240?
+										if (FCV_X < 240)
+										{
+
+											// Appel d'une Macro
+											// Appel d'une Macro: X_240()
+											FCM_X_240();
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_lignesV()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(24, 0, 24, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(24, 0, 24, 240);
+02E2  0E18      	MOVLW 0x18
+02E4  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+02E6  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+02E8  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+02EA  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+02EC  0E18      	MOVLW 0x18
+02EE  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+02F0  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+02F2  0EF0      	MOVLW 0xF0
+02F4  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+02F6  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+02F8  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(48, 0, 48, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(48, 0, 48, 240);
+02FC  0E30      	MOVLW 0x30
+02FE  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+0300  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0302  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+0304  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0306  0E30      	MOVLW 0x30
+0308  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+030A  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+030C  0EF0      	MOVLW 0xF0
+030E  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0310  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0312  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(72, 0, 72, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(72, 0, 72, 240);
+0316  0E48      	MOVLW 0x48
+0318  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+031A  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+031C  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+031E  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0320  0E48      	MOVLW 0x48
+0322  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0324  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0326  0EF0      	MOVLW 0xF0
+0328  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+032A  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+032C  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(96, 0, 96, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(96, 0, 96, 240);
+0330  0E60      	MOVLW 0x60
+0332  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+0334  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0336  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+0338  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+033A  0E60      	MOVLW 0x60
+033C  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+033E  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0340  0EF0      	MOVLW 0xF0
+0342  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0344  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0346  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(120, 0, 120, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(120, 0, 120, 240);
+034A  0E78      	MOVLW 0x78
+034C  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+034E  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0350  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+0352  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0354  0E78      	MOVLW 0x78
+0356  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0358  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+035A  0EF0      	MOVLW 0xF0
+035C  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+035E  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0360  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(144, 0, 144, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(144, 0, 144, 240);
+0364  0E90      	MOVLW 0x90
+0366  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+0368  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+036A  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+036C  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+036E  0E90      	MOVLW 0x90
+0370  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0372  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0374  0EF0      	MOVLW 0xF0
+0376  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0378  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+037A  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(168, 0, 168, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(168, 0, 168, 240);
+037E  0EA8      	MOVLW 0xA8
+0380  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+0382  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0384  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+0386  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0388  0EA8      	MOVLW 0xA8
+038A  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+038C  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+038E  0EF0      	MOVLW 0xF0
+0390  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0392  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0394  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(192, 0, 192, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(192, 0, 192, 240);
+0398  0EC0      	MOVLW 0xC0
+039A  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+039C  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+039E  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+03A0  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+03A2  0EC0      	MOVLW 0xC0
+03A4  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+03A6  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+03A8  0EF0      	MOVLW 0xF0
+03AA  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+03AC  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+03AE  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(216, 0, 216, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(216, 0, 216, 240);
+03B2  0ED8      	MOVLW 0xD8
+03B4  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+03B6  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+03B8  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+03BA  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+03BC  0ED8      	MOVLW 0xD8
+03BE  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+03C0  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+03C2  0EF0      	MOVLW 0xF0
+03C4  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+03C6  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+03C8  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(240, 0, 240, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(240, 0, 240, 240);
+03CC  0EF0      	MOVLW 0xF0
+03CE  6E3E      	MOVWF FCD_0f051__00063_arg_FCL_X1
+03D0  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+03D2  6A40      	CLRF FCD_0f051__00063_arg_FCL_Y1
+03D4  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+03D6  0EF0      	MOVLW 0xF0
+03D8  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+03DA  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+03DC  0EF0      	MOVLW 0xF0
+03DE  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+03E0  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+03E2  EC09F001  	CALL FCD_0f051__00063
+
+
+}
+03E6  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_24()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 1
+		FCV_HITBOX = 1;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 11
+			FCV_HITBOX = 11;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 21
+				FCV_HITBOX = 21;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 31
+					FCV_HITBOX = 31;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 41
+						FCV_HITBOX = 41;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 51
+							FCV_HITBOX = 51;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 61
+								FCV_HITBOX = 61;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 71
+									FCV_HITBOX = 71;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 81
+										FCV_HITBOX = 81;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 91
+											FCV_HITBOX = 91;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_240()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 10
+		FCV_HITBOX = 10;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 20
+			FCV_HITBOX = 20;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 30
+				FCV_HITBOX = 30;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 40
+					FCV_HITBOX = 40;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 50
+						FCV_HITBOX = 50;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 60
+							FCV_HITBOX = 60;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 70
+								FCV_HITBOX = 70;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 80
+									FCV_HITBOX = 80;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 90
+										FCV_HITBOX = 90;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 100
+											FCV_HITBOX = 100;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_48()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 2
+		FCV_HITBOX = 2;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 12
+			FCV_HITBOX = 12;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 22
+				FCV_HITBOX = 22;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 32
+					FCV_HITBOX = 32;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// Calcul
+						// Calcul:
+						//  hitbox = 42
+						FCV_HITBOX = 42;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 52
+							FCV_HITBOX = 52;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 62
+								FCV_HITBOX = 62;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 72
+									FCV_HITBOX = 72;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 82
+										FCV_HITBOX = 82;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 92
+											FCV_HITBOX = 92;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_Appui_tactile()
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::ClearDisplay()
+	FCD_0f051_gLCD_EB076_4D1__ClearDisplay();
+
+	#if 0 // Disabled code
+	//Commentaire:
+	//Coordonnée pour X
+
+	#endif // #if 0: Disabled code
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: X=gLCD_EB076_4D1::G4D_ReadTouchCoordinatesPicaso(0)
+	FCV_X = FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(0);
+
+	#if 0 // Disabled code
+	//Commentaire:
+	//Coordonée pour Y
+
+	#endif // #if 0: Disabled code
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: Y=gLCD_EB076_4D1::G4D_ReadTouchCoordinatesPicaso(1)
+	FCV_Y = FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(1);
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::PrintNumber(X, 80, 150, 2, 1)
+	FCD_0f051_gLCD_EB076_4D1__PrintNumber(FCV_X, 80, 150, 2, 1);
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::PrintNumber(Y, 120, 150, 2, 1)
+	FCD_0f051_gLCD_EB076_4D1__PrintNumber(FCV_Y, 120, 150, 2, 1);
+
+	// Pause
+	// Pause: 2 s
+	FCI_DELAYBYTE_S(2);
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::ClearDisplay()
+	FCD_0f051_gLCD_EB076_4D1__ClearDisplay();
+
+	// Calcul
+	// Calcul:
+	//  Appui_Ecran = 0
+	//  X = 0
+	//  Y = 0
+	FCV_APPUI_ECRAN = 0;
+	FCV_X = 0;
+	FCV_Y = 0;
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_Recuperation_coordonees()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: Appui_Ecran=gLCD_EB076_4D1::G4D_GetTouchCoordinatesPicaso()
+	FCV_APPUI_ECRAN = FCD_0f051_gLCD_EB076_4D1__G4D_GetTouchCoordinatesPicaso();
+07A4  EC77F002  	CALL FCD_0f051__00069
+07A8  5040      	MOVF CompTempVarRet2677, W
+07AA  6E34      	MOVWF gbl_FCV_APPUI_ECRAN
+
+
+}
+07AC  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_lignesH()
+
+{
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 24, 240, 24)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 24, 240, 24);
+03E8  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+03EA  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+03EC  0E18      	MOVLW 0x18
+03EE  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+03F0  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+03F2  0EF0      	MOVLW 0xF0
+03F4  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+03F6  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+03F8  0E18      	MOVLW 0x18
+03FA  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+03FC  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+03FE  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 48, 240, 48)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 48, 240, 48);
+0402  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+0404  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0406  0E30      	MOVLW 0x30
+0408  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+040A  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+040C  0EF0      	MOVLW 0xF0
+040E  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0410  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0412  0E30      	MOVLW 0x30
+0414  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0416  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0418  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 72, 240, 72)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 72, 240, 72);
+041C  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+041E  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0420  0E48      	MOVLW 0x48
+0422  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+0424  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0426  0EF0      	MOVLW 0xF0
+0428  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+042A  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+042C  0E48      	MOVLW 0x48
+042E  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0430  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0432  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 96, 240, 96)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 96, 240, 96);
+0436  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+0438  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+043A  0E60      	MOVLW 0x60
+043C  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+043E  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0440  0EF0      	MOVLW 0xF0
+0442  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0444  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0446  0E60      	MOVLW 0x60
+0448  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+044A  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+044C  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 120, 240, 120)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 120, 240, 120);
+0450  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+0452  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0454  0E78      	MOVLW 0x78
+0456  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+0458  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+045A  0EF0      	MOVLW 0xF0
+045C  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+045E  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0460  0E78      	MOVLW 0x78
+0462  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0464  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0466  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 144, 240, 144)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 144, 240, 144);
+046A  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+046C  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+046E  0E90      	MOVLW 0x90
+0470  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+0472  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+0474  0EF0      	MOVLW 0xF0
+0476  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0478  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+047A  0E90      	MOVLW 0x90
+047C  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+047E  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+0480  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 168, 240, 168)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 168, 240, 168);
+0484  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+0486  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+0488  0EA8      	MOVLW 0xA8
+048A  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+048C  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+048E  0EF0      	MOVLW 0xF0
+0490  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+0492  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+0494  0EA8      	MOVLW 0xA8
+0496  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+0498  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+049A  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 192, 240, 192)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 192, 240, 192);
+049E  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+04A0  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+04A2  0EC0      	MOVLW 0xC0
+04A4  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+04A6  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+04A8  0EF0      	MOVLW 0xF0
+04AA  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+04AC  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+04AE  0EC0      	MOVLW 0xC0
+04B0  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+04B2  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+04B4  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 216, 240, 216)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 216, 240, 216);
+04B8  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+04BA  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+04BC  0ED8      	MOVLW 0xD8
+04BE  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+04C0  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+04C2  0EF0      	MOVLW 0xF0
+04C4  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+04C6  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+04C8  0ED8      	MOVLW 0xD8
+04CA  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+04CC  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+04CE  EC09F001  	CALL FCD_0f051__00063
+
+
+	// Appel de la Routine Composant
+	// Appel de la Routine Composant: gLCD_EB076_4D1::DrawLine(0, 240, 240, 240)
+	FCD_0f051_gLCD_EB076_4D1__DrawLine(0, 240, 240, 240);
+04D2  6A3E      	CLRF FCD_0f051__00063_arg_FCL_X1
+04D4  6A3F      	CLRF FCD_0f051__00063_arg_FCL_X1+D'1'
+04D6  0EF0      	MOVLW 0xF0
+04D8  6E40      	MOVWF FCD_0f051__00063_arg_FCL_Y1
+04DA  6A41      	CLRF FCD_0f051__00063_arg_FCL_Y1+D'1'
+04DC  0EF0      	MOVLW 0xF0
+04DE  6E42      	MOVWF FCD_0f051__00063_arg_FCL_X2
+04E0  6A43      	CLRF FCD_0f051__00063_arg_FCL_X2+D'1'
+04E2  0EF0      	MOVLW 0xF0
+04E4  6E44      	MOVWF FCD_0f051__00063_arg_FCL_Y2
+04E6  6A45      	CLRF FCD_0f051__00063_arg_FCL_Y2+D'1'
+04E8  EC09F001  	CALL FCD_0f051__00063
+
+
+}
+04EC  0012      	RETURN
+
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_192()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 8
+		FCV_HITBOX = 8;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 18
+			FCV_HITBOX = 18;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 28
+				FCV_HITBOX = 28;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 38
+					FCV_HITBOX = 38;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 48
+						FCV_HITBOX = 48;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 58
+							FCV_HITBOX = 58;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 68
+								FCV_HITBOX = 68;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 78
+									FCV_HITBOX = 78;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 88
+										FCV_HITBOX = 88;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 98
+											FCV_HITBOX = 98;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_120()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 5
+		FCV_HITBOX = 5;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 15
+			FCV_HITBOX = 15;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 25
+				FCV_HITBOX = 25;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 35
+					FCV_HITBOX = 35;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 45
+						FCV_HITBOX = 45;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 55
+							FCV_HITBOX = 55;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 65
+								FCV_HITBOX = 65;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 75
+									FCV_HITBOX = 75;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 85
+										FCV_HITBOX = 85;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 95
+											FCV_HITBOX = 95;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+/*=----------------------------------------------------------------------=*\
+   Use :
+\*=----------------------------------------------------------------------=*/
+void FCM_X_216()
+{
+
+	// Décision
+	// Décision: Y < 24?
+	if (FCV_Y < 24)
+	{
+
+		// Calcul
+		// Calcul:
+		//  hitbox = 9
+		FCV_HITBOX = 9;
+
+	} else {
+
+		// Décision
+		// Décision: Y < 48?
+		if (FCV_Y < 48)
+		{
+
+			// Calcul
+			// Calcul:
+			//  hitbox = 19
+			FCV_HITBOX = 19;
+
+		} else {
+
+			// Décision
+			// Décision: Y < 72?
+			if (FCV_Y < 72)
+			{
+
+				// Calcul
+				// Calcul:
+				//  hitbox = 29
+				FCV_HITBOX = 29;
+
+			} else {
+
+				// Décision
+				// Décision: Y < 96?
+				if (FCV_Y < 96)
+				{
+
+					// Calcul
+					// Calcul:
+					//  hitbox = 39
+					FCV_HITBOX = 39;
+
+				} else {
+
+					// Décision
+					// Décision: Y < 120?
+					if (FCV_Y < 120)
+					{
+
+						// 
+						// Calcul:
+						//  hitbox = 49
+						FCV_HITBOX = 49;
+
+					} else {
+
+						// Décision
+						// Décision: Y < 144?
+						if (FCV_Y < 144)
+						{
+
+							// Calcul
+							// Calcul:
+							//  hitbox = 59
+							FCV_HITBOX = 59;
+
+						} else {
+
+							// Décision
+							// Décision: Y < 168?
+							if (FCV_Y < 168)
+							{
+
+								// Calcul
+								// Calcul:
+								//  hitbox = 69
+								FCV_HITBOX = 69;
+
+							} else {
+
+								// Décision
+								// Décision: Y < 192?
+								if (FCV_Y < 192)
+								{
+
+									// Calcul
+									// Calcul:
+									//  hitbox = 79
+									FCV_HITBOX = 79;
+
+								} else {
+
+									// Décision
+									// Décision: Y < 216?
+									if (FCV_Y < 216)
+									{
+
+										// Calcul
+										// Calcul:
+										//  hitbox = 89
+										FCV_HITBOX = 89;
+
+									} else {
+
+										// Décision
+										// Décision: Y < 240?
+										if (FCV_Y < 240)
+										{
+
+											// Calcul
+											// Calcul:
+											//  hitbox = 99
+											FCV_HITBOX = 99;
+
+										// } else {
+
+										}
+
+									}
+
+								}
+
+							}
+
+						}
+
+					}
+
+				}
+
+			}
+
+		}
+
+	}
+
+}
+
+
+
+/*========================================================================*\
+   Use :Principale
+\*========================================================================*/
+void main()
+
+{
+adcon1 = 0x0F;
+0948  0E0F      	MOVLW 0x0F
+094A  6EC1      	MOVWF gbl_adcon1
+
+
+
+
+
+	// Appel d'une Macro
+	// Appel d'une Macro: Initialisation()
+	FCM_Initialisation();
+094C  ECD7F003  	CALL FCM_Initia_0005B
+
+
+	// Boucle
+	// Boucle: While 1
+	while (1)
+0950            label43
+09B2  D7CE      	BRA	label43
+
+	{
+
+		// Appel d'une Macro
+		// Appel d'une Macro: Reinitialisation_tactile()
+		FCM_Reinitialisation_tactile();
+0950  ECCDF003  	CALL FCM_Reinit_00060
+
+
+		// Boucle
+		// Boucle: While Appui_Ecran = 0
+		while (FCV_APPUI_ECRAN == 0)
+0954            label44
+0954  5234      	MOVF gbl_FCV_APPUI_ECRAN, F
+0956  E103      	BNZ	label45
+095C  D7FB      	BRA	label44
+095E            label45
+
+		{
+
+			// Appel d'une Macro
+			// Appel d'une Macro: Recuperation_coordonees()
+			FCM_Recuperation_coordonees();
+0958  ECD2F003  	CALL FCM_Recupe_00068
+
+
+
+		}
+
+		// Appel de la Routine Composant
+		// Appel de la Routine Composant: X=gLCD_EB076_4D1::G4D_ReadTouchCoordinatesPicaso(X)
+		FCV_X = FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(FCV_X);
+095E  5021      	MOVF gbl_FCV_X, W
+0960  6E3E      	MOVWF FCD_0f051__00065_arg_FCL_AXIS
+0962  EC83F004  	CALL FCD_0f051__00065
+0966  5041      	MOVF CompTempVarRet2673, W
+0968  6E21      	MOVWF gbl_FCV_X
+096A  5042      	MOVF CompTempVarRet2673+D'1', W
+096C  6E22      	MOVWF gbl_FCV_X+D'1'
+
+
+		// Appel de la Routine Composant
+		// Appel de la Routine Composant: Y=gLCD_EB076_4D1::G4D_ReadTouchCoordinatesPicaso(Y)
+		FCV_Y = FCD_0f051_gLCD_EB076_4D1__G4D_ReadTouchCoordinatesPicaso(FCV_Y);
+096E  501F      	MOVF gbl_FCV_Y, W
+0970  6E3E      	MOVWF FCD_0f051__00065_arg_FCL_AXIS
+0972  EC83F004  	CALL FCD_0f051__00065
+0976  5041      	MOVF CompTempVarRet2673, W
+0978  6E1F      	MOVWF gbl_FCV_Y
+097A  5042      	MOVF CompTempVarRet2673+D'1', W
+097C  6E20      	MOVWF gbl_FCV_Y+D'1'
+
+
+		// Décision
+		// Décision: Appui_Ecran >= 1?
+		if (FCV_APPUI_ECRAN >= 1)
+097E  0E01      	MOVLW 0x01
+0980  6034      	CPFSLT gbl_FCV_APPUI_ECRAN
+0982  D001      	BRA	label46
+0984  D011      	BRA	label47
+0986            label46
+09A8            label47
+
+		{
+
+			// Appel de la Routine Composant
+			// Appel de la Routine Composant: gLCD_EB076_4D1::DrawRectangle(1, 1, 23, 23, 0, 1)
+			FCD_0f051_gLCD_EB076_4D1__DrawRectangle(1, 1, 23, 23, 0, 1);
+0986  0E01      	MOVLW 0x01
+0988  6E3E      	MOVWF FCD_0f051__000A1_arg_FCL_X1
+098A  6A3F      	CLRF FCD_0f051__000A1_arg_FCL_X1+D'1'
+098C  0E01      	MOVLW 0x01
+098E  6E40      	MOVWF FCD_0f051__000A1_arg_FCL_Y1
+0990  6A41      	CLRF FCD_0f051__000A1_arg_FCL_Y1+D'1'
+0992  0E17      	MOVLW 0x17
+0994  6E42      	MOVWF FCD_0f051__000A1_arg_FCL_X2
+0996  6A43      	CLRF FCD_0f051__000A1_arg_FCL_X2+D'1'
+0998  0E17      	MOVLW 0x17
+099A  6E44      	MOVWF FCD_0f051__000A1_arg_FCL_Y2
+099C  6A45      	CLRF FCD_0f051__000A1_arg_FCL_Y2+D'1'
+099E  6A46      	CLRF FCD_0f051__000A1_arg_FCL_T_000A2
+09A0  0E01      	MOVLW 0x01
+09A2  6E47      	MOVWF FCD_0f051__000A1_arg_FCL_SOLID
+09A4  ECE0F003  	CALL FCD_0f051__000A1
+
+
+			#if 0 // Disabled code
+			// Appel d'une Macro
+			// Appel d'une Macro: Hitbox()
+			FCM_Hitbox();
+
+			#endif // #if 0: Disabled code
+		// } else {
+
+		}
+
+		// Pause
+		// Pause: 2 s
+		FCI_DELAYBYTE_S(2);
+09A8  0E02      	MOVLW 0x02
+09AA  6E42      	MOVWF delay_s_00000_arg_del
+09AC  EC33F000  	CALL delay_s_00000
+
+
+		// Calcul
+		// Calcul:
+		//  Appui_Ecran = 0
+		FCV_APPUI_ECRAN = 0;
+09B0  6A34      	CLRF gbl_FCV_APPUI_ECRAN
+
+
+
+	}
+
+	mainendloop: goto mainendloop;
+}
+
+
+
+
+/*========================================================================*\
+   Use :Interruption
+\*========================================================================*/
+void MX_INTERRUPT_MACRO(void)
+
+{
+
+}
+0A28  CFEAF001  	MOVFF FSR0H,  Int1Context
+0A2C  CFE9F002  	MOVFF FSR0L,  Int1Context+D'1'
+0A30  CFF4F003  	MOVFF PRODH,  Int1Context+D'2'
+0A34  CFF3F004  	MOVFF PRODL,  Int1Context+D'3'
+0A38  C004FFF3  	MOVFF Int1Context+D'3',  PRODL
+0A3C  C003FFF4  	MOVFF Int1Context+D'2',  PRODH
+0A40  C002FFE9  	MOVFF Int1Context+D'1',  FSR0L
+0A44  C001FFEA  	MOVFF Int1Context,  FSR0H
+0A48  0011      	RETFIE 1
+
+
+
+
+
+
+/*********************************************************************
+ *                  Flowcode CAL UART File
+ *
+ * File: PIC_CAL_UART.c
+ *
+ * (c) 2011 Matrix Multimedia Ltd.
+ * http://www.matrixmultimedia.com
+ *
+ * Software License Agreement
+ *
+ * The software supplied herewith by Matrix Multimedia Ltd (the
+ * “Company”) for its Flowcode graphical programming language is
+ * intended and supplied to you, the Company’s customer, for use
+ * solely and exclusively on the Company's products. The software
+ * is owned by the Company, and is protected under applicable
+ * copyright laws. All rights are reserved. Any use in violation
+ * of the foregoing restrictions may subject the user to criminal
+ * sanctions under applicable laws, as well as to civil liability
+ * for the breach of the terms and conditions of this licence.
+ *
+ * THIS SOFTWARE IS PROVIDED IN AN “AS IS” CONDITION. NO WARRANTIES,
+ * WHETHER EXPRESS, IMPLIED OR STATUTORY, INCLUDING, BUT NOT LIMITED
+ * TO, IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A
+ * PARTICULAR PURPOSE APPLY TO THIS SOFTWARE. THE COMPANY SHALL NOT,
+ * IN ANY CIRCUMSTANCES, BE LIABLE FOR SPECIAL, INCIDENTAL OR
+ * CONSEQUENTIAL DAMAGES, FOR ANY REASON WHATSOEVER.
+ *
+ * Changelog:
+ *
+ *  date  | by | description
+ * -------+----+-----------------------------------------------------
+ * 010911 | BR | Created
+ * 020911 | BR | Updated variables with typedef alternatives
+ * 011211 | BR | Converted to new dynamic defines mechanism
+ * 160112 | BR | Fixed issues with rx return type and low bauds on fast devices
+ * 020212 | ST | Added <MX_UART_2_PIE4> routing to account for differences in 16F and 18F devices with 2 UARTs
+ * 270212 | BR | Fixed a bug in the receive functionality
+ * 280212 | BR | Sorted out auto echo functionality
+ * 160412 | BR | Addition of HW change baud function
+ * 100912 | BR | Minor bug fix for UART 2 where pir3 was referenced instead of definition
+ * 240413 | LM | Fixed typo re PORT_1 -> PORT_X for Software UART
+ * 030713 | LM | Standard API calls
+ * 220713 | LM | Remappable registers to lower case (for @ defs)
+ * 300914 | BR | Tried to make the baud calculation a bit more reliable for higher speed bauds at odd crystal frequencies
+ * 161014 | LM | Register redefinitions (for PIC18F24K50)
+ */
+
+
+#if (!defined(BAUDCON) && defined(BAUDCON1))
+	#define baudcon baudcon1
+#endif
+#if (!defined(RCSTA) && defined(RCSTA1))
+	#define rcsta rcsta1
+#endif
+#if (!defined(SPBRG) && defined(SPBRG1))
+	#define spbrg spbrg1
+#endif
+#if (!defined(SPBRGH) && defined(SPBRGH1))
+	#define spbrgh spbrgh1
+#endif
+#if (!defined(TXREG) && defined(TXREG1))
+	#define txreg txreg1
+#endif
+#if (!defined(RCREG) && defined(RCREG1))
+	#define rcreg rcreg1
+#endif
+#if (!defined(TXSTA) && defined(TXSTA1))
+	#define txsta txsta1
+#endif
+
+#ifndef MX_UART_SW_DEFS
+	#define MX_UART_SW_DEFS
+
+	#ifdef _BOOSTC
+		#define INST_COUNT	45	//65 for lower speeds or 40 for higher speeds.
+	#endif
+	#ifdef HI_TECH_C
+		#define INST_COUNT	315
+	#endif
+
+	//Work out number of nops for software baud rate
+	#define MX_INSTRUCTION_SPEED 	(MX_CLK_SPEED / 4)
+	#define MX_OVERHEAD				(MX_INSTRUCTION_SPEED / INST_COUNT)
+	#define SW_OFFSET				(1000000 / MX_OVERHEAD)
+
+#endif
+
+ #if defined(MX_UART_CHANNEL_1) && (MX_UART_NUM==1)
+	#if (MX_UART_CHANNEL_1 == 0)
+
+		#define MX_SOFT_BAUD_1 (1000000 / MX_UART_BAUD_1) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_1 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_1	1
+		#define MX_HARD_BAUD_1	(((MX_CLK_SPEED / MX_UART_BAUD_1) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_1	0
+
+		#if (MX_HARD_BAUD_1 > 255)
+			#undef MX_HARD_BAUD_1
+			#undef MX_HARD_SLOW_1
+			#define MX_HARD_BAUD_1	(((MX_CLK_SPEED / MX_UART_BAUD_1) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_1	1
+
+			#if (MX_HARD_BAUD_1 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+
+	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_2) && (MX_UART_NUM==2)
+	#if (MX_UART_CHANNEL_2 == 0)
+
+		#define MX_SOFT_BAUD_2 (1000000 / MX_UART_BAUD_2) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_2 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_2	1
+		#define MX_HARD_BAUD_2	(((MX_CLK_SPEED / MX_UART_BAUD_2) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_2	0
+
+		#if (MX_HARD_BAUD_2 > 255)
+			#undef MX_HARD_BAUD_2
+			#undef MX_HARD_SLOW_2
+			#define MX_HARD_BAUD_2	(((MX_CLK_SPEED / MX_UART_BAUD_2) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_2	1
+
+			#if (MX_HARD_BAUD_2 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+		#endif
+ 	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_3) && (MX_UART_NUM==3)
+	#if (MX_UART_CHANNEL_3 == 0)
+
+		#define MX_SOFT_BAUD_3 (1000000 / MX_UART_BAUD_3) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_3 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_3	1
+		#define MX_HARD_BAUD_3	(((MX_CLK_SPEED / MX_UART_BAUD_3) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_3	0
+
+		#if (MX_HARD_BAUD_3 > 255)
+			#undef MX_HARD_BAUD_3
+			#undef MX_HARD_SLOW_3
+			#define MX_HARD_BAUD_3	(((MX_CLK_SPEED / MX_UART_BAUD_3) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_3	1
+
+			#if (MX_HARD_BAUD_3 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+	#endif
+ #endif
+ #if defined(MX_UART_CHANNEL_4) && (MX_UART_NUM==4)
+	#if (MX_UART_CHANNEL_4 == 0)
+
+		#define MX_SOFT_BAUD_4 (1000000 / MX_UART_BAUD_4) - SW_OFFSET
+
+		#if (MX_SOFT_BAUD_4 < 1)
+			#error "Software UART Baud Rate Not Available At This Clock Speed"
+		#endif
+
+	#else
+		#define MX_SOFT_BAUD_4	1
+		#define MX_HARD_BAUD_4	(((MX_CLK_SPEED / MX_UART_BAUD_4) - 8) / 16)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_4	0
+
+		#if (MX_HARD_BAUD_4 > 255)
+			#undef MX_HARD_BAUD_4
+			#undef MX_HARD_SLOW_4
+			#define MX_HARD_BAUD_4	(((MX_CLK_SPEED / MX_UART_BAUD_4) - 8)	/ 64)		//Was - 16 but had issues with rounding down
+			#define MX_HARD_SLOW_4	1
+
+			#if (MX_HARD_BAUD_4 > 255)
+				#warning "The baud rate you have entered cannot be reached (too slow for crystal speed)"
+			#endif
+
+		#endif
+	#endif
+ #endif
+
+
+//Hardware Baud update definitions
+#ifndef MX_HARD_BAUD_CHANGE_DEFS
+	#define MX_HARD_BAUD_CHANGE_DEFS
+
+	#define MX_HARD_BAUD_1200	(((MX_CLK_SPEED / 1200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_1200 > 255)
+		#undef MX_HARD_BAUD_1200
+		#define MX_HARD_BAUD_1200	(((MX_CLK_SPEED / 1200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_1200	1
+	#else
+		#define MX_HARD_SLOW_1200	0
+	#endif
+
+	#define MX_HARD_BAUD_2400	(((MX_CLK_SPEED / 2400) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_2400 > 255)
+		#undef MX_HARD_BAUD_2400
+		#define MX_HARD_BAUD_2400	(((MX_CLK_SPEED / 2400) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_2400	1
+	#else
+		#define MX_HARD_SLOW_2400	0
+	#endif
+
+	#define MX_HARD_BAUD_4800	(((MX_CLK_SPEED / 4800) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_4800 > 255)
+		#undef MX_HARD_BAUD_4800
+		#define MX_HARD_BAUD_4800	(((MX_CLK_SPEED / 4800) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_4800	1
+	#else
+		#define MX_HARD_SLOW_4800	0
+	#endif
+
+	#define MX_HARD_BAUD_9600	(((MX_CLK_SPEED / 9600) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_9600 > 255)
+		#undef MX_HARD_BAUD_9600
+		#define MX_HARD_BAUD_9600	(((MX_CLK_SPEED / 9600) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_9600	1
+	#else
+		#define MX_HARD_SLOW_9600	0
+	#endif
+
+	#define MX_HARD_BAUD_19200	(((MX_CLK_SPEED / 19200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_19200 > 255)
+		#undef MX_HARD_BAUD_19200
+		#define MX_HARD_BAUD_19200	(((MX_CLK_SPEED / 19200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_19200	1
+	#else
+		#define MX_HARD_SLOW_19200	0
+	#endif
+
+	#define MX_HARD_BAUD_38400	(((MX_CLK_SPEED / 38400) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_38400 > 255)
+		#undef MX_HARD_BAUD_38400
+		#define MX_HARD_BAUD_38400	(((MX_CLK_SPEED / 38400) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_38400	1
+	#else
+		#define MX_HARD_SLOW_38400	0
+	#endif
+
+	#define MX_HARD_BAUD_57600	(((MX_CLK_SPEED / 57600) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_57600 > 255)
+		#undef MX_HARD_BAUD_57600
+		#define MX_HARD_BAUD_57600	(((MX_CLK_SPEED / 57600) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_57600	1
+	#else
+		#define MX_HARD_SLOW_57600	0
+	#endif
+
+	#define MX_HARD_BAUD_115200	(((MX_CLK_SPEED / 115200) - 8) / 16)		//Was - 16 but had issues with rounding down
+	#if (MX_HARD_BAUD_115200 > 255)
+		#undef MX_HARD_BAUD_115200
+		#define MX_HARD_BAUD_115200	(((MX_CLK_SPEED / 115200) - 8) / 64)		//Was - 16 but had issues with rounding down
+		#define MX_HARD_SLOW_115200	1
+	#else
+		#define MX_HARD_SLOW_115200	0
+	#endif
+#endif
+
+#define MX_RECEIVE_DELAY 	(MX_CLK_SPEED / 400000)
+
+
+//Dynamic function naming based on defines and index number
+#define MX_UART_CHANNEL_X	CAL_APPEND(MX_UART_CHANNEL_, MX_UART_NUM)
+#define MX_UART_TX_PIN_X	CAL_APPEND(MX_UART_TX_PIN_, MX_UART_NUM)
+#define MX_UART_TX_PORT_X	CAL_APPEND(MX_UART_TX_PORT_, MX_UART_NUM)
+#define MX_UART_TX_TRIS_X	CAL_APPEND(MX_UART_TX_TRIS_, MX_UART_NUM)
+#define MX_UART_RX_PIN_X	CAL_APPEND(MX_UART_RX_PIN_, MX_UART_NUM)
+#define MX_UART_RX_PORT_X	CAL_APPEND(MX_UART_RX_PORT_, MX_UART_NUM)
+#define MX_UART_RX_TRIS_X	CAL_APPEND(MX_UART_RX_TRIS_, MX_UART_NUM)
+#define MX_UART_FLOWEN_X	CAL_APPEND(MX_UART_FLOWEN_, MX_UART_NUM)
+#define MX_UART_CTS_PIN_X	CAL_APPEND(MX_UART_CTS_PIN_, MX_UART_NUM)
+#define MX_UART_CTS_PORT_X	CAL_APPEND(MX_UART_CTS_PORT_, MX_UART_NUM)
+#define MX_UART_CTS_TRIS_X	CAL_APPEND(MX_UART_CTS_TRIS_, MX_UART_NUM)
+#define MX_UART_RTS_PIN_X	CAL_APPEND(MX_UART_RTS_PIN_, MX_UART_NUM)
+#define MX_UART_RTS_PORT_X	CAL_APPEND(MX_UART_RTS_PORT_, MX_UART_NUM)
+#define MX_UART_RTS_TRIS_X	CAL_APPEND(MX_UART_RTS_TRIS_, MX_UART_NUM)
+#define MX_UART_DBITS_X		CAL_APPEND(MX_UART_DBITS_, MX_UART_NUM)
+#define MX_UART_RETURN_X	CAL_APPEND(MX_UART_RETURN_, MX_UART_NUM)
+#define MX_UART_ECHO_X		CAL_APPEND(MX_UART_ECHO_, MX_UART_NUM)
+#define MX_UART_INT_X		CAL_APPEND(MX_UART_INT_, MX_UART_NUM)
+#define MX_UART_BAUD_X		CAL_APPEND(MX_HARD_BAUD_, MX_UART_NUM)
+#define MX_SOFT_BAUD_X		CAL_APPEND(MX_SOFT_BAUD_, MX_UART_NUM)
+#define MX_HARD_SLOW_X		CAL_APPEND(MX_HARD_SLOW_, MX_UART_NUM)
+
+#define UART_Delay_CAL		CAL_APPEND(FC_CAL_UART_Delay_, MX_UART_NUM)
+#define UART_Send			CAL_APPEND(FC_CAL_UART_Send_, MX_UART_NUM)
+#define UART_Uninit			CAL_APPEND(FC_CAL_UART_Uninit_, MX_UART_NUM)
+
+
+//Component Definitions
+#define UART_STATUS_LOOP	0
+#define UART_STATUS_TIMEOUT	1
+#define UART_STATUS_RXBYTE	2
+
+
+//Interrupt Definitions
+#ifdef MX_UART_2_PIE4
+  #define MX_UART2_PIE pie4
+  #define MX_UART2_PIR pir4
+  #define MX_UART2_TXSTA tx2sta
+  #define MX_UART2_RCSTA rc2sta
+  #define MX_UART2_TXREG tx2reg
+  #define MX_UART2_RCREG rc2reg
+#else
+  #define MX_UART2_PIE pie3
+  #define MX_UART2_PIR pir3
+  #define MX_UART2_TXSTA txsta2
+  #define MX_UART2_RCSTA rcsta2
+  #define MX_UART2_TXREG txreg2
+  #define MX_UART2_RCREG rcreg2
+#endif
+
+#if (MX_UART_INT_X == 1)
+
+	#ifndef MX_UART_INT_DEFS
+	#define MX_UART_INT_DEFS
+
+		#define MX_UART_INT_CH1_FUNC
+		#define MX_UART_INT_CH2_FUNC
+		#define MX_UART_INT_FUNC_END
+
+		#define MX_UART_INT_CH1_DET		ts_bit(pir1, RCIF) && ts_bit(pie1, RCIE)
+		#define MX_UART_INT_CH2_DET		ts_bit(MX_UART2_PIR, RC2IF) && ts_bit(MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_EN		st_bit (pie1, RCIE)
+		#define MX_UART_INT_CH2_EN		st_bit (MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_DIS		cr_bit (pie1, RCIE)
+		#define MX_UART_INT_CH2_DIS		cr_bit (MX_UART2_PIE, RC2IE)
+
+		#define MX_UART_INT_CH1_CLR		cr_bit (pir1, RCIF)
+		#define MX_UART_INT_CH2_CLR		cr_bit (MX_UART2_PIR, RC2IF)
+
+	#endif
+#endif
+
+
+//Function Prototypes
+CALFUNCTION(void, FC_CAL_UART_Init_, (void));
+CALFUNCTION(void, FC_CAL_UART_Uninit_, (void));
+CALFUNCTION(void, FC_CAL_UART_Send_, (MX_UINT16 nChar));
+CALFUNCTION(MX_SINT16, FC_CAL_UART_Receive_, (MX_UINT8 nTimeout));
+CALFUNCTION(void, FC_CAL_UART_Delay_, (void));
+CALFUNCTION(void, FC_CAL_UART_UpdateBaud_, (MX_UINT8 new_baud));
+
+
+//Peripheral Functions
+CALFUNCTION(void, FC_CAL_UART_Init_, (void))
+
+{
+
+	#if (MX_UART_CHANNEL_X == 0)
+		FC_CAL_Bit_In_DDR 	(MX_UART_RX_PORT_X, MX_UART_RX_TRIS_X, MX_UART_RX_PIN_X);		// Receive pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_TX_PORT_X, MX_UART_TX_TRIS_X, MX_UART_TX_PIN_X);		// Transmit pin is default high
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+
+		  #ifdef MX_UART_1_REMAPPABLE
+			MX_UART_1_TX_RPOR = MX_UART_1_TX_UTX;
+			MX_UART_1_RX_RPINR = MX_UART_1_RX_RP;
+		  #endif
+
+		  #if (MX_HARD_SLOW_X == 1)
+			cr_bit(txsta, BRGH);						//Low Speed
+		  #else
+			st_bit(txsta, BRGH);						//High Speed
+0140  84AC      	BSF gbl_txsta,2
+
+		  #endif
+			spbrg = MX_UART_BAUD_X;   					// set the baud rate
+0142  0E7F      	MOVLW 0x7F
+0144  6EAF      	MOVWF gbl_spbrg
+
+			rcsta = 0;                    				// 8-bit, disabled
+0146  6AAB      	CLRF gbl_rcsta
+
+
+			#if(MX_UART_DBITS_X == 9)
+				st_bit(txsta, TX9);   					// 9-bit TX
+				st_bit(rcsta, RX9);                    	// 9-bit RX
+			#endif
+
+			st_bit(rcsta, SPEN);         				// turn on serial interface
+0148  8EAB      	BSF gbl_rcsta,7
+
+			st_bit(txsta, TXEN);
+014A  8AAC      	BSF gbl_txsta,5
+
+			st_bit(rcsta, CREN);
+014C  88AB      	BSF gbl_rcsta,4
+
+
+			#if (MX_UART_INT_X == 1)
+				MX_UART_INT_CH1_EN;
+				st_bit(intcon, PEIE);
+				st_bit(intcon, GIE);
+			#else
+				cr_bit (pie1, RCIE);
+014E  9A9D      	BCF gbl_pie1,5
+
+			#endif
+
+	#endif
+
+
+	#if (MX_UART_CHANNEL_X == 2)
+
+		  #ifdef MX_UART_2_REMAPPABLE
+			MX_UART_2_TX_RPOR = MX_UART_2_TX_UTX;
+			MX_UART_2_RX_RPINR = MX_UART_2_RX_RP;
+		  #endif
+
+		  #if (MX_HARD_SLOW_X == 1)
+			cr_bit(MX_UART2_TXSTA, BRGH);				//Low Speed
+		  #else
+			st_bit(MX_UART2_TXSTA, BRGH);				//High Speed
+		  #endif
+
+			spbrg2 = MX_UART_BAUD_X;   					// set the baud rate
+			MX_UART2_RCSTA = 0;                    		// 8-bit, disabled
+
+			#if(MX_UART_DBITS_X == 9)
+				st_bit(MX_UART2_TXSTA, TX9);   			// 9-bit TX
+				st_bit(MX_UART2_RCSTA, RX9);            // 9-bit RX
+			#endif
+
+			st_bit(MX_UART2_RCSTA, SPEN);         		// turn on serial interface
+			st_bit(MX_UART2_TXSTA, TXEN);
+			st_bit(MX_UART2_RCSTA, CREN);
+
+			#if (MX_UART_INT_X == 1)
+				MX_UART_INT_CH2_EN;
+				st_bit(intcon, PEIE);
+				st_bit(intcon, GIE);
+			#else
+				cr_bit (MX_UART2_PIE, RC2IE);
+			#endif
+
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)						//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);	// CTS pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);	// RTS not ready to accept data
+	#endif
+
+}
+0150  0012      	RETURN
+
+
+
+
+CALFUNCTION(void, FC_CAL_UART_Uninit_, (void))
+
+{
+
+	#if (MX_UART_CHANNEL_X == 0)
+		FC_CAL_Bit_In_DDR (MX_UART_RX_PORT_X, MX_UART_RX_TRIS_X, MX_UART_RX_PIN_X);		// Receive pin is a input
+		FC_CAL_Bit_In_DDR (MX_UART_TX_PORT_X, MX_UART_TX_TRIS_X, MX_UART_TX_PIN_X);		// Transmit pin is default high
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+			rcsta = 0;                    								// 8-bit, disabled
+013A  6AAB      	CLRF gbl_rcsta
+
+			txsta = 0;
+013C  6AAC      	CLRF gbl_txsta
+
+		  #ifdef MX_UART_RXINT
+			MX_UART_INT_CH1_DIS;
+		  #endif
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+			MX_UART2_RCSTA = 0;                    								// 8-bit, disabled
+			MX_UART2_TXSTA = 0;
+		  #ifdef MX_UART_RXINT
+			MX_UART_INT_CH2_DIS;
+		  #endif
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)										//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);		// CTS pin is a input
+		FC_CAL_Bit_In_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);		// RTS not ready to accept data
+	#endif
+}
+013E  0012      	RETURN
+
+
+
+
+CALFUNCTION(void, FC_CAL_UART_Send_, (MX_UINT16 nChar))
+
+{
+	#if (MX_UART_FLOWEN_X == 1)
+		while (FC_CAL_Bit_In(MX_UART_CTS_PORT_X, MX_UART_CTS_PIN_X) != 0);	// Wait until CTS is low
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 0)													// Software UART TX
+		MX_UINT8 idx;
+		FC_CAL_Bit_Low(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);					// Send Start bit
+		UART_Delay_CAL();
+		for (idx = 0; idx < MX_UART_DBITS_X; idx++)
+		{
+			if (nChar & 0x01)														// Mask off data bit
+				FC_CAL_Bit_High(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);
+			else
+				FC_CAL_Bit_Low(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);
+			UART_Delay_CAL();
+			nChar = nChar >> 1;														// Move to next data bit
+		}
+		FC_CAL_Bit_High(MX_UART_TX_PORT_X, MX_UART_TX_PIN_X);					// Send Stop bit
+		UART_Delay_CAL();
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 1)
+		while (ts_bit(pir1, TXIF) == 0);
+008C            label5
+008C  0E10      	MOVLW 0x10
+008E  149E      	ANDWF gbl_pir1, W
+0090  6E4E      	MOVWF CompTempVar2690
+0092  524E      	MOVF CompTempVar2690, F
+0094  E0FB      	BZ	label5
+
+
+		#if (MX_UART_DBITS_X == 9)
+			if (test_bit(nChar, 8))
+				st_bit(txsta, TX9D);
+			else
+				cr_bit(txsta, TX9D);
+	  	#endif
+		txreg = nChar;
+0096  504C      	MOVF FC_CAL_UAR_0006E_arg_nChar, W
+0098  6EAD      	MOVWF gbl_txreg
+
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+		while (ts_bit(MX_UART2_PIR, TX2IF) == 0);
+
+		#if (MX_UART_DBITS_X == 9)
+			if (test_bit(nChar, 8))
+				st_bit(MX_UART2_TXSTA, TX9D);
+			else
+				cr_bit(MX_UART2_TXSTA, TX9D);
+		#endif
+		MX_UART2_TXREG = nChar;
+	#endif
+}
+009A  0012      	RETURN
+
+
+
+CALFUNCTION(MX_SINT16, FC_CAL_UART_Receive_, (MX_UINT8 nTimeout))
+
+{
+  #if (MX_UART_RETURN_X == 1)
+	MX_UINT16 retVal = 512;
+  #else
+  	MX_UINT8 retVal = 255;
+009C  684D      	SETF FC_CAL_UAR_0006D_1_retVal
+
+  #endif
+
+	MX_UINT8 delay1 = 0;
+009E  6A4E      	CLRF FC_CAL_UAR_0006D_1_delay1
+
+	MX_UINT8 regcheck = 0;
+00A0  6A4F      	CLRF FC_CAL_UAR_0006D_1_regcheck
+
+	MX_UINT8 bWaitForever = 0;
+00A2  6A50      	CLRF FC_CAL_UAR_0006D_1_bWaitForever
+
+	MX_UINT8 rxStatus = UART_STATUS_LOOP;
+00A4  6A51      	CLRF FC_CAL_UAR_0006D_1_rxStatus
+
+	MX_UINT16 delaycnt;
+
+  #if (MX_UART_CHANNEL_X == 0)
+  	MX_UINT8 idx;
+  #else
+  	MX_UINT8 dummy = 0;
+00A6  6A54      	CLRF FC_CAL_UAR_0006D_1_dummy
+
+  #endif
+
+	if (nTimeout == 255)
+00A8  284C      	INCF FC_CAL_UAR_0006D_arg_nTimeout, W
+00AA  E102      	BNZ	label6
+00B0            label6
+
+		bWaitForever = 1;
+00AC  0E01      	MOVLW 0x01
+00AE  6E50      	MOVWF FC_CAL_UAR_0006D_1_bWaitForever
+
+
+	#if (MX_UART_FLOWEN_X == 1)
+		FC_CAL_Bit_Low (MX_UART_RTS_PORT_X, MX_UART_RTS_PIN_X);			// Ready to accept data
+	#endif
+
+	while (rxStatus == UART_STATUS_LOOP)
+00B0  5251      	MOVF FC_CAL_UAR_0006D_1_rxStatus, F
+00B2  E124      	BNZ	label11
+00FA  D7DA      	BRA	label6
+00FC            label11
+
+	{
+		if (bWaitForever == 0)
+00B4  5250      	MOVF FC_CAL_UAR_0006D_1_bWaitForever, F
+00B6  E118      	BNZ	label10
+
+		{
+			if (nTimeout == 0)							//don't wait forever, so do timeout thing...
+00B8  524C      	MOVF FC_CAL_UAR_0006D_arg_nTimeout, F
+00BA  E103      	BNZ	label7
+00C2            label7
+
+			{
+				rxStatus = UART_STATUS_TIMEOUT;
+00BC  0E01      	MOVLW 0x01
+00BE  6E51      	MOVWF FC_CAL_UAR_0006D_1_rxStatus
+
+			}
+			else
+00C0  D013      	BRA	label10
+
+			{
+				for (delaycnt = 0; delaycnt < MX_RECEIVE_DELAY; delaycnt++);	//Delay without calling delay function
+00C2  6A52      	CLRF FC_CAL_UAR_0006D_1_delaycnt
+00C4  6A53      	CLRF FC_CAL_UAR_0006D_1_delaycnt+D'1'
+00C6            label8
+00C6  0E31      	MOVLW 0x31
+00C8  5C52      	SUBWF FC_CAL_UAR_0006D_1_delaycnt, W
+00CA  E205      	BC	label9
+00CC  6653      	TSTFSZ FC_CAL_UAR_0006D_1_delaycnt+D'1'
+00CE  D003      	BRA	label9
+00D0  4A52      	INFSNZ FC_CAL_UAR_0006D_1_delaycnt, F
+00D2  2A53      	INCF FC_CAL_UAR_0006D_1_delaycnt+D'1', F
+00D4  D7F8      	BRA	label8
+00D6            label9
+
+				delay1 = delay1 + 1;
+00D6  284E      	INCF FC_CAL_UAR_0006D_1_delay1, W
+00D8  6E4E      	MOVWF FC_CAL_UAR_0006D_1_delay1
+
+				if(delay1 == 100)
+00DA  0E64      	MOVLW 0x64
+00DC  624E      	CPFSEQ FC_CAL_UAR_0006D_1_delay1
+00DE  D004      	BRA	label10
+00E8            label10
+
+				{
+					nTimeout = nTimeout - 1;
+00E0  044C      	DECF FC_CAL_UAR_0006D_arg_nTimeout, W
+00E2  6E4C      	MOVWF FC_CAL_UAR_0006D_arg_nTimeout
+
+					MX_CLEAR_WATCHDOG;
+00E4  0004      	CLRWDT
+
+					delay1 = 0;
+00E6  6A4E      	CLRF FC_CAL_UAR_0006D_1_delay1
+
+				}
+			}
+		}
+
+		#if (MX_UART_CHANNEL_X == 0)
+			regcheck = FC_CAL_Bit_In(MX_UART_RX_PORT_X, MX_UART_RX_PIN_X);	//Test for start bit
+			if (regcheck == 0)
+				rxStatus = UART_STATUS_RXBYTE;
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 1)
+			regcheck = ts_bit(pir1, RCIF);
+00E8  0E20      	MOVLW 0x20
+00EA  149E      	ANDWF gbl_pir1, W
+00EC  6E55      	MOVWF CompTempVar2687
+00EE  5055      	MOVF CompTempVar2687, W
+00F0  6E4F      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+
+			if (regcheck != 0)
+00F2  524F      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+00F4  E0DD      	BZ	label6
+
+				rxStatus = UART_STATUS_RXBYTE;
+00F6  0E02      	MOVLW 0x02
+00F8  6E51      	MOVWF FC_CAL_UAR_0006D_1_rxStatus
+
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 2)
+			regcheck = ts_bit(MX_UART2_PIR, RC2IF);
+			if (regcheck != 0)
+				rxStatus = UART_STATUS_RXBYTE;
+		#endif
+
+	}
+
+	if (rxStatus == UART_STATUS_RXBYTE)
+00FC  0E02      	MOVLW 0x02
+00FE  6251      	CPFSEQ FC_CAL_UAR_0006D_1_rxStatus
+0100  D018      	BRA	label14
+
+	{
+		#if (MX_UART_CHANNEL_X == 0)
+
+			retVal = 0;
+			UART_Delay_CAL();
+
+			for (idx = 0; idx < MX_UART_DBITS_X; idx++)
+			{
+				if (FC_CAL_Bit_In(MX_UART_RX_PORT_X, MX_UART_RX_PIN_X))
+					retVal = retVal | (0x01 << idx);
+
+				UART_Delay_CAL();
+			}
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 1)
+			regcheck = ts_bit(rcsta, FERR);
+0102  0E04      	MOVLW 0x04
+0104  14AB      	ANDWF gbl_rcsta, W
+0106  6E55      	MOVWF CompTempVar2688
+0108  5055      	MOVF CompTempVar2688, W
+010A  6E4F      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+
+			if (regcheck != 0)
+010C  524F      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+010E  E003      	BZ	label12
+0116            label12
+
+			{
+				dummy = rcreg;						//need to read the rcreg to clear FERR
+0110  50AE      	MOVF gbl_rcreg, W
+0112  6E54      	MOVWF FC_CAL_UAR_0006D_1_dummy
+
+				#if (MX_UART_RETURN_X == 1)
+					retVal = 0x400;					//Framing Error Flag
+				#endif
+			}
+			else
+0114  D00E      	BRA	label14
+
+			{
+				regcheck = ts_bit(rcsta, OERR);
+0116  0E02      	MOVLW 0x02
+0118  14AB      	ANDWF gbl_rcsta, W
+011A  6E55      	MOVWF CompTempVar2689
+011C  5055      	MOVF CompTempVar2689, W
+011E  6E4F      	MOVWF FC_CAL_UAR_0006D_1_regcheck
+
+				if (regcheck != 0)
+0120  524F      	MOVF FC_CAL_UAR_0006D_1_regcheck, F
+0122  E003      	BZ	label13
+012A            label13
+
+				{
+					cr_bit(rcsta, CREN);			//Reset receiver to clear error
+0124  98AB      	BCF gbl_rcsta,4
+
+					st_bit(rcsta, CREN);
+0126  88AB      	BSF gbl_rcsta,4
+
+
+					#if (MX_UART_RETURN_X == 1)
+						retVal = 0x800;				//Overrun Error Flag
+					#endif
+				}
+				else
+0128  D004      	BRA	label14
+0132            label14
+
+				{
+					retVal = 0;
+012A  6A4D      	CLRF FC_CAL_UAR_0006D_1_retVal
+
+
+					#if (MX_UART_DBITS_X == 9)
+						if(ts_bit(rcsta, RX9D))
+							retVal = 0x100;
+					#endif
+
+					retVal = retVal | rcreg; 			//no error, so rx byte is valid
+012C  50AE      	MOVF gbl_rcreg, W
+012E  104D      	IORWF FC_CAL_UAR_0006D_1_retVal, W
+0130  6E4D      	MOVWF FC_CAL_UAR_0006D_1_retVal
+
+				}
+			}
+		#endif
+
+		#if (MX_UART_CHANNEL_X == 2)
+			regcheck = ts_bit(MX_UART2_RCSTA, FERR);
+			if (regcheck != 0)
+			{
+				dummy = MX_UART2_RCREG;			//need to read the rcreg to clear FERR
+				#if (MX_UART_RETURN_X == 1)
+					retVal = 0x400;					//Framing Error Flag
+				#endif
+			}
+			else
+			{
+				regcheck = ts_bit(MX_UART2_RCSTA, OERR);
+				if (regcheck != 0)
+				{
+					cr_bit(MX_UART2_RCSTA, CREN);	//Reset receiver to clear error
+					st_bit(MX_UART2_RCSTA, CREN);
+					#if (MX_UART_RETURN_X == 1)
+						retVal = 0x800;				//Overrun Error Flag
+					#endif
+				}
+				else
+				{
+					retVal = 0;
+
+					#if (MX_UART_DBITS_X == 9)
+						if(ts_bit(MX_UART2_RCSTA, RX9D))
+							retVal = 0x100;
+					#endif
+
+					retVal = retVal | MX_UART2_RCREG; 			//no error, so rx byte is valid
+				}
+			}
+
+		#endif
+
+		#if (MX_UART_ECHO_X == 1)
+			UART_Send(retVal);
+		#endif
+	}
+
+	#if (MX_UART_FLOWEN_X == 1)
+		FC_CAL_Bit_High(MX_UART_RTS_PORT_X, MX_UART_RTS_PIN_X);		//not ready to accept data
+	#endif
+
+	return (retVal);
+0132  504D      	MOVF FC_CAL_UAR_0006D_1_retVal, W
+0134  6E55      	MOVWF CompTempVarRet2686
+0136  6A56      	CLRF CompTempVarRet2686+D'1'
+
+}
+0138  0012      	RETURN
+
+
+
+CALFUNCTION(void, FC_CAL_UART_Delay_, (void))
+{
+  #if (MX_UART_CHANNEL_X == 0)
+
+	MX_UINT16 delay = MX_SOFT_BAUD_X;
+
+	while (delay > 255)
+	{
+		delay_us(255);
+		delay = delay - 255;
+		MX_CLEAR_WATCHDOG;
+	}
+	delay_us(delay);
+	MX_CLEAR_WATCHDOG;
+
+  #endif
+}
+
+
+CALFUNCTION(void, FC_CAL_UART_UpdateBaud_, (MX_UINT8 new_baud))
+
+{
+	//Baud Rates - Function compatible with hardware mode only
+	/*
+	0 - 1200
+	1 - 2400
+	2 - 4800
+	3 - 9600
+	4 - 19200
+	5 - 38400
+	6 - 57600
+	7 - 115200
+	*/
+
+	MX_UINT8 baudrate, baudmode;
+
+	if (new_baud > 7)
+0152  0E07      	MOVLW 0x07
+0154  6442      	CPFSGT FC_CAL_UAR_0006B_arg_new_baud
+0156  D001      	BRA	label15
+015A            label15
+
+		return;
+
+	if (new_baud == 0)
+015A  5242      	MOVF FC_CAL_UAR_0006B_arg_new_baud, F
+015C  E104      	BNZ	label16
+0166            label16
+
+	{
+		baudrate = MX_HARD_BAUD_1200;
+015E  6843      	SETF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_1200;
+0160  0E01      	MOVLW 0x01
+0162  6E44      	MOVWF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 1)
+0164  D02F      	BRA	label23
+0166  0442      	DECF FC_CAL_UAR_0006B_arg_new_baud, W
+0168  E105      	BNZ	label17
+0174            label17
+
+	{
+		baudrate = MX_HARD_BAUD_2400;
+016A  0E7F      	MOVLW 0x7F
+016C  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_2400;
+016E  0E01      	MOVLW 0x01
+0170  6E44      	MOVWF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 2)
+0172  D028      	BRA	label23
+0174  0E02      	MOVLW 0x02
+0176  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+0178  D003      	BRA	label18
+0180            label18
+
+	{
+		baudrate = MX_HARD_BAUD_4800;
+017A  6843      	SETF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_4800;
+017C  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 3)
+017E  D022      	BRA	label23
+0180  0E03      	MOVLW 0x03
+0182  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+0184  D004      	BRA	label19
+018E            label19
+
+	{
+		baudrate = MX_HARD_BAUD_9600;
+0186  0E7F      	MOVLW 0x7F
+0188  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_9600;
+018A  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 4)
+018C  D01B      	BRA	label23
+018E  0E04      	MOVLW 0x04
+0190  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+0192  D004      	BRA	label20
+019C            label20
+
+	{
+		baudrate = MX_HARD_BAUD_19200;
+0194  0E3F      	MOVLW 0x3F
+0196  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_19200;
+0198  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 5)
+019A  D014      	BRA	label23
+019C  0E05      	MOVLW 0x05
+019E  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+01A0  D004      	BRA	label21
+01AA            label21
+
+	{
+		baudrate = MX_HARD_BAUD_38400;
+01A2  0E1F      	MOVLW 0x1F
+01A4  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_38400;
+01A6  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 6)
+01A8  D00D      	BRA	label23
+01AA  0E06      	MOVLW 0x06
+01AC  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+01AE  D004      	BRA	label22
+01B8            label22
+
+	{
+		baudrate = MX_HARD_BAUD_57600;
+01B0  0E14      	MOVLW 0x14
+01B2  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_57600;
+01B4  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+	else if (new_baud == 7)
+01B6  D006      	BRA	label23
+01B8  0E07      	MOVLW 0x07
+01BA  6242      	CPFSEQ FC_CAL_UAR_0006B_arg_new_baud
+01BC  D003      	BRA	label23
+01C4            label23
+
+	{
+		baudrate = MX_HARD_BAUD_115200;
+01BE  0E0A      	MOVLW 0x0A
+01C0  6E43      	MOVWF FC_CAL_UAR_0006B_1_baudrate
+
+		baudmode = MX_HARD_SLOW_115200;
+01C2  6A44      	CLRF FC_CAL_UAR_0006B_1_baudmode
+
+	}
+
+	UART_Uninit();
+01C4  EC9DF000  	CALL FC_CAL_UAR_0006C
+
+
+	#if (MX_UART_CHANNEL_X == 1)
+
+	    if (baudmode == 1)
+01C8  0444      	DECF FC_CAL_UAR_0006B_1_baudmode, W
+01CA  E102      	BNZ	label24
+01D0            label24
+
+			cr_bit(txsta, BRGH);					//Low Speed
+01CC  94AC      	BCF gbl_txsta,2
+
+	    else
+01CE  D001      	BRA	label25
+01D2            label25
+
+			st_bit(txsta, BRGH);					//High Speed
+01D0  84AC      	BSF gbl_txsta,2
+
+
+		spbrg = baudrate;   						// set the baud rate
+01D2  5043      	MOVF FC_CAL_UAR_0006B_1_baudrate, W
+01D4  6EAF      	MOVWF gbl_spbrg
+
+		rcsta = 0;                    				// 8-bit, disabled
+01D6  6AAB      	CLRF gbl_rcsta
+
+
+		#if(MX_UART_DBITS_X == 9)
+			st_bit(txsta, TX9);   					// 9-bit TX
+			st_bit(rcsta, RX9);                    	// 9-bit RX
+		#endif
+
+		st_bit(rcsta, SPEN);         				// turn on serial interface
+01D8  8EAB      	BSF gbl_rcsta,7
+
+		st_bit(txsta, TXEN);
+01DA  8AAC      	BSF gbl_txsta,5
+
+		st_bit(rcsta, CREN);
+01DC  88AB      	BSF gbl_rcsta,4
+
+
+		#if (MX_UART_INT_X == 1)
+			MX_UART_INT_CH1_EN;
+			st_bit(intcon, PEIE);
+			st_bit(intcon, GIE);
+		#else
+			cr_bit (pie1, RCIE);
+01DE  9A9D      	BCF gbl_pie1,5
+
+		#endif
+	#endif
+
+	#if (MX_UART_CHANNEL_X == 2)
+
+	  	if (baudmode == 1)
+			cr_bit(MX_UART2_TXSTA, BRGH);			//Low Speed
+	  	else
+			st_bit(MX_UART2_TXSTA, BRGH);			//High Speed
+
+		spbrg2 = baudrate;   						// set the baud rate
+		MX_UART2_RCSTA = 0;                    		// 8-bit, disabled
+
+		#if(MX_UART_DBITS_X == 9)
+			st_bit(MX_UART2_TXSTA, TX9);   			// 9-bit TX
+			st_bit(MX_UART2_RCSTA, RX9);            // 9-bit RX
+		#endif
+
+		st_bit(MX_UART2_RCSTA, SPEN);         		// turn on serial interface
+		st_bit(MX_UART2_TXSTA, TXEN);
+		st_bit(MX_UART2_RCSTA, CREN);
+
+		#if (MX_UART_INT_X == 1)
+			MX_UART_INT_CH2_EN;
+			st_bit(intcon, PEIE);
+			st_bit(intcon, GIE);
+		#else
+			cr_bit (MX_UART2_PIE, RC2IE);
+		#endif
+	#endif
+
+	#if (MX_UART_FLOWEN_X == 1)						//Flowcontrol enabled?
+		FC_CAL_Bit_In_DDR (MX_UART_CTS_PORT_X, MX_UART_CTS_TRIS_X, MX_UART_CTS_PIN_X);	// CTS pin is a input
+		FC_CAL_Bit_High_DDR (MX_UART_RTS_PORT_X, MX_UART_RTS_TRIS_X, MX_UART_RTS_PIN_X);	// RTS not ready to accept data
+	#endif
+
+}
+0158  0012      	RETURN
+01E0  0012      	RETURN
+
+
+////////////////////////////////////////
+// Code with no source :-)
+////////////////////////////////////////
+0000  EFDAF004  	GOTO	_startup
+
+0008  EF14F005  	GOTO	interrupt
+000C            delay_ms_00000
+000C            ; { delay_ms ; function begin
+000C  5243      	MOVF delay_ms_00000_arg_del, F
+000E  0000      	NOP
+0010  E101      	BNZ	label1
+0012  0012      	RETURN
+0014            label1
+0014  0EF5      	MOVLW 0xF5
+0016            label2
+0016  0000      	NOP
+0018  0000      	NOP
+001A  0000      	NOP
+001C  0000      	NOP
+001E  0000      	NOP
+0020  0000      	NOP
+0022  0000      	NOP
+0024  0000      	NOP
+0026  0000      	NOP
+0028  0000      	NOP
+002A  0000      	NOP
+002C  0000      	NOP
+002E  0000      	NOP
+0030  0000      	NOP
+0032  0000      	NOP
+0034  0000      	NOP
+0036  0FFF      	ADDLW 0xFF
+0038  A4D8      	BTFSS STATUS,Z
+003A  D7ED      	BRA	label2
+003C  0000      	NOP
+003E  0000      	NOP
+0040  0000      	NOP
+0042  0000      	NOP
+0044  0000      	NOP
+0046  0000      	NOP
+0048  0000      	NOP
+004A  0000      	NOP
+004C  0000      	NOP
+004E  0000      	NOP
+0050  0000      	NOP
+0052  0000      	NOP
+0054  0000      	NOP
+0056  2E43      	DECFSZ delay_ms_00000_arg_del, F
+0058  D7DD      	BRA	label1
+005A  0012      	RETURN
+005C            ; } delay_ms function end
+
+005C            delay_us_00000
+005C            ; { delay_us ; function begin
+005C            label3
+005C  0000      	NOP
+005E  0000      	NOP
+0060  2E42      	DECFSZ delay_us_00000_arg_del, F
+0062  D7FC      	BRA	label3
+0064  0012      	RETURN
+0066            ; } delay_us function end
+
+0066            delay_s_00000
+0066            ; { delay_s ; function begin
+0066            label4
+0066  0EFA      	MOVLW 0xFA
+0068  6E43      	MOVWF delay_ms_00000_arg_del
+006A  EC06F000  	CALL delay_ms_00000
+006E  0EFA      	MOVLW 0xFA
+0070  6E43      	MOVWF delay_ms_00000_arg_del
+0072  EC06F000  	CALL delay_ms_00000
+0076  0EFA      	MOVLW 0xFA
+0078  6E43      	MOVWF delay_ms_00000_arg_del
+007A  EC06F000  	CALL delay_ms_00000
+007E  0EFA      	MOVLW 0xFA
+0080  6E43      	MOVWF delay_ms_00000_arg_del
+0082  EC06F000  	CALL delay_ms_00000
+0086  2E42      	DECFSZ delay_s_00000_arg_del, F
+0088  D7EE      	BRA	label4
+008A  0012      	RETURN
+008C            ; } delay_s function end
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+09B4            _startup
+09B4  0ED5      	MOVLW 0xD5
+09B6  6E05      	MOVWF gbl_14_LSR
+09B8  0EC4      	MOVLW 0xC4
+09BA  6E06      	MOVWF gbl_14_LSR+D'1'
+09BC  0EBB      	MOVLW 0xBB
+09BE  6E07      	MOVWF gbl_14_LSR+D'2'
+09C0  0EDC      	MOVLW 0xDC
+09C2  6E08      	MOVWF gbl_14_LSR+D'3'
+09C4  6A09      	CLRF gbl_15_gbl_aSig
+09C6  6A0A      	CLRF gbl_15_gbl_aSig+D'1'
+09C8  6A0B      	CLRF gbl_15_gbl_aSig+D'2'
+09CA  6A0C      	CLRF gbl_15_gbl_aSig+D'3'
+09CC  6A0D      	CLRF gbl_15_gbl_bSig
+09CE  6A0E      	CLRF gbl_15_gbl_bSig+D'1'
+09D0  6A0F      	CLRF gbl_15_gbl_bSig+D'2'
+09D2  6A10      	CLRF gbl_15_gbl_bSig+D'3'
+09D4  6A11      	CLRF gbl_15_gbl_zSig
+09D6  6A12      	CLRF gbl_15_gbl_zSig+D'1'
+09D8  6A13      	CLRF gbl_15_gbl_zSig+D'2'
+09DA  6A14      	CLRF gbl_15_gbl_zSig+D'3'
+09DC  6A2E      	CLRF gbl_15_gbl_aExp
+09DE  6A2F      	CLRF gbl_15_gbl_bExp
+09E0  6A1D      	CLRF gbl_15_gbl_zExp
+09E2  6A1E      	CLRF gbl_15_gbl_zExp+D'1'
+09E4  6A30      	CLRF gbl_15_gbl_aSign
+09E6  6A31      	CLRF gbl_15_gbl_bSign
+09E8  6A32      	CLRF gbl_15_gbl_zSign
+09EA  6A33      	CLRF gbl_15_gbl_zSigZero
+09EC  6A15      	CLRF gbl_15_gbl_ret
+09EE  6A16      	CLRF gbl_15_gbl_ret+D'1'
+09F0  6A17      	CLRF gbl_15_gbl_ret+D'2'
+09F2  6A18      	CLRF gbl_15_gbl_ret+D'3'
+09F4  6A2C      	CLRF gbl_float_rounding_mode
+09F6  6A2D      	CLRF gbl_float_exception_flags
+09F8  6A2B      	CLRF gbl_float_detect_tininess
+
+
+
+0A24  EFA4F004  	GOTO	main
+
+300000  32FF      	DW 0x32FF
+300002  FEFF      	DW 0xFEFF
+300004  FBFF      	DW 0xFBFF
+300006  FFBA      	DW 0xFFBA
+300008  FFFF      	DW 0xFFFF
+30000A  FFFF      	DW 0xFFFF
+30000C  FFFF      	DW 0xFFFF
