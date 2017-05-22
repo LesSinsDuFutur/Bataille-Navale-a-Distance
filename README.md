@@ -25,23 +25,23 @@ Diagrammes SysML
 
 ### Diagramme de Contexte
 
-![](/Diagrams/Context_navale_OK.PNG)
+![](Diagrams/Context_navale_OK.PNG)
 
 ### Diagramme d'Exigence
 
-![](/Diagrams/Exigence_navale_OK.PNG)
+![](Diagrams/Exigence_navale_OK.PNG)
 
 ### Diagramme de Cas d'Utilisation
 
-![](/Diagrams/Cas_utilisation_navale_OK.png)
+![](Diagrams/Cas_utilisation_navale_OK.png)
 
 ### Diagramme de Séquence (Début de partie)
 
-![](/Diagrams/se_start_navale_OK.png)
+![](Diagrams/se_start_navale_OK.png)
 
 ### Diagramme de Séquence (Partie Gagnée)
 
-![](/Diagrams/seq_Win_OK.png)
+![](Diagrams/seq_Win_OK.png)
 
 ### Diagramme de Séquence (Pendant une partie)
 
@@ -49,9 +49,9 @@ Diagrammes SysML
 
 ### Diagramme de définition de Blocs
 
-![](/Diagrams/Bloc_Navale_OK.png)
+![](Diagrams/Bloc_Navale_OK.png)
 
 Chaîne d'Information
 --------------------
 
-![](/Diagrams/CICE_Navale_OK.PNG)
+![](Diagrams/CICE_Navale_OK.PNG)
