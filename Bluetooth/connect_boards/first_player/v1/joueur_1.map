@@ -1,0 +1,261 @@
+;/////////////////////////////////////////////////////////////////////////////////
+;// Code Generator: BoostC Compiler - http://www.sourceboost.com
+;// Version       : 7.20
+;// License Type  : Pro License
+;// Limitations   : PIC18 max code size:Unlimited, max RAM banks:Unlimited
+;/////////////////////////////////////////////////////////////////////////////////
+
+
+Map File
+
+Program Memory usage
+====================
+
+Address  Length   Unique Name      Name
+-------  ------   -----------      ----
+00000000:00000008 _resetvector     _resetvector  
+00000008:00000004 _interruptVector _interruptVector  
+0000000C:0000000A delay_us_00000   delay_us(unsigned char)  
+00000016:00000050 delay_ms_00000   delay_ms(unsigned char)  
+00000066:00000026 delay_s_00000    delay_s(unsigned char)  
+0000008C:0000009E FC_CAL_UAR_00074 FC_CAL_UART_Receive_1(unsigned char)  
+0000012A:00000036 FCI_DELAYI_00038 FCI_DELAYINT_US(unsigned short)  
+00000160:00000010 FC_CAL_UAR_00075 FC_CAL_UART_Send_1(unsigned short)  
+00000170:00000020 FCI_GETLEN_0003E FCI_GETLENGTH(unsigned char*,unsigned char)  
+00000190:00000050 FCD_0c851__0007B FCD_0c851_Bluetooth2__StringReceive(void)  
+000001E0:000001DE FCI_SHEAD_00000  FCI_SHEAD(unsigned char*,unsigned char,unsigned char*,unsigned char,unsigned char*,unsigned char)  
+000003BE:00000070 FCD_0c851__00062 FCD_0c851_Bluetooth2__SendCommand(unsigned char*,unsigned short,unsigned char)  
+0000042E:000002BC FCD_04071__00066 FCD_04071_LCD__RawSend(unsigned char,bit)  
+000006EA:0000007E __mul_32_3_00009 __mul_32_32(unsigned long,unsigned long)  
+00000768:00000064 __div_32_3_00004 __div_32_32(unsigned long,unsigned long)  
+000007CC:00000016 FC_CAL_UAR_00076 FC_CAL_UART_Init_1(void)  
+000007E2:0000005A FCI_SCOPY_00000  FCI_SCOPY(unsigned char*,unsigned char,unsigned char*,unsigned char)  
+0000083C:00000036 FCD_0c851__00084 FCD_0c851_Bluetooth2__RestoreFactorySettings(void)  
+00000872:0000010C FCD_0c851__00081 FCD_0c851_Bluetooth2__SetMode(unsigned char,unsigned char)  
+0000097E:0000005E FCD_0c851__0007F FCD_0c851_Bluetooth2__SaveSettings(void)  
+000009DC:00000098 FCD_0c851__00078 FCD_0c851_Bluetooth2__SetPairKey(unsigned char*,unsigned short)  
+00000A74:00000028 FCD_04071__00061 FCD_04071_LCD__Clear(void)  
+00000A9C:0000002E FCM_SET_AS_00058 FCM_SET_ASCII_CHARATERS(void)  
+00000ACA:00000180 FCI_TOSTRI_00042 FCI_TOSTRING(signed long,unsigned char*,unsigned char)  
+00000C4A:000001E0 FCD_0c851__00054 FCD_0c851_Bluetooth2__SendScript(unsigned char)  
+00000E2A:00000122 FCD_0c851__00052 FCD_0c851_Bluetooth2__Initialise(void)  
+00000F4C:00000026 FCD_04071__00057 FCD_04071_LCD__Cursor(unsigned char,unsigned char)  
+00000F72:00000038 FCD_04071__00056 FCD_04071_LCD__PrintString(unsigned char*,unsigned short)  
+00000FAA:00000124 FCD_04071__00053 FCD_04071_LCD__Start(void)  
+000010CE:000000B6 FCM_INITIA_00051 FCM_INITIALISATION(void)  
+00001184:00000048 FCD_0c851__00065 FCD_0c851_Bluetooth2__ReceiveByte(unsigned char)  
+000011CC:00000038 FCD_04071__00064 FCD_04071_LCD__PrintNumber(signed short)  
+00001204:0000002C main             main(void)  
+00001230:00000054 _startup_00000   _startup(void)  
+00001284:00000084 interrupt        interrupt(void)  
+00001308:00006CF8 *Unused Block 
+
+Register usage
+==============
+
+Address  Bit Lengh Bit Mask   Unique Name                      Name
+-------  --------- --------   -----------                      ----
+00000001:00000020             Int1Context                      Int1Context
+00000005:00000190             gbl_FCV_0c851_Bluetooth2___00000 FCV_0c851_Bluetooth2__STRING_ARRAY
+00000037:00000020             gbl_14_LSR                       LSR
+0000003B:00000020             gbl_15_gbl_aSig                  gbl_aSig
+0000003F:00000020             gbl_15_gbl_bSig                  gbl_bSig
+00000043:00000020             gbl_15_gbl_zSig                  gbl_zSig
+00000047:00000020             gbl_15_gbl_ret                   gbl_ret
+0000004B:00000010             gbl_15_gbl_zExp                  gbl_zExp
+0000004D:00000008             gbl_float_detect_tininess        float_detect_tininess
+0000004E:00000008             gbl_float_rounding_mode          float_rounding_mode
+0000004F:00000008             gbl_float_exception_flags        float_exception_flags
+00000050:00000008             gbl_15_gbl_aExp                  gbl_aExp
+00000051:00000008             gbl_15_gbl_bExp                  gbl_bExp
+00000052:00000008             gbl_15_gbl_aSign                 gbl_aSign
+00000053:00000008             gbl_15_gbl_bSign                 gbl_bSign
+00000054:00000008             gbl_15_gbl_zSign                 gbl_zSign
+00000055:00000008             gbl_15_gbl_zSigZero              gbl_zSigZero
+00000056:00000008             gbl_FCV_OCTET                    FCV_OCTET
+00000057:00000008             gbl_FCV_BT_STATE                 FCV_BT_STATE
+00000058:00000008             gbl_FCV_0c851_Bluetooth2__RX_IDX FCV_0c851_Bluetooth2__RX_IDX
+00000059:00000008             gbl_FCV_0c851_Bluetooth2___00001 FCV_0c851_Bluetooth2__RX_DONE
+0000005A:00000008             gbl_FCV_0c851_Bluetooth2___00002 FCV_0c851_Bluetooth2__RX_LENGTH
+0000005B:00000008             delay_s_00000_arg_del            del
+0000005C:00000008             FCD_0c851__00054_1_FCL_I         FCL_I
+0000005D:00000008             FCD_0c851__00054_1_FCL_CH        FCL_CH
+0000005E:00000008             FCD_0c851__00054_1_FCL_LEN       FCL_LEN
+0000005F:00000008             FCD_0c851__00054_1_FCR_RETVAL    FCR_RETVAL
+00000060:00000008             CompTempVarRet2654               $ret
+00000062:00000008             CompTempVar2664                 
+00000067:00000010             FCD_04071__00056_arg_FCL_TEXT    FCL_TEXT
+00000069:00000058             CompTempVar2639                 
+0000006B:00000010             FCI_TOSTRI_00042_arg_sDst        sDst
+0000006D:00000008             FCI_TOSTRI_00042_arg_iDst_len    iDst_len
+0000006E:00000008             FCI_TOSTRI_00042_1_tmp1          tmp1
+0000006F:00000008             FCD_0c851__00052_1_FCR_RETVAL    FCR_RETVAL
+00000070:00000008             delay_ms_00000_arg_del           del
+00000071:00000010             CompTempVar2647                 
+00000072:00000028             CompTempVar2652                 
+00000073:00000008             CompTempVarRet2754               $ret
+00000077:00000010             FCD_0c851__00078_arg_FCLsz_00079 FCLsz_PAIRKEY
+00000078:00000010             CompTempVarRet1863               $ret
+00000079:00000008             FCD_0c851__00078_1_FCR_RETVAL    FCR_RETVAL
+0000007A:00000010             FCD_0c851__00062_arg_FCL_COMMAND FCL_COMMAND
+0000007B:00000010             FCD_04071__00056_arg_FCLsz_TEXT  FCLsz_TEXT
+0000007C:00000010             FCD_0c851__00062_arg_FCLsz_00063 FCLsz_COMMAND
+0000007D:00000008             FCD_04071__00056_1_FCL_IDX       FCL_IDX
+0000007E:00000008             FCD_0c851__00062_arg_FCL_SENDCR  FCL_SENDCR
+0000007F:00000008             FCD_0c851__00062_1_FCL_IDX       FCL_IDX
+00000080:00000048             CompTempVar2642                 
+00000081:00000008             FCD_04071__00066_1_FCL_NIBBLE    FCL_NIBBLE
+00000082:00000008             FCD_04071__00066_210_ptmp        ptmp
+00000084:00000008             CompTempVar1874                 
+00000085:00000008             CompTempVar1875                 
+00000086:00000020             CompTempVarRet414                $ret
+00000088:00000020             CompTempVarRet172                $ret
+00000089:00000028             CompTempVar2643                 
+00000094:00000008             FCD_0c851__00062_1_FCL_LEN       FCL_LEN
+00000095:00000008             FCD_0c851__00062_1_FCR_RETVAL    FCR_RETVAL
+00000096:00000008             CompTempVarRet2696               $ret
+00000098:00000008             FCI_GETLEN_0003E_arg_iStr1_len   iStr1_len
+00000099:00000008             FCI_GETLEN_0003E_1_tmp           tmp
+0000009A:00000008             CompTempVarRet1850               $ret
+0000009D:00000010             FCI_SHEAD_00000_arg_sDst         sDst
+0000009F:00000008             FCI_SHEAD_00000_arg_iDst_len     iDst_len
+000000A0:00000008             FCI_SHEAD_00000_1_len            len
+000000A1:00000008             FCI_SHEAD_00000_1_strt           strt
+000000A2:00000008             CompTempVar2062                 
+000000A3:00000008             CompTempVar2063                 
+000000A4:00000008             CompTempVar2037                 
+000000A8:00000008             FCD_0c851__0007B_1_FCL_TOUT      FCL_TOUT
+000000A9:00000008             FCD_0c851__0007B_1_FCL_LEN       FCL_LEN
+000000AA:00000008             FCD_0c851__0007B_1_FCR_RETVAL    FCR_RETVAL
+000000AB:00000008             CompTempVarRet2742               $ret
+000000AD:00000008             delay_us_00000_arg_del           del
+000000D1:00000008             FCI_SCOPY_00000_1_len            len
+000000D2:00000008             CompTempVar2071                 
+000000D3:00000008             CompTempVar2072                 
+000000D4:00000008             interrupt_1_FCL_BT_IN            FCL_BT_IN
+000000D5:00000008             CompTempVar2766                 
+000000D6:00000008             CompTempVar2767                 
+000000D7:00000008             FC_CAL_UAR_00074_1_delay1        delay1
+000000D8:00000008             FC_CAL_UAR_00074_1_regcheck      regcheck
+000000D9:00000008             FC_CAL_UAR_00074_1_bWaitForever  bWaitForever
+000000DA:00000008             FC_CAL_UAR_00074_1_rxStatus      rxStatus
+000000DB:00000010             FC_CAL_UAR_00074_1_delaycnt      delaycnt
+000000DD:00000008             FC_CAL_UAR_00074_1_dummy         dummy
+000000DE:00000008             CompTempVar2731                 
+00000100:000007F8             gbl_FCV_ASCII                    FCV_ASCII
+00000F80:00000008             gbl_porta                        porta
+00000F81:00000008             gbl_portb                        portb
+00000F82:00000008             gbl_portc                        portc
+00000F83:00000008             gbl_portd                        portd
+00000F84:00000008             gbl_porte                        porte
+00000F89:00000008             gbl_lata                         lata
+00000F8A:00000008             gbl_latb                         latb
+00000F8B:00000008             gbl_latc                         latc
+00000F8C:00000008             gbl_latd                         latd
+00000F8D:00000008             gbl_late                         late
+00000F92:00000008             gbl_trisa                        trisa
+00000F93:00000008             gbl_trisb                        trisb
+00000F94:00000008             gbl_trisc                        trisc
+00000F95:00000008             gbl_trisd                        trisd
+00000F96:00000008             gbl_trise                        trise
+00000F9B:00000008             gbl_osctune                      osctune
+00000F9D:00000008             gbl_pie1                         pie1
+00000F9E:00000008             gbl_pir1                         pir1
+00000F9F:00000008             gbl_ipr1                         ipr1
+00000FA0:00000008             gbl_pie2                         pie2
+00000FA1:00000008             gbl_pir2                         pir2
+00000FA2:00000008             gbl_ipr2                         ipr2
+00000FA6:00000008             gbl_eecon1                       eecon1
+00000FA7:00000008             gbl_eecon2                       eecon2
+00000FA8:00000008             gbl_eedata                       eedata
+00000FA9:00000008             gbl_eeadr                        eeadr
+00000FAB:00000008             gbl_rcsta                        rcsta
+00000FAC:00000008             gbl_txsta                        txsta
+00000FAD:00000008             gbl_txreg                        txreg
+00000FAE:00000008             gbl_rcreg                        rcreg
+00000FAF:00000008             gbl_spbrg                        spbrg
+00000FB0:00000008             gbl_spbrgh                       spbrgh
+00000FB1:00000008             gbl_t3con                        t3con
+00000FB2:00000008             gbl_tmr3l                        tmr3l
+00000FB3:00000008             gbl_tmr3h                        tmr3h
+00000FB4:00000008             gbl_cmcon                        cmcon
+00000FB5:00000008             gbl_cvrcon                       cvrcon
+00000FB6:00000008             gbl_eccpas                       eccpas
+00000FB7:00000008             gbl_pwm1con                      pwm1con
+00000FB8:00000008             gbl_baudctl                      baudctl
+00000FBA:00000008             gbl_ccp2con                      ccp2con
+00000FBB:00000008             gbl_ccpr2l                       ccpr2l
+00000FBC:00000008             gbl_ccpr2h                       ccpr2h
+00000FBD:00000008             gbl_ccp1con                      ccp1con
+00000FBE:00000008             gbl_ccpr1l                       ccpr1l
+00000FBF:00000008             gbl_ccpr1h                       ccpr1h
+00000FC0:00000008             gbl_adcon2                       adcon2
+00000FC1:00000008             gbl_adcon1                       adcon1
+00000FC2:00000008             gbl_adcon0                       adcon0
+00000FC3:00000008             gbl_adresl                       adresl
+00000FC4:00000008             gbl_adresh                       adresh
+00000FC5:00000008             gbl_sspcon2                      sspcon2
+00000FC6:00000008             gbl_sspcon1                      sspcon1
+00000FC7:00000008             gbl_sspstat                      sspstat
+00000FC8:00000008             gbl_sspadd                       sspadd
+00000FC9:00000008             gbl_sspbuf                       sspbuf
+00000FCA:00000008             gbl_t2con                        t2con
+00000FCB:00000008             gbl_pr2                          pr2
+00000FCC:00000008             gbl_tmr2                         tmr2
+00000FCD:00000008             gbl_t1con                        t1con
+00000FCE:00000008             gbl_tmr1l                        tmr1l
+00000FCF:00000008             gbl_tmr1h                        tmr1h
+00000FD0:00000008             gbl_rcon                         rcon
+00000FD1:00000008             gbl_wdtcon                       wdtcon
+00000FD2:00000008             gbl_lvdcon                       lvdcon
+00000FD3:00000008             gbl_osccon                       osccon
+00000FD5:00000008             gbl_t0con                        t0con
+00000FD6:00000008             gbl_tmr0l                        tmr0l
+00000FD7:00000008             gbl_tmr0h                        tmr0h
+00000FD8:00000008             gbl_status                       status
+00000FD9:00000008             gbl_fsr2l                        fsr2l
+00000FDA:00000008             gbl_fsr2h                        fsr2h
+00000FDB:00000008             gbl_plusw2                       plusw2
+00000FDC:00000008             gbl_preinc2                      preinc2
+00000FDD:00000008             gbl_postdec2                     postdec2
+00000FDE:00000008             gbl_postinc2                     postinc2
+00000FDF:00000008             gbl_indf2                        indf2
+00000FE0:00000008             gbl_bsr                          bsr
+00000FE1:00000008             gbl_fsr1l                        fsr1l
+00000FE2:00000008             gbl_fsr1h                        fsr1h
+00000FE3:00000008             gbl_plusw1                       plusw1
+00000FE4:00000008             gbl_preinc1                      preinc1
+00000FE5:00000008             gbl_postdec1                     postdec1
+00000FE6:00000008             gbl_postinc1                     postinc1
+00000FE7:00000008             gbl_indf1                        indf1
+00000FE8:00000008             gbl_wreg                         wreg
+00000FE9:00000008             gbl_fsr0l                        fsr0l
+00000FEA:00000008             gbl_fsr0h                        fsr0h
+00000FEB:00000008             gbl_plusw0                       plusw0
+00000FEC:00000008             gbl_preinc0                      preinc0
+00000FED:00000008             gbl_postdec0                     postdec0
+00000FEE:00000008             gbl_postinc0                     postinc0
+00000FEF:00000008             gbl_indf0                        indf0
+00000FF0:00000008             gbl_intcon3                      intcon3
+00000FF1:00000008             gbl_intcon2                      intcon2
+00000FF2:00000008             gbl_intcon                       intcon
+00000FF3:00000008             gbl_prodl                        prodl
+00000FF4:00000008             gbl_prodh                        prodh
+00000FF5:00000008             gbl_tablat                       tablat
+00000FF6:00000008             gbl_tblptrl                      tblptrl
+00000FF7:00000008             gbl_tblptrh                      tblptrh
+00000FF8:00000008             gbl_tblptru                      tblptru
+00000FF9:00000008             gbl_pcl                          pcl
+00000FFA:00000008             gbl_pclath                       pclath
+00000FFB:00000008             gbl_pclatu                       pclatu
+00000FFC:00000008             gbl_stkptr                       stkptr
+00000FFD:00000008             gbl_tosl                         tosl
+00000FFE:00000008             gbl_tosh                         tosh
+00000FFF:00000008             gbl_tosu                         tosu
+
+
+Memory Usage Report
+===================
+RAM available:1536 bytes, used:479 bytes (31.2%), free:1057 bytes (68.8%), 
+Heap size:1025 bytes, Heap max single alloc:127 bytes
+ROM available:32768 bytes, used:4872 bytes (14.9%), free:27896 bytes (85.1%)

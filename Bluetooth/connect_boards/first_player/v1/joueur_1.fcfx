@@ -1,0 +1,340 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,32!10,f9!18,fe!20,ff!28,78!30,ba!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,0%f,0%10,1%11,0%13,3%18,0%19,f%28,0%29,0%2a,0%2f,0%30,0%32,0%36,0%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='0' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='0' />
+			<data name='usev9' value='0' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='0' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='0' />
+			<data name='ictrate' value='20000' />
+			<data name='ictmask' value='0' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug />
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='0dad5648-2da6-4864-86cc-4be57de7e461' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='ascii' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='255' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='false' type='b1' description='' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='octet' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='return' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='20' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='command_return' type='u8' description='Retour des commandes envoyés/reçues' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='BT_CONNECTED' type='s16' description='Indique si les deux modules bluetooth sont connectés' isconst='1' isinit='1' usrinit='255' setinit='255' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='bt_state' type='u8' description='État du bluetooth' isconst='0' isinit='1' usrinit='165' setinit='165' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='loop' type='s16' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='BT_COMMAND_EMPTY' type='s16' description='Résultat de la commande vide' isconst='1' isinit='1' usrinit='255' setinit='255' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='BT_COMMAND_OK' type='s16' description='Succès de la commande' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='true' type='b1' description='' isconst='1' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='CONVERT_TABLE_STRING' description='Convertir un tableau de donnée en chaîne de caractères' >
+						<return name='Return' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='var_table' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+							<array size='255' />
+						</param>
+						<local name='var_ascii_return' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<command class_type='calculation' title='Calcul' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='INITIALISATION' description='Initialisation de tout les modules tel que le Bluetooth ou encore de LCD etc...' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='comment' title='' comment='BT4
+' textarea='12,0,12,0' />
+						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='Initialise' />
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Start' />
+						<command class_type='delay' title='Pause' exp='1' type='2' />
+						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='SendScript' >
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='SendScript' >
+							<argument exp='2' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Initialisation...&quot;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Player (1)&quot;' />
+						</command>
+						<command class_type='call' title='Appel d&apos;une Macro' macro='SET_ASCII_CHARATERS' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='BT_CHECK_CONNECTON' description='Vérification de la connexion entre les deux modules bluetooth' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='BT_DATA_RECEIVER' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='CONVERT_BINARY_ASCII' description='Convertir une valeur binaire en caractère ascii' >
+						<return name='Return' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+						<param name='var_binary' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+							<array size='20' />
+						</param>
+						<local name='var_ascii_return' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='SET_ASCII_CHARATERS' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='comment' title='' comment='a =&gt; &quot;numero_case + type_de_bateau&quot;
+b =&gt; &quot;variable_a_changer + valeur_(ou_calcul)&quot;
+' textarea='12,0,12,0' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='// numbers' />
+							<exp exp='ascii[48] = &apos;0&apos;' />
+							<exp exp='ascii[49] = &apos;1&apos;' />
+							<exp exp='ascii[50] = &apos;2&apos;' />
+							<exp exp='ascii[51] = &apos;3&apos;' />
+							<exp exp='ascii[52] = &apos;4&apos;' />
+							<exp exp='ascii[53] = &apos;5&apos;' />
+							<exp exp='ascii[54] = &apos;6&apos;' />
+							<exp exp='ascii[55] = &apos;7&apos;' />
+							<exp exp='ascii[56] = &apos;8&apos;' />
+							<exp exp='ascii[57] = &apos;9&apos;' />
+							<exp exp='ascii[58] = &apos;10&apos;' />
+							<exp exp='' />
+							<exp exp='// letters' />
+							<exp exp='ascii[97] = &apos;a&apos;' />
+							<exp exp='ascii[98] = &apos;b&apos;' />
+							<exp exp='ascii[99] = &apos;c&apos;' />
+							<exp exp='ascii[100] = &apos;d&apos;' />
+							<exp exp='ascii[101] = &apos;e&apos;' />
+							<exp exp='ascii[102] = &apos;f&apos;' />
+							<exp exp='' />
+							<exp exp='// symbols' />
+							<exp exp='ascii[43] = &apos;+&apos;' />
+						</command>
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='CHECK_BT_GETTING' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='Main' description='' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='INITIALISATION' />
+						<command class_type='comment' title='' comment='S DEBUG
+' textarea='12,0,12,0' />
+						<command class_type='loop' title='Boucle' disable='1' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='ReceiveByte' >
+									<return exp='octet' />
+									<argument exp='0' />
+								</command>
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintNumber' >
+									<argument exp='octet' />
+								</command>
+								<command class_type='delay' title='Pause' exp='250' type='1' />
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+							</flowline>
+						</command>
+						<command class_type='comment' title='' comment='F DEBUG' textarea='12,0,12,0' />
+						<command class_type='call' title='Appel d&apos;une Macro' macro='BT_CONNECTION' />
+					</flowline>
+				</macro>
+				<macro >
+					<flowline name='BT_CONNECTION' description='Connection des deux modules entre eux' >
+						<return name='Return' type='v0' description='' isconst='0' isinit='0' usrinit='' setinit='' />
+						<command class_type='loop' title='Boucle' type='0' exp='bt_state != 0' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+									<argument exp='&quot;Connection...&quot;' />
+								</command>
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
+									<argument exp='0' />
+									<argument exp='1' />
+								</command>
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+									<argument exp='&quot;Please wait...&quot;' />
+								</command>
+								<command class_type='comment' title='' comment='On se connete automatiquement au module bluetooth du joueur 2' textarea='12,0,12,0' />
+								<command class_type='call' title='Appel de la Routine Composant' disable='1' component='Bluetooth2' macro='SendCommand' >
+									<return exp='command_return' />
+									<argument exp='&quot;ATD0080980B9388&quot;' />
+									<argument exp='1' />
+								</command>
+								<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='SendCommand' >
+									<argument exp='&quot;ATA&quot;' />
+									<argument exp='1' />
+								</command>
+								<command class_type='delay' title='Pause' exp='1' type='2' />
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+								<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintNumber' >
+									<argument exp='command_return' />
+								</command>
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='bt_state = command_return' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='delay' title='Pause' exp='5' type='2' />
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Clear' />
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;Connected to&quot;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Cursor' >
+							<argument exp='0' />
+							<argument exp='1' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='&quot;player (2)&quot;' />
+						</command>
+						<command class_type='delay' title='Pause' exp='1' type='2' />
+						<command class_type='comment' title='' comment='DEBUG' textarea='12,0,12,0' />
+						<command class_type='loop' title='Boucle' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='ReceiveByte' >
+									<return exp='command_return' />
+									<argument exp='0' />
+								</command>
+								<command class_type='calculation' title='Calcul' />
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='76b3eb5c-2d23-4c8d-bde8-505032bc886a' vmin='4' vmaj='1' codename='Bluetooth2' x='-176' y='0' z='0.755' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='DeviceName' data='lool' />
+					<value target='PairKey' data='1379' />
+					<value target='InitDefs' data='1' />
+					<value target='InitDisc' data='1' />
+					<value target='InitConn' data='1' />
+					<value target='script_count' data='002' />
+					<value target='script1' data='ATS0=1
+ATR
+ATS512=7
+ATS536=1
+ATS502=' />
+					<value target='script2' data='ATS531=2
+ATA
+AT&amp;W
+ATZ0' />
+					<value target='script3' data='' />
+					<value target='script4' data='' />
+					<value target='string_size' data='50' />
+					<value target='baud' data='004' />
+					<value target='flow_control' data='0' />
+					<value target='expect_echo' data='1' />
+					<value target='channel' data='001' />
+					<value target='tx_pin' data='$PORTC.6' />
+					<value target='rx_pin' data='$PORTC.7' />
+					<value target='rts_pin' data='$PORTC.3' />
+					<value target='cts_pin' data='$PORTC.4' />
+					<value target='TXRemap' data='' />
+					<value target='RXRemap' data='' />
+					<value target='Reset' data='$PORTB.1' />
+					<value target='label' data='Bluetooth' />
+					<value target='Injector' data='000' />
+					<value target='InjectorHandle' data='0' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+			<component class_type='ref' guid='d29dda88-17de-4008-991a-c881890d4c57' vmin='1' vmaj='1' codename='lcd_eb005' x='-104' y='0' z='3.575' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='Pin_Data_0' data='$PORTA.0' />
+					<value target='Pin_Data_1' data='$PORTA.1' />
+					<value target='Pin_Data_2' data='$PORTA.2' />
+					<value target='Pin_Data_3' data='$PORTA.3' />
+					<value target='Pin_RS' data='$PORTA.4' />
+					<value target='Pin_E' data='$PORTA.5' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='536.6' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='8409120' img='' style='0' />
+		<table rgb='7360576' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='SET_ASCII_CHARATERS' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='INITIALISATION' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='29' flags='0' />
+		<view type='0' name='CONVERT_BINARY_ASCII' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='CONVERT_TABLE_STRING' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='BT_CHECK_CONNECTON' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='BT_DATA_RECEIVER' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='BT_CONNECTION' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAWwYAAA4DAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+	</layout>
+</document>
+</root>

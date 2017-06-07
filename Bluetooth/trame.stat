@@ -1,0 +1,32 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 108.0,rom = 0;
+FCI_DELAYINT_US(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_Delay.c",line = 137,ram = 3.0,rom = 54;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCI_SHEAD(unsigned char*,unsigned char,unsigned char*,unsigned char,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 898,ram = 14.0,rom = 478;
+FC_MARKER(signed short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 178,ram = 17.0,rom = 1098;
+wait_clock(unsigned char,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 589,ram = 5.0,rom = 68;
+icd_byte_tx(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 503,ram = 4.0,rom = 144;
+icd_byte_rx(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 539,ram = 3.0,rom = 148;
+read_register(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 616,ram = 6.0,rom = 28;
+write_register(unsigned short,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 626,ram = 5.0,rom = 22;
+rst_dev(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 635,ram = 0.0,rom = 26;
+ICD_PUSH(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 476,ram = 4.0,rom = 46;
+wait_data(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_ICD2.c",line = 602,ram = 4.0,rom = 64;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 537,ram = 11.0,rom = 158;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 507,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 382,ram = 0.0,rom = 22;
+FCD_0c851_Bluetooth2__SetPairKey(unsigned char*,unsigned short):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 286,ram = 34.0,rom = 152;
+FCD_0c851_Bluetooth2__SendCommand(unsigned char*,unsigned short,unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 508,ram = 9.0,rom = 120;
+FCD_0c851_Bluetooth2__StringReceive(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 709,ram = 6.0,rom = 104;
+FCD_0c851_Bluetooth2__SaveSettings(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 624,ram = 6.0,rom = 94;
+FCD_0c851_Bluetooth2__SendByte(unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 648,ram = 1.0,rom = 14;
+FCD_0c851_Bluetooth2__SetMode(unsigned char,unsigned char):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 668,ram = 12.0,rom = 268;
+FCD_0c851_Bluetooth2__RestoreFactorySettings(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 769,ram = 7.0,rom = 54;
+FCD_0c851_Bluetooth2__Initialise(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 789,ram = 39.0,rom = 308;
+main(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 841,ram = 0.0,rom = 102;
+interrupt(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\trame.c",line = 911,ram = 3.0,rom = 132;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 162;
+#HEAP_BLOCK: 0, 197, 1339;

@@ -1,0 +1,119 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,32!10,f9!18,fe!20,ff!28,fb!30,ba!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,0%f,0%10,1%11,0%13,3%18,0%19,f%28,1%29,1%2a,0%2f,1%30,0%32,0%36,0%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='1' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='9' />
+			<data name='usev9' value='1' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='2' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='0' />
+			<data name='ictrate' value='20000' />
+			<data name='ictmask' value='0' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug />
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='c14546e1-0e6e-4419-8e7a-bc994fb1c15b' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='false' type='b1' description='' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='data' type='u8' description='' isconst='0' isinit='1' usrinit='54' setinit='54' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='true' type='b1' description='' isconst='1' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='Main' description='' >
+						<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='Initialise' />
+						<command class_type='loop' title='Boucle' type='0' exp='1' >
+							<flowline >
+								<command class_type='call' title='Appel de la Routine Composant' component='Bluetooth2' macro='SendByte' >
+									<argument exp='42' />
+								</command>
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='data = data + 1' />
+								</command>
+							</flowline>
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='76b3eb5c-2d23-4c8d-bde8-505032bc886a' vmin='3' vmaj='1' codename='Bluetooth2' x='-56' y='0' z='0.755' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='DeviceName' data='FlowBlue' />
+					<value target='PairKey' data='1234' />
+					<value target='InitDefs' data='1' />
+					<value target='InitDisc' data='1' />
+					<value target='InitConn' data='1' />
+					<value target='script_count' data='001' />
+					<value target='script1' data='' />
+					<value target='script2' data='' />
+					<value target='script3' data='' />
+					<value target='script4' data='' />
+					<value target='string_size' data='40' />
+					<value target='baud' data='004' />
+					<value target='flow_control' data='0' />
+					<value target='expect_echo' data='1' />
+					<value target='channel' data='1' />
+					<value target='tx_pin' data='$PORTC.6' />
+					<value target='rx_pin' data='$PORTC.7' />
+					<value target='rts_pin' data='$PORTB.3' />
+					<value target='cts_pin' data='$PORTB.4' />
+					<value target='TXRemap' data='' />
+					<value target='RXRemap' data='' />
+					<value target='Reset' data='$PORTC.1' />
+					<value target='label' data='Bluetooth' />
+					<value target='Injector' data='000' />
+					<value target='InjectorHandle' data='0' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='8409120' img='' style='0' />
+		<table rgb='7360576' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAAowIAAH4CAAA' zoom='75' scrollx='0' scrolly='0' flags='0' />
+	</layout>
+</document>
+</root>

@@ -1,0 +1,14 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 312.0,rom = 0;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCD_04071_LCD__Clear(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 202,ram = 0.0,rom = 38;
+FCD_04071_LCD__RawSend(unsigned char,bit):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 554,ram = 3.1,rom = 700;
+FCD_04071_LCD__PrintString(unsigned char*,unsigned short):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 221,ram = 6.0,rom = 54;
+FCD_04071_LCD__Start(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 680,ram = 1.0,rom = 290;
+main(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 775,ram = 2.0,rom = 142;
+interrupt(void):"U:\DOCUME~1\SIN\BOYER\PROJET\BLUETO~1\CONNEC~1\convert_table_string.c",line = 836,ram = 0.0,rom = 34;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 76;
+#HEAP_BLOCK: 0, 511, 1025;

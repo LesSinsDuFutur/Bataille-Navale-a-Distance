@@ -1,0 +1,36 @@
+// SourceBoost Linker Function Resource Usage Dump
+
+#GLOBAL:"global",line = 0,ram = 850.1,rom = 0;
+FCI_DELAYINT_US(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_Delay.c",line = 137,ram = 3.0,rom = 54;
+FCI_DELAYINT_MS(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_Delay.c",line = 148,ram = 3.0,rom = 54;
+FCI_GETLENGTH(unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 144,ram = 5.0,rom = 32;
+FCI_SHEAD(unsigned char*,unsigned char,unsigned char*,unsigned char,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 892,ram = 14.0,rom = 480;
+FCI_SCOPY(unsigned char*,unsigned char,unsigned char*,unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_String.c",line = 954,ram = 9.0,rom = 92;
+FCM_INTERUPT_GETTING_DATA(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1465,ram = 258.0,rom = 98;
+FCD_0c851_Bluetooth2__ReceiveByte(unsigned char):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 935,ram = 4.0,rom = 72;
+FCD_0c851_Bluetooth2__ReadString(unsigned char*,unsigned short,unsigned char):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1212,ram = 8.0,rom = 84;
+FCD_04071_LCD__PrintString(unsigned char*,unsigned short):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 317,ram = 6.0,rom = 56;
+FCD_04071_LCD__Clear(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 298,ram = 0.0,rom = 38;
+FCM_INITIALISATION(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1581,ram = 8.0,rom = 150;
+FCD_04071_LCD__Start(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 776,ram = 1.0,rom = 290;
+FCD_0c851_Bluetooth2__Initialise(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1411,ram = 33.0,rom = 286;
+FCD_0c851_Bluetooth2__SendScript(unsigned char):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 996,ram = 82.0,rom = 458;
+FCM_SET_ASCII_CHARATERS(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1668,ram = 0.0,rom = 74;
+FCM_BT_CONNECTION(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1705,ram = 5.0,rom = 314;
+FCD_0c851_Bluetooth2__SendCommand(unsigned char*,unsigned short,unsigned char):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1133,ram = 9.0,rom = 112;
+FCD_04071_LCD__RawSend(unsigned char,bit):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 650,ram = 3.1,rom = 702;
+FC_CAL_UART_Receive_1(unsigned char):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 515,ram = 11.0,rom = 158;
+FC_CAL_UART_Send_1(unsigned short):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 485,ram = 3.0,rom = 16;
+FC_CAL_UART_Init_1(void):"C:\Program Files (x86)\Flowcode 6\CAL\PIC\PIC_CAL_UART.c",line = 360,ram = 0.0,rom = 22;
+FCD_0c851_Bluetooth2__SetPairKey(unsigned char*,unsigned short):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 912,ram = 34.0,rom = 152;
+FCD_0c851_Bluetooth2__StringReceive(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1332,ram = 4.0,rom = 84;
+FCD_0c851_Bluetooth2__SaveSettings(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1247,ram = 6.0,rom = 94;
+FCD_0c851_Bluetooth2__SetMode(unsigned char,unsigned char):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1291,ram = 12.0,rom = 268;
+FCD_0c851_Bluetooth2__RestoreFactorySettings(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1391,ram = 7.0,rom = 54;
+main(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1784,ram = 0.0,rom = 20;
+interrupt(void):"C:\Users\Cyril\DOCUME~1\Projet\BLUETO~1\CONNEC~1\FIRST_~1\v2\joueur_1.c",line = 1822,ram = 3.0,rom = 132;
+delay_us(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 10;
+delay_ms(unsigned char):"NoSourceFile",line = 0,ram = 0.0,rom = 80;
+delay_s(unsigned char):"NoSourceFile",line = 0,ram = 1.0,rom = 38;
+_startup(void):"NoSourceFile",line = 0,ram = 0.0,rom = 108;
+#HEAP_BLOCK: 0, 1279, 257;

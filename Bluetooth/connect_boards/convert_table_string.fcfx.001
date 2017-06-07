@@ -1,0 +1,153 @@
+<root>
+<document schema='101' license='50,LYC-FERRY06-V6,HY62PA' title='' description='' target='PIC.18F.18F4520' >
+	<config data='!0,ff!8,32!10,f9!18,fe!20,ff!28,fb!30,ba!38,ff!40,ff!48,ff!50,ff!58,ff!60,ff!68,ff%8,2%e,0%f,0%10,1%11,0%13,3%18,0%19,f%28,1%29,1%2a,0%2f,1%30,0%32,0%36,0%37,1%40,1%41,1%42,1%43,1%4f,1%4e,1%50,1%51,1%52,1%53,1%5f,1%5e,1%5d,1%60,1%61,1%62,1%63,1%6e,1' clkspd='19660800' simspd='1' usewdt='0' constif='0' />
+	<plugins >
+		<dll_dbg_icd enabled='0' >
+			<data name='debug' value='1' />
+			<data name='userpins' value='0' />
+			<data name='speed' value='0' />
+			<data name='usev9' value='0' />
+			<data name='breaks' value='8' />
+			<data name='stacks' value='8' />
+			<data name='clkport' value='1' />
+			<data name='clkbit' value='6' />
+			<data name='dataport' value='1' />
+			<data name='databit' value='7' />
+			<data name='ghostype' value='0' />
+			<data name='monitor' value='1' />
+			<data name='ictloop' value='0' />
+			<data name='ictrate' value='20000' />
+			<data name='ictmask' value='0' />
+			<data name='anlpres' value='255' />
+			<data name='digmask1' value='-1' />
+			<data name='digmask2' value='-1' />
+		</dll_dbg_icd>
+		<dll_models enabled='1' />
+		<dll_upgrader enabled='1' />
+		<dll_webhelp enabled='1' />
+	</plugins>
+	<supplement use='0' head='' body='' />
+	<debug >
+		<watch expr='result_string' />
+		<watch expr='loop_count' />
+		<watch expr='result_octet' />
+		<watch expr='loop_count_2' />
+		<watch expr='char[0]' />
+	</debug>
+	<components >
+		<settings autoimg='1' center='1' unitscale='0' fixedscale='0' fixedx='1' fixedy='1' fixedz='1' headcode='0' />
+		<definition guid='213b22c9-695e-4038-ae52-c2cfbc1ece15' vstate='40' vmin='0' vmaj='1' srcleaf='' visiblename='' description='' category='' catenable='1' author='' manuname='' manucode='' sysinfo='0' keywords='' dynamic='0' iconpath='' />
+		<component class_type='root' codename='panel' x='0' y='0' z='0' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='0' poslock='0' >
+			<resources />
+			<properties />
+			<values />
+			<events />
+			<apis />
+			<variables >
+				<variable public='0' >
+					<def class_type='variable' name='char_entries' type='u8' description='' isconst='0' isinit='0' usrinit='0' setinit='' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='loop_count_2' type='u8' description='' isconst='0' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='false' type='b1' description='' isconst='1' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='char' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='20' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='octet' type='u8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='20' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='loop_count' type='u8' description='' isconst='0' isinit='1' usrinit='2' setinit='2' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='result_string' type='T8' description='' isconst='0' isinit='0' usrinit='&quot;&quot;' setinit='' >
+						<array size='255' />
+					</def>
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='result_octet' type='s16' description='' isconst='0' isinit='1' usrinit='0' setinit='0' />
+				</variable>
+				<variable public='0' >
+					<def class_type='variable' name='true' type='b1' description='' isconst='1' isinit='1' usrinit='1' setinit='1' />
+				</variable>
+			</variables>
+			<macros >
+				<macro >
+					<flowline name='Main' description='' >
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='Start' />
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='char[0] = 0b01010111' />
+							<exp exp='char[1] = 0b11101010' />
+							<exp exp='char[2] = 0b00010101' />
+							<exp exp='char[3] = 0b11111101' />
+							<exp exp='char_entries = Length$ (char)' />
+							<exp exp='result_string[0] = &apos;[&apos;' />
+						</command>
+						<command class_type='loop' title='Boucle' type='0' exp='result_octet &lt; char_entries' >
+							<flowline >
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='octet = NumberToHex$ (char[result_octet])' />
+								</command>
+								<command class_type='native' title='Code C' ccode='// Convertir l&apos;hexa en décimal j&apos;en ai marre
+hexa = FCV_OCTET;
+FCV_OCTET = Convert.ToInt32(hexa, 16);' language='C' />
+								<command class_type='calculation' title='Calcul' >
+									<exp exp='result_string[loop_count_2] = StringToInt$ (octet)' />
+									<exp exp='result_string[loop_count] = &apos;,&apos;' />
+									<exp exp='' />
+									<exp exp='// Incrémentations' />
+									<exp exp='result_octet = result_octet + 1' />
+									<exp exp='loop_count = loop_count + 2' />
+									<exp exp='loop_count_2 = loop_count_2 + 2' />
+								</command>
+							</flowline>
+						</command>
+						<command class_type='calculation' title='Calcul' >
+							<exp exp='result_string[loop_count - 2] = &apos;]&apos;' />
+						</command>
+						<command class_type='call' title='Appel de la Routine Composant' component='lcd_eb005' macro='PrintString' >
+							<argument exp='result_string' />
+						</command>
+					</flowline>
+				</macro>
+			</macros>
+			<component class_type='ref' guid='d29dda88-17de-4008-991a-c881890d4c57' vmin='1' vmaj='1' codename='lcd_eb005' x='-72' y='0' z='3.575' xsz='1' ysz='1' zsz='1' xang='0' yang='0' zang='0' xquat='0' yquat='0' zquat='0' wquat='1' visible='1' interactive='1' solid='1' layer='1' poslock='0' >
+				<resources />
+				<properties />
+				<values >
+					<value target='Pin_Data_0' data='$PORTA.0' />
+					<value target='Pin_Data_1' data='$PORTA.1' />
+					<value target='Pin_Data_2' data='$PORTA.2' />
+					<value target='Pin_Data_3' data='$PORTA.3' />
+					<value target='Pin_RS' data='$PORTA.4' />
+					<value target='Pin_E' data='$PORTA.5' />
+				</values>
+				<events />
+				<apis />
+				<variables />
+				<macros />
+			</component>
+		</component>
+	</components>
+	<keymap />
+	<panel2d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='9737364' img='' style='0' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel2d>
+	<panel3d shadows='0' lighting='2' brightness='0' perspective='0' >
+		<background rgb='8409120' img='' style='0' />
+		<table rgb='7360576' img='' style='0' size='25' />
+		<camera xe='0' ye='0' ze='300' xt='0' yt='0' zt='0' xquat='0' yquat='0' zquat='0' wquat='1' />
+	</panel3d>
+	<layout >
+		<view type='0' name='Main' mode='0' placement='LAAAAAAAAAABAAAA---------------------wAAAAAUAAAA2wMAAJUCAAA' zoom='75' scrollx='0' scrolly='236' flags='0' />
+	</layout>
+</document>
+</root>
